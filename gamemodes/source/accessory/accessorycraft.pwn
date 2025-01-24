@@ -1,5 +1,5 @@
 #define MAX_CRAFT_AKS 18
-#define DOP_AKS_BUST 5
+#define DOP_AKS_BUST 6
 #define MAX_CLASS_AKS 4
 
 new AccessoryCraftList[MAX_CRAFT_AKS][16] =
@@ -48,7 +48,8 @@ new AccessoryCraftListBust[MAX_CRAFT_AKS+DOP_AKS_BUST][5] =
     { 12101, 2, 1, 15, 0},         // Са бля
     { 12461, 2, 1, 15, 1},         // Катана New Year
     { 12444, 3, 0, 20, 0},         // Apple Vision Pro
-    { 12290, 3, 0, 5, 0}         // Очки гари шпротера
+    { 12290, 3, 0, 5, 0},         // Очки гари шпротера
+    { 12492, 4, 17, 1, 1}           // Лучший админ
 };
 
 new friskQualityBust[MAX_CLASS_AKS][] =
@@ -199,6 +200,10 @@ stock ResultCountBustAks(AksId, AksType, AksParam)
         else if(math <= 0.1) math = -0.5;
         count *= 1 + math;
         result = floatround(count, floatround_floor);
+    }
+    else if(AksType == 4)
+    {
+        result = 1;
     }
     else 
     {

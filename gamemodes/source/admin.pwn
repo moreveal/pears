@@ -1747,3 +1747,13 @@ stock AHelpList(playerid)
 	ShowDialog(playerid, 176, DIALOG_STYLE_MSGBOX,"{FFFFFF}Команды {FF9000}Администрации {FFFFFF}2 страница", str, "Назад", "Выход");
 	return 1;
 }
+
+stock AdminAks(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] > 0 && ADUTY[playerid] == 1)
+	{
+		SetPlayerAttachedObject(playerid, 4, 12493, 2, 0.405000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.078000, 1.051999, 1.131999, 0, 0);
+	}
+	else RemovePlayerAttachedObject(playerid, 4);
+	return true;
+}
