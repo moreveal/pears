@@ -350,7 +350,7 @@ cars
 15288, 	volga21, 	volga21, 	car, 		VOLGA21, 	VOLGA21, 	null,	richfamily,	    10,	0,	0,	-1, 0.75, 0.75,		0
 15289, 	delorean, 	delorean, 	car, 		DELOREAN, 	DELOREAN, 	null,	executive, 	    5, 	0,	0,	-1, 0.70, 0.70,		0
 15290,	volga24,	volga24,	car, 		VOLGA24, 	VOLGA24, 	null,	richfamily, 	10, 0,	0,	-1, 0.75, 0.75,		0
-15291,	f90unm,		f90unm,		car, 		F90UNM, 	F90UNM, 	null,	richfamily, 	7, 	0,	0,	-1, 0.7, 0.7,		1
+15291, 	dchallunm, 	dchallunm, 	car, 		DCHALLUNM, 	DCHALLUNM, 	null,	executive, 	    5, 	0,	0,	-1, 0.8, 0.8,		0
 15292,	m5cs,		m5cs,		car, 		M5CS, 	    M5CS, 	    null,	richfamily, 	7, 	0,	0,	-1, 0.75, 0.75,		1
 15293, 	cnnheli,	cnnheli, 	heli, 		COASTMAV, 	SANMAV,		null,	ignore,		    6,	0,	0,	-1, 0.7, 0.7,		-1
 15294, 	robr44,	    robr44, 	heli, 		MAVERICK,	MAVERIC,	null,	ignore,		    10,	0,	0,	-1, 0.7, 0.7,		-1

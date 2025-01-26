@@ -140,7 +140,7 @@ new vehNameCustom[][] =
     "Газ-21 Волга", // 2124
     "DeLorean DMC-12", // 2125
     "Газ-24 Волга", // 2126
-    "BMW M5 F90 UNMARKED", // 2127
+    "Dodge Challenger SRT FBI", // 2127
     "BMW M5 Competition Sport", // 2128
     "SA News Helicopter", // 2129
     "Robinson R44", // 2130
@@ -174,7 +174,7 @@ new vehNameCustom[][] =
     "Canis Seminole Frontier", // 2158
     "1982 Mercury Cougar", // 2159
     "Chevrolet Corvette C3", // 2160
-    "Cadillac CTS-V", // 2161
+    "Cadillac CTS-V FBI", // 2161
     "Cadillac Fleetwood Hearse", // 2162
     "Albany Lurcher", // 2163
     "Cadillac Escalade Army", // 2164
@@ -328,7 +328,7 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     35000000, // "Газ-21 Волга" // 2124
     35000000, // "DeLorean DMC-12" // 2125
     35000000, // "Газ-24 Волга" // 2126
-    20000000, // "BMW M5 F90 UNMARKED", // 2127
+    20000000, // "Dodge Challenger SRT FBI", // 2127
     35000000, // "BMW M5 Competition Sport // 2128
     70000000, // "SA News Helicopter", // 2129
     28000000, // "Robinson R44", // 2130
@@ -362,7 +362,7 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     1800000, // "Canis Seminole Frontier", // 2158
     10000000, // "1982 Mercury Cougar", // 2159
     10000000, // "Chevrolet Corvette C3", // 2160
-    10000000, // "Cadillac CTS-V" // 2161
+    10000000, // "Cadillac CTS-V FBI" // 2161
     10000000, // "Cadillac Fleetwood Hearse", // 2162
     10000000, // "Albany Lurcher" // 2163
     20000000, // "Cadillac Escalade SA Army" // 2164
@@ -385,6 +385,194 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     6000000, // "Volkswagen Golf VII GTI" // 2181
     90000000, // "Bugatti Bolide" // 2182
     30000000, // "Chevrolet Impala 1967" // 2183
+};
+
+new vehSummaGoldCustom[] = // Гос цены на авто в голде (Дефолтные) Кастомный транспорт
+{
+    11500, // "Lamborghini Murcielago", // 2000  
+	425, // "BMW E36 328i", // 2001  
+	4000, // "BMW M4 G82", // 2002  
+	4500, // "Mercedes S63", // 2003  
+	187, // "Acura Integra", // 2004  
+	1625, // "Hummer H2", // 2005  
+	5250, // "Nissan GT-R R35 RB", // 2006  
+	1150, // "Impreza WRX STi", // 2007  
+	525, // "Skoda Octavia", // 2008  
+	1375, // "Mercedes C63", // 2009  
+	650, // "Nissan 350Z", // 2010  
+	2250, // "Audi Q7", // 2011  
+	1350, // "BMW 530i", // 2012  
+	235, // "BMW M635CSI E24", // 2013  
+	4250, // "Mercedes G63 B800", // 2014  
+	1950, // "Ford Raptor", // 2015  
+	5750, // "Audi RS5", // 2016  
+	275, // "BMW 325i E30", // 2017  
+	2375, // "BMW X6M", // 2018  
+	150, // "Volkswagen Golf", // 2019  
+	2000, // "Cadillac Fleetwood", // 2020  
+	375, // "BMW 750il E38", // 2021  
+	3750, // "Dodge Super Bee", // 2022  
+	1750, // "Ford GT", // 2023  
+	21750, // "Lamborghini Centenario", // 2024  
+	2750, // "Mercedes W124", // 2025  
+	3250, // "Mercedes SL 65", // 2026  
+	625, // "Nissan 240SX", // 2027  
+	2125, // "Porsche 911 GT2", // 2028  
+	1625, // "Shelby GT 500", // 2029  
+	2375, // "Toyota Supra MK5", // 2030  
+	575, // "Toyota AE86", // 2031  
+	325, // "Prison Bus", // 2032  
+	6250, // "Mercedes AMG GT63", // 2033  
+	10000, // "Bentley Mulliner Bacalar", // 2034  
+	800, // "BMW 325i E30", // 2035  
+	7750, // "Arm Cargo", // 2036  
+	1250, // "charger unm, // 2037  
+	1250, // "Charger Police", // 2038  
+	1250, // "Charger Civ", // 2039  
+	1125, // "Enforcer SWAT", // 2040  
+	1000, // "Truck SWAT", // 2041  
+	75000, // "F1 Ferrari", // 2042  
+	575, // "Ford Crown Victoria", // 2043  
+	300, // "Ford Crown Victoria Dep", // 2044  
+	1750, // "Expedition", // 2045  
+	875, // "Explorer Dep", // 2046  
+	875, // "Explorer Police", // 2047  
+	237, // "Ford Focus ST", // 2048  
+	625, // "Silvia S13", // 2049  
+	1375, // "Jeep Wrangler", // 2050  
+	475, // "Lexus LS400", // 2051  
+	2375, // "Lexus RCF", // 2052  
+	325, // "Mazda RX7", // 2053  
+	600, // "Audi RS6 C5", // 2054  
+	3000, // "Mercedes Sprinter", // 2055  
+	23750, // "Ferrari Enzo", // 2056  
+	5000, // "Mercedes E63", // 2057  
+	875, // "Mitsubishi Eclipse", // 2058  
+	950, // "Nissan Silvia S14", // 2059  
+	2250, // "Hummer H1", // 2060  
+	2500, // "Plymouth Hemi", // 2061  
+	725, // "Toyota Camry Taxi", // 2062  
+	8750, // "Vaz 2106", // 2063  
+	8750, // "Vaz 2105", // 2064  
+	137, // "Volkswagen Golf R32", // 2065  
+	3000, // "BMW G11", // 2066  
+	325, // "Toyota Chaser JZX100", // 2067  
+	6750, // "BMW M5 F90", // 2068  
+	3125, // "Audi R8", // 2069  
+	13750, // "Rolls-Royce Wraith", // 2070  
+	16000, // "Rolls-Royce Cullinan", // 2071  
+	25000, // "Pagani Zonda", // 2072  
+	1500, // "Audi RS3", // 2073  
+	1375, // "Nissan GT-R R34", // 2074  
+	1125, // "Silvia S15", // 2075  
+	2375, // "Nissan GT-R R35", // 2076  
+	700, // "Charger RT 69", // 2077  
+	50000, // "Mars Rover", // 2078  
+	50000, // "Mars Rider", // 2079  
+	50000, // "Mars RC Car", // 2080  
+	50000, // "Ingenuity", // 2081  
+	2000, // "Peugeot 406 2003", // 2082  
+	625, // "Alfa-Romeo 159 Ti", // 2083  
+	6750, // "Aston-Martin DB11", // 2084  
+	2500, // "Chevrolet Corvette C6 ZR1", // 2085  
+	7500, // "Tesla Model X P100D", // 2086  
+	21250, // "Chiron", // 2087  
+	8750, // "Porsche 911 JS Edition", // 2088  
+	9000, // "Bentley Turbo R 1991", // 2089  
+	475, // "Chevrolet Express", // 2090  
+	375, // "Ford Econoline Pack", // 2091  
+	4250, // "Audi RS7", // 2092  
+	17000, // "Bentley Continental GT", // 2093  
+	700, // "Chevrolet Tahoe", // 2094  
+	1000, // "Sa Bus", // 2095  
+	1250, // "Paramedic", // 2096  
+	4250, // "Mercedes-Benz CLS 63 AMG", // 2097  
+	33750, // "Bugatti Divo", // 2098  
+	700, // "Toyota Chaser BN Sports", // 2099  
+	12500, // "SAPD Helicopter", // 2100  
+	12500, // "MH-6 Little Bird", // 2101  
+	12500, // "FBI Helicopter", // 2102  
+	12250, // "McLaren 720s Spider", // 2103  
+	8750, // "Lamborghini Miura P400 SV", // 2104  
+	14000, // "Lamborghini Gallardo Superleggera", // 2105  
+	8000, // "Ferrari 348", // 2106  
+	1375, // "Jeep Cherokee 1984 Sand Edition", // 2107  
+	2500, // "Mercedes-Benz CLS 63 AMG Police", // 2108  
+	2375, // "Volvo Polestar One", // 2109  
+	1150, // "Mazda RX7 Tune body", // 2110  
+	6000, // "Dodge Viper", // 2111  
+	2750, // "BMW M5 E60", // 2112  
+	4750, // "BMW M8 Competition Gran Coupe", // 2113  
+	2150, // "Chevrolet Camaro ZL1", // 2114  
+	575, // "Motorcycle Kawasaki", // 2115  
+	18500, // "Lamborghini Aventador", // 2116  
+	1850, // "BMW X5M", // 2117  
+	4000, // "BMW X7M", // 2118  
+	2500, // "Toyota Land Cruiser 200", // 2119  
+	8750, // "VAZ 2101 Drift", // 2120  
+	6625, // "Audi RS7", // 2121  
+	100000, // "MRAP", // 2122  
+	2600, // "Ford Mustang GT 2015", // 2123  
+	8750, // "Газ-21 Волга", // 2124  
+	8750, // "DeLorean DMC-12", // 2125  
+	8750, // "Газ-24 Волга", // 2126  
+	5000, // "Dodge Challenger SRT FBI", // 2127  
+	8750, // "BMW M5 Competition Sport", // 2128  
+	17500, // "SA News Helicopter", // 2129  
+	7000, // "Robinson R44", // 2130  
+	11250, // "Buckingham SuperVolito Carbon", // 2131  
+	17500, // "Bell UH-1 Iroquois", // 2132  
+	17500, // "Buckingham Volatus", // 2133  
+	3750, // "Mercedes-Benz Maybach S650", // 2134  
+	3750, // "Cadillac Escalade SA News", // 2135  
+	4750, // "Audi E-Tron GT", // 2136  
+	7500, // "BMW i7", // 2137  
+	3000, // "Ford Mustang E-Tech", // 2138  
+	7250, // "Porsche Taycan Turbo S", // 2139  
+	12500, // "Tesla Cybertruck Police", // 2140  
+	8500, // "Tesla Cybertruck", // 2141  
+	4500, // "Tesla Model S", // 2142  
+	2400, // "Tesla Model 3", // 2143  
+	650, // "Ducati Corse", // 2144  
+	350, // "Harley Davidson 1986", // 2145  
+	1350, // "Honda CBR 1000RR", // 2146  
+	975, // "NRG 600 Racing", // 2147  
+	1150, // "Pegassi Bati 901s", // 2148  
+	1000, // "Pegassi Ruffian", // 2149  
+	1350, // "Suzuki GSX-R 1000", // 2150  
+	12500, // "Ford GT Police Highway Patrol", // 2151  
+	2875, // "Dodge Challenger Hellcat", // 2152  
+	8750, // "Rolls-Royce Phantom", // 2153  
+	500, // "1959 Chevrolet Impala", // 2154  
+	625, // "1996 Chevrolet Impala SS", // 2155  
+	500, // "1976 Ford Gran Torino", // 2156  
+	575, // "Bravado Antares", // 2157  
+	450, // "Canis Seminole Frontier", // 2158  
+	2500, // "1982 Mercury Cougar", // 2159  
+	2500, // "Chevrolet Corvette C3", // 2160  
+	2500, // "Cadillac CTS-V FBI", // 2161  
+	2500, // "Cadillac Fleetwood Hearse", // 2162  
+	2500, // "Albany Lurcher", // 2163  
+	5000, // "Cadillac Escalade SA Army", // 2164  
+	4000, // "BMW M3 Competition", // 2165  
+	4250, // "BMW M3 G81", // 2166  
+	3000, // "Cadillac XT6-V", // 2167  
+	3375, // "Dodge Ram", // 2168  
+	3200, // "Ford Raptor", // 2169  
+	1500, // "Jeep Grand Cherokee SRT", // 2170  
+	23500, // "Ferrari LaFerrari", // 2171  
+	200, // "Daewoo Matiz", // 2172  
+	450, // "Mercedes Benz W140", // 2173  
+	3450, // "Range Rover Sport", // 2174  
+	2250, // "Volvo XC90", // 2175  
+	5000, // "Mercedes-Benz G63 AMG 6x6", // 2176  
+	7750, // "Lamborghini Urus", // 2177  
+	2500, // "Ford Crown Victoria Kill Mure", // 2178  
+	21250, // "Lamborghini Countach LPI 800-4", // 2179  
+	5000, // "BMW XM", // 2180  
+	1500, // "Volkswagen Golf VII GTI", // 2181  
+	22500, // "Bugatti Bolide", // 2182  
+	7500, // "Chevrolet Impala 1967", // 2183  
 };
 
 stock AddCustomVehicle() // Добавляем тс на карту
@@ -516,7 +704,7 @@ stock AddCustomVehicle() // Добавляем тс на карту
     AddVehicleSyncModel(421, 2124); // "Газ-21 Волга" // 2124
     AddVehicleSyncModel(415, 2125); // "DeLorean DMC-12" // 2125
     AddVehicleSyncModel(566, 2126); // "Газ-24 Волга" // 2126
-    AddVehicleSyncModel(560, 2127); // "BMW M5 F90 UNMARKED" // 2127
+    AddVehicleSyncModel(402, 2127); // "Dodge Challenger SRT FBI" // 2127
     AddVehicleSyncModel(560, 2128); // "BMW M5 Competition Sport // 2128
     AddVehicleSyncModel(488, 2129); // "SA News Helicopter", // 2129
     AddVehicleSyncModel(487, 2130); // "Robinson R44", // 2130
@@ -550,7 +738,7 @@ stock AddCustomVehicle() // Добавляем тс на карту
     AddVehicleSyncModel(579, 2158); // "Canis Seminole Frontier", // 2158
     AddVehicleSyncModel(507, 2159); // "1982 Mercury Cougar", // 2159
     AddVehicleSyncModel(603, 2160); // "Chevrolet Corvette C3", // 2160
-    AddVehicleSyncModel(560, 2161); // "Cadillac CTS-V" // 2161
+    AddVehicleSyncModel(560, 2161); // "Cadillac CTS-V FBI" // 2161
     AddVehicleSyncModel(442, 2162); // "Cadillac Fleetwood Hearse", // 2162
     AddVehicleSyncModel(442, 2163); // "Albany Lurcher" // 2163
     AddVehicleSyncModel(579, 2164); // "Cadillac Escalade Army" // 2164
@@ -649,11 +837,11 @@ stock GetVehicleClass(m)
     || m == 574 || m == 582 || m == 583 || m == 596 || m == 597 || m == 598 || m == 599 || m == 601 
 	|| m == 2032 || m == 2036 || m == 2037 || m == 2038 || m == 2040 || m == 2041 || m == 2044 || m == 2045 || m == 2046
 	|| m == 2047 || m == 2060 || m == 2096 || m == 2100 || m == 2101 || m == 2102 || m == 2108 || m == 2122 || m == 2127
-    || m == 2129 || m == 2129 || m == 2132 || m == 2134 || m == 2135 || m == 2140 || m == 2151 || m == 2164) class = 7;
+    || m == 2129 || m == 2129 || m == 2132 || m == 2134 || m == 2135 || m == 2140 || m == 2151 || m == 2161 || m == 2164) class = 7;
 
     // Новый класс, типо лимитированные (8)
     else if(m == 2063 || m == 2064 || m == 2088 || m == 2104 || m == 2120 || m == 2124 || m == 2126 || m == 2128 || m == 2153
-    || m == 2159 || m == 2160 || m == 2161 || m == 2162 || m == 2163 || m == 2176 || m == 2177 || m == 2178
+    || m == 2159 || m == 2160 || m == 2162 || m == 2163 || m == 2176 || m == 2177 || m == 2178
     || m == 2179 || m == 2180 || m == 2181 || m == 2183) class = 8;
 
     else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
