@@ -321,6 +321,8 @@ stock dialogBattlePassLevelMenuInformation(playerid)
                                 "\n{cccccc}- За опыт повышается уровень пропуска, а уже за каждый уровень есть награды, которые может получить абсолютно любой игрок"\
                                 "\n{cccccc}- Задания бывают 3 типов. Ежедневные - обновляются каждый день. Еженедельные - обновляются раз в неделю"\
                                 "\n{cccccc}Разовые задания - не обновляются, и доступны 1 раз за сезон пропуска"\
+                                "\n\n{ff9000}Когда он закончится?"\
+                                "\n{cccccc}- Это зимний пропуск. Он закончится 28 февраля ночью в момент рестарта."\
                                 "\n\n{ff9000}- Пропуск бывает 2 типов:"\
                                 "\n{ffffff}Обычный {cccccc}- со стандартными наградами, доступен всем без вложений/доната"\
                                 "\n{ffcc00}Премиум {cccccc}- с премиум наградами, покупка уровня в 2 раза дешевле, доступен к покупке на нашем сайте"\
@@ -337,7 +339,7 @@ stock dialogBattlePassLevelMenuInformation(playerid)
                                 "\n{cccccc}- Каждый уровень вы будете получать по Новогодней Шкатулки, а каждый 5 уровень по одной Gold Шкатулке",
                                 !BattlePass[playerid][bpDonate] ? "{cccccc}Обычный" : "{ffcc00}Премиум",
                                 !BattlePass[playerid][bpDonate] ? 1000000 : 500000, !BattlePass[playerid][bpDonate] ? 100 : 50);
-	format(string,sizeof(string),"{C8A2C8}Пропуск Зима 2024-2025");
+	format(string,sizeof(string),"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля");
 	ShowDialog(playerid,BATTLEPASS_SHOW_LEVELMENU_INFO,DIALOG_STYLE_MSGBOX, string, lines, "*", "");
 	return true;
 }
@@ -362,7 +364,7 @@ stock dialogBattlePassListTask(playerid,type)
             List[quan][playerid] = i;
             quan++;
         }
-        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Выбор","Отмена");
+        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Выбор","Отмена");
     }
     else if(type == 1)
     {
@@ -381,7 +383,7 @@ stock dialogBattlePassListTask(playerid,type)
             List[quan][playerid] = i;
             quan++;
         }
-        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Выбор","Отмена");
+        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Выбор","Отмена");
     }
     else if(type == 2)
     {
@@ -398,7 +400,7 @@ stock dialogBattlePassListTask(playerid,type)
             List[quan][playerid] = i;
             quan++;
         }
-        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Выбор","Отмена");
+        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Выбор","Отмена");
     }
     return 1;
 }
@@ -515,7 +517,7 @@ stock dialogCase_BattlePass(playerid, dialogid, response, listitem) {
                 new line[214],lines[4096];
                 format(line,sizeof(line),"{cccccc}Задание: {ff9000}%s", BattlePassWeeklyTaskName[BattlePass[playerid][bpTaskWeekly][TaskID]]), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{cccccc}%s", BattlePassWeeklyTaskDescription[BattlePass[playerid][bpTaskWeekly][TaskID]]), strcat(lines,line);
-                ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKINFO,DIALOG_STYLE_MSGBOX,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Ок","");
+                ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKINFO,DIALOG_STYLE_MSGBOX,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Ок","");
             }
         }
         case BATTLEPASS_SHOW_MENU_TASKINFO:{
@@ -659,7 +661,7 @@ stock dialogBattlePassListAwards(playerid)
         GetNameThing(0, BattlePassAwarsdItem[i][15], BattlePassAwarsdItem[i][16], BattlePassAwarsdItem[i][19]),
         BattlePassAwarsdItem[i][17] != 0 ? tempText[3] : " "), strcat(lines,line);
     }
-    ShowDialog(playerid,BATTLEPASS_SHOW_MENU_AWARDS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Выбор","Отмена");
+    ShowDialog(playerid,BATTLEPASS_SHOW_MENU_AWARDS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Выбор","Отмена");
     return 1;
 }
 
