@@ -124,7 +124,7 @@ stock use_throw(playerid, inva, useinva)
 	}
 	if(ThrowInfo[t][tBombPlant] == true)
 	{
-		if(ThrowInfo[t][tPlayerid] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Вы не можете поднять активированную бомбу");
+		if(ThrowInfo[t][tPlayerid] != PlayerInfo[playerid][pID] && thingType == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете поднять активированную бомбу");
 	} 
     i_resetveshi(playerid);
 	i_resettabs(playerid);
