@@ -1,6 +1,6 @@
 #define MAX_CRAFT_AKS 18
 #define DOP_AKS_BUST 6
-#define MAX_CLASS_AKS 4
+#define MAX_CLASS_AKS 5
 
 new AccessoryCraftList[MAX_CRAFT_AKS][16] =
 {
@@ -49,7 +49,7 @@ new AccessoryCraftListBust[MAX_CRAFT_AKS+DOP_AKS_BUST][5] =
     { 12461, 2, 1, 15, 1},         // Катана New Year
     { 12444, 3, 0, 20, 0},         // Apple Vision Pro
     { 12290, 3, 0, 5, 0},         // Очки гари шпротера
-    { 12492, 4, 17, 1, 1}           // Лучший админ
+    { 12492, 4, 17, 1, 1}           // Лучший админ // ДВИНУТЬ ПОТОМ ИЛИ ПЕРЕПИСАТЬ
 };
 
 new friskQualityBust[MAX_CLASS_AKS][] =
@@ -57,7 +57,8 @@ new friskQualityBust[MAX_CLASS_AKS][] =
     { "Кол-во дополнительных переносимых патрон" },
     { "Дополнительных страниц инвентаря" },
     { "Урон по НПС процентов" },
-    { "Дополнительный опыт к навыкам" }
+    { "Дополнительный опыт к навыкам" },
+    { "X2 Point и Score, норма онлайна вдвое меньше"}
 };
 
 new friskQualityBustShot[MAX_CLASS_AKS][] =
@@ -65,7 +66,8 @@ new friskQualityBustShot[MAX_CLASS_AKS][] =
     { "Разгрузка" },
     { "Рюкзак" },
     { "Оружие" },
-    { "Очки" }
+    { "Очки" },
+    { "Цепь" }
 };
 
 new friskQualityColorAndText[6][] =
@@ -115,6 +117,7 @@ stock CreateAcsListCraft(playerid)
         if(AccessoryCraftListBust[i][1] != quan)
         {
             quan++;
+            if(quan == 4) continue;
             format(line,sizeof(line),"{ff9000}%s\n",friskQualityBustShot[quan]), strcat(lines,line);
         }
     }
