@@ -54,7 +54,7 @@ stock use_boot(playerid, v, inva, useinva)
 			if(PlayerRobCollector(playerid)) return i_resettabs(playerid);
 
 			// Вычитаем из казны бабло (5 - ограбление)
-			getkazna(5, fquan);
+			TakeMoneyFromTreasury(fquan, "Ограбление инкассаторов");
 
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ухх! Мои денюжки.. Кажется в мешке было {99ff66}%d$ {cccccc}(%s)", fquan, get_k(fquan));
 			format(string, sizeof(string), "взял%s мешок {99ff66}%d$ {C2A2DA}(%s)", gender(playerid), fquan, get_k(fquan));

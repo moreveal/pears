@@ -25,8 +25,11 @@ stock sell_shark(playerid)
 
 		pay = ServerInfo[1] + givePrice; // Стоимость акулы + рандом
 		if(ServerInfo[53] == 0) pay += pay/4; // Это повышенная оплата, если она есть для этой работы сейчас
+		if (!TakeMoneyFromTreasury(pay, "Зарплата (акула)"))
+		{
+			return ErrorMessage(playerid, "{FF6347}В казне недостаточно средств для выдачи зарплаты.\n{FF6347}Обратитесь к администрации.");
+		}
 		paysalary(playerid, pay, 0);
-		getkazna(3, pay);
 		
 		SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я продал%s акулу за {99ff66}%d$", gender(playerid), pay);
 		MoneyLog("salary", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", pay, "Зарплата Акула");

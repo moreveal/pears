@@ -92,7 +92,7 @@ stock CreateRentVehicle(playerid, vehicleModel, color1, color2, statusLabel, uni
     if(price > 0)
     {
         oGivePlayerMoney(playerid, -price);
-        putkazna(2, price);
+        PutMoneyToTreasury(price, "Оплата за аренду транспорта (у гос.)");
         MoneyLog("rentcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, "");
     }
 
