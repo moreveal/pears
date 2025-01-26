@@ -282,18 +282,23 @@ stock gthinginfoPage(playerid)
 {
 	new line[70],lines[sizeof(friskName)*70],quan,quanstop;
 	quanstop = DP[5][playerid];
+	DP[4][playerid] = quanstop;
+	ClearList(playerid);
+
     format(line,sizeof(line),"{ff9000}ID Предмета\t{cccccc}Название\t{44ff99}Стоимость в моде"), strcat(lines,line);
-	if(quanstop >= sizeof(friskName)) return ErrorMessage(playerid,"{ff6347}Дальше нет предметов");
+	if(quanstop >= sizeof(friskName)) return pc_cmd_gthinginfo(playerid);
     for(new i = quanstop; i<sizeof(friskName);i++)
     {
         //if(CheckOnInventory(i) == 0 || quan > 60 || friskDefault[i] == -1) continue;
 		if(CheckOnInventory(i) == 0 || quan > 60) continue;
         format(line,sizeof(line),"\n{ff9000}%d\t{cccccc}%s\t{44ff99}%d$",i,friskName[i],friskDefault[i]), strcat(lines,line);
+		List[quan][playerid] = i;
 		quan++;
 		quanstop = i;
 	}
+	format(line,sizeof(line),"\n{ff9000}Далее\t \t "), strcat(lines,line);
 	DP[5][playerid] = quanstop+1;
-	ShowDialog(playerid,1501,DIALOG_STYLE_TABLIST_HEADERS,"Предметы",lines,"Далее","Выход");
+	ShowDialog(playerid,1501,DIALOG_STYLE_TABLIST_HEADERS,"Предметы",lines,"Выбрать","Выход");
 	return 1;
 }
 
