@@ -442,7 +442,7 @@ stock CourtCloseProcess(courtofferid, deposit = -1, period = -1)
 
         // Помещаем залог в казну
         if (courtDecision != COURT_CLASS_WORKING_OUT_PAROLE)
-            putkazna(0, deposit);
+            PutMoneyToTreasury(deposit, "Залог за тюремный срок");
     }
 
     if(courtDecision != COURT_CLASS_DECLINE && courtDecision != COURT_CLASS_JAIL_REDUCE_PAROLE)

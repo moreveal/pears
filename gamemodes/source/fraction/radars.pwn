@@ -1935,7 +1935,7 @@ stock Radar_ViolationHandler(playerid) {
                             // Выплаты
                             new fine_percent = RadarInfo[radarid][riFine] / 100;
                             bigint_add(OrganInfo[RadarInfo[radarid][riFraction]][glave], fine_percent * RADAR_POLICE_SHARE); // Часть от штрафа на счёт организации
-                            putkazna(0, fine_percent * RADAR_GOVERNMENT_SHARE); // Часть от штрафа в казну
+                            PutMoneyToTreasury(fine_percent * RADAR_GOVERNMENT_SHARE, "Штраф"); // Часть от штрафа в казну
 						}
 						else PlayerInfo[playerid][pAmmos11] += RadarInfo[radarid][riFine];
 

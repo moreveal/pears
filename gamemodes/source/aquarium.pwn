@@ -273,7 +273,7 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
                 SuccessMessage(playerid, "{99ff66}Вы покормили рыбок\n{cccccc}Теперь рыбки будут счастливы :)");
                 oGivePlayerMoney(playerid, -price);
                 MoneyLog("feedfish", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, "");
-                putkazna(2, price);
+                PutMoneyToTreasury(price, "Кормёжка рыбок");
                 payanim(playerid, 0);
 
                 for(new i; i < MAX_FISH_IN_AQUARIUM; ++i) AquariumInfo[aquaid][aqFullSatiety][i] = 0; 
@@ -304,7 +304,7 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
             SuccessMessage(playerid, string);
             oGivePlayerMoney(playerid, -price);
             MoneyLog("buyfish", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, "");
-            putkazna(2, price);
+            PutMoneyToTreasury(price, "Покупка рыбки");
             payanim(playerid, 0);
 
             new aquaid = DP[0][playerid], fishid = DP[1][playerid];

@@ -2091,7 +2091,7 @@ stock LoadOrderEscort(playerid)
 	OrganInfo[3][gUpdate] = 1;
 
 	// Перечисляем эти деньги в казну
-	putkazna(2, OrganInfo[g][gDeliveryPay] / 2);
+	PutMoneyToTreasury(OrganInfo[g][gDeliveryPay] / 2, "Боеприпасы в NGSA");
 
 	new line[90],lines[630];
 	format(line,sizeof(line),"{99ff66}Боеприпасы загружены в Barracks"), strcat(lines,line);

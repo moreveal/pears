@@ -4,7 +4,8 @@ new dyn_zone_zzBiz[MAX_BIZ];
 
 // Бизнесы Аренды
 #define MAX_BIZ_TERM 56
-#define MIN_CHIPSFEE 1 // Процент комиссии фишек
+#define MIN_CHIPSFEE 6 // Минимальный процент комиссии фишек
+#define MAX_CHIPSFEE 12 // Максимальный процент комиссии фишек
 new Float:RentPos_X[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_Y[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_Z[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Float:RentPos_RX[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Float:RentPos_RY[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_RZ[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentObject[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
@@ -100,7 +101,7 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 	}
 	else
 	{	
-		if(b == 200) format(line,sizeof(line),"{cccccc}Комиссия на вывод фишек \t{99ff66}%d% \t \n", BizzInfo[b][bChipsFee]), strcat(lines,line);
+		if(b == 200) format(line,sizeof(line),"{cccccc}Комиссия на вывод фишек \t{99ff66}%d%% \t \n", BizzInfo[b][bChipsFee]), strcat(lines,line);
 		format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
 		format(line,sizeof(line),"{cccccc}Статус заказа \t %s \t \n", BizzInfo[b][bOrderStatus] ? "{99ff66}[Active]" : "{FF6347}[Unactive]"), strcat(lines,line);
 		format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
@@ -1720,9 +1721,9 @@ stock SaveTax_Biz(b)
 stock dialogChipsProcent(playerid, b)
 {
 	new lines[300], string[60];
-	format(lines,sizeof(lines),"\n{cccccc}Введите цифру процента, который вы будете забирать за продоваемые фишки\
-								\n\nТекущий комиссия: {0088ff}%d%\
-								\n{FF6347}Не меньше %s и не больше 10", BizzInfo[b][bChipsFee], FormatNumberWithCommas(MIN_CHIPSFEE));
+	format(lines,sizeof(lines),"\n{cccccc}Введите налог, который вы будете забирать за продаваемые фишки\
+								\n\nТекущий комиссия: {0088ff}%d%%\
+								\n{FF6347}Не меньше %d%% и не больше %d%%", BizzInfo[b][bChipsFee], MIN_CHIPSFEE, MAX_CHIPSFEE);
 	format(string,sizeof(string),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
 	ShowDialog(playerid,CASINO_EDITCHIPSPROCENT,DIALOG_STYLE_INPUT, string, lines, "Принять", "Отмена");
 	return true;
@@ -1731,7 +1732,7 @@ stock dialogChipsProcent(playerid, b)
 stock UpdateChipsProcent(playerid, b, const inputtext[])
 {
 	new input = strval(inputtext);
-	if(input < MIN_CHIPSFEE || input > 10) return dialogChipsProcent(playerid, b);
+	if(input < MIN_CHIPSFEE || input > MAX_CHIPSFEE) return dialogChipsProcent(playerid, b);
 	BizzInfo[b][bChipsFee] = input;
 	productbiz(playerid, b);
 
