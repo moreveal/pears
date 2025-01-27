@@ -1,6 +1,6 @@
 #define MAX_CRAFT_AKS 18
-#define DOP_AKS_BUST 5
-#define MAX_CLASS_AKS 4
+#define DOP_AKS_BUST 6
+#define MAX_CLASS_AKS 5
 
 new AccessoryCraftList[MAX_CRAFT_AKS][16] =
 {
@@ -48,7 +48,8 @@ new AccessoryCraftListBust[MAX_CRAFT_AKS+DOP_AKS_BUST][5] =
     { 12101, 2, 1, 15, 0},         // Са бля
     { 12461, 2, 1, 15, 1},         // Катана New Year
     { 12444, 3, 0, 20, 0},         // Apple Vision Pro
-    { 12290, 3, 0, 5, 0}         // Очки гари шпротера
+    { 12290, 3, 0, 5, 0},         // Очки гари шпротера
+    { 12492, 4, 17, 1, 1}           // Лучший админ // ДВИНУТЬ ПОТОМ ИЛИ ПЕРЕПИСАТЬ
 };
 
 new friskQualityBust[MAX_CLASS_AKS][] =
@@ -56,7 +57,8 @@ new friskQualityBust[MAX_CLASS_AKS][] =
     { "Кол-во дополнительных переносимых патрон" },
     { "Дополнительных страниц инвентаря" },
     { "Урон по НПС процентов" },
-    { "Дополнительный опыт к навыкам" }
+    { "Дополнительный опыт к навыкам" },
+    { "X2 Point и Score, норма онлайна вдвое меньше"}
 };
 
 new friskQualityBustShot[MAX_CLASS_AKS][] =
@@ -64,7 +66,8 @@ new friskQualityBustShot[MAX_CLASS_AKS][] =
     { "Разгрузка" },
     { "Рюкзак" },
     { "Оружие" },
-    { "Очки" }
+    { "Очки" },
+    { "Цепь" }
 };
 
 new friskQualityColorAndText[6][] =
@@ -114,6 +117,7 @@ stock CreateAcsListCraft(playerid)
         if(AccessoryCraftListBust[i][1] != quan)
         {
             quan++;
+            if(quan == 4) continue;
             format(line,sizeof(line),"{ff9000}%s\n",friskQualityBustShot[quan]), strcat(lines,line);
         }
     }
@@ -145,7 +149,7 @@ stock AcsListCraftInformation(playerid)
     new line[150],lines[1400];
     format(line,sizeof(line),"{ff9000}Вы выбрали %s", friskQualityBustShot[DP[0][playerid]]), strcat(lines,line);
     format(line,sizeof(line),"\n\n{cccccc}Но данный тип аксессуара, увы, нельзя скрафтить!"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Он может выпасть в кейсе, или выдаваться администрацией в конкурсах/мероприятиях"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Он может выпасть в шкатулке, или выдаваться администрацией в конкурсах/мероприятиях"), strcat(lines,line);
     format(line,sizeof(line),"\n\n{ff9000}Список аксессуаров и их бонусов:"), strcat(lines,line);
     for(new i = 0; i < sizeof(AccessoryCraftListBust); i ++)
     {
@@ -199,6 +203,10 @@ stock ResultCountBustAks(AksId, AksType, AksParam)
         else if(math <= 0.1) math = -0.5;
         count *= 1 + math;
         result = floatround(count, floatround_floor);
+    }
+    else if(AksType == 4)
+    {
+        result = 1;
     }
     else 
     {

@@ -188,22 +188,25 @@ stock RemoveObjectToTexture(playerid) // Снимаем информацию о 
 {
 	if(MenuInfo[playerid][zDynamicObject] > 0)
 	{
-		Streamer_SetIntData(STREAMER_TYPE_OBJECT, MenuInfo[playerid][zDynamicObject], STREAMER_EDITABLE_DYNAMIC_OBJECT, 0); // Editable Dynamic Object
-
-		// Отменяем изменения, если они не были сохранены
-		if(MenuInfo[playerid][zChange] > 0)
+		if(IsValidDynamicObject(MenuInfo[playerid][zDynamicObject]))
 		{
-			for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) 
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, MenuInfo[playerid][zDynamicObject], STREAMER_EDITABLE_DYNAMIC_OBJECT, 0); // Editable Dynamic Object
+
+			// Отменяем изменения, если они не были сохранены
+			if(MenuInfo[playerid][zChange] > 0)
 			{
-				// Если текстуры изначально не было, а потом появилась - стираем
-				if(zTxtSaveModel[playerid][i] == 0 && zTxtModel[playerid][i] > 0)
+				for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) 
 				{
-					RemoveDynamicObjectMaterial(MenuInfo[playerid][zDynamicObject], i);
-				}
-				// Если текстура изначально была, возвращаем
-				else if(zTxtSaveModel[playerid][i] > 0)
-				{
-					SetDynamicObjectMaterial(MenuInfo[playerid][zDynamicObject], i, zTxtSaveModel[playerid][i], zTxtSaveTxd[playerid][i], zTxtSaveTexture[playerid][i], zTxtSaveMaterial[playerid][i]);
+					// Если текстуры изначально не было, а потом появилась - стираем
+					if(zTxtSaveModel[playerid][i] == 0 && zTxtModel[playerid][i] > 0)
+					{
+						RemoveDynamicObjectMaterial(MenuInfo[playerid][zDynamicObject], i);
+					}
+					// Если текстура изначально была, возвращаем
+					else if(zTxtSaveModel[playerid][i] > 0)
+					{
+						SetDynamicObjectMaterial(MenuInfo[playerid][zDynamicObject], i, zTxtSaveModel[playerid][i], zTxtSaveTxd[playerid][i], zTxtSaveTexture[playerid][i], zTxtSaveMaterial[playerid][i]);
+					}
 				}
 			}
 		}

@@ -467,9 +467,10 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         bigint_add(OrganInfo[9][glave], ServerInfo[65]);
 
                         TakeAdvertise[i] = -1;
-                        DeleteAdFromEditList(i);
 
                         MoneyLog("ad", PlayerInfo[Advertise[i][adsID]][pID], PlayerInfo[Advertise[i][adsID]][pName], PlayerInfo[Advertise[i][adsID]][pPlaIP], 0, "", "", -ServerInfo[65], "Объявление CNN");
+                        
+                        DeleteAdFromEditList(i);
                         return 1;
                     }
 
@@ -498,9 +499,10 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         bigint_add(OrganInfo[9][glave], ServerInfo[66]);
                         
                         TakeAdvertise[i] = -1;
-                        DeleteAdFromEditList(i);
 
                         MoneyLog("ad", PlayerInfo[Advertise[i][adsID]][pID], PlayerInfo[Advertise[i][adsID]][pName], PlayerInfo[Advertise[i][adsID]][pPlaIP], 0, "", "", -ServerInfo[66], "Объявление CNN");
+                        
+                        DeleteAdFromEditList(i);
                         return 1;
                     }
                 }

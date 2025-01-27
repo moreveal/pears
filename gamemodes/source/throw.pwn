@@ -124,7 +124,7 @@ stock use_throw(playerid, inva, useinva)
 	}
 	if(ThrowInfo[t][tBombPlant] == true)
 	{
-		if(ThrowInfo[t][tPlayerid] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Вы не можете поднять активированную бомбу");
+		if(ThrowInfo[t][tPlayerid] != PlayerInfo[playerid][pID] && thingType == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете поднять активированную бомбу");
 	} 
     i_resetveshi(playerid);
 	i_resettabs(playerid);
@@ -340,7 +340,7 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 	if(fpick == 42 && thingType == 0 && type == 1) time = -1; // Ноутбук на столе (-1 значит никогда не исчезнет)
 	if(fpick == 229 && thingType == 0) z -= object_correct_z(18849); // Корректируем позицию предмета сумки с парашютом на земле
 
-	// Если кейс, тогда корректируем
+	// Если шкатулку, тогда корректируем
 	else if(IsACasePackID(thingPack) && thingPack != 5)
 	{
 		new model = GetModelCustomCase(thingPack);
@@ -399,10 +399,6 @@ stock DestroyThrow(t) // Удаляем предмет с земли
 	ThrowInfo[t][tBombPlant] = false;
 	ThrowInfo[t][tOpenVehicleBomp] = 0;
  	ThrowInfo[t][tUseplayer] = 0;
-	if(IsABackPack(ThrowInfo[t][tId]) && ThrowInfo[t][tQara] != 0)
-	{
-		DeleteBackPack(ThrowInfo[t][tQara]);
-	}
 	ThrowInfo[t][tId] = 0, ThrowInfo[t][tQuan] = 0, ThrowInfo[t][tPara] = 0, ThrowInfo[t][tQara] = 0, ThrowInfo[t][tType] = 0, ThrowInfo[t][tPack] = 0, throwkol --;
 	return 1;
 }
@@ -436,7 +432,7 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 	new Float:correct_z;
 	if(thingPack == 1) model = 3014, setgift = 1; // Подарок
 	else if(thingPack == 2 || thingPack == 4)  model = 3014; // Ящик
-	else if(IsACasePackID(thingPack)) model = GetModelCustomCase(thingPack); // Кейс
+	else if(IsACasePackID(thingPack)) model = GetModelCustomCase(thingPack); // шкатулка
 	else
 	{
 	    if(thingType == 0) // Основные предметы

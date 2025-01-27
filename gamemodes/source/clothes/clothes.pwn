@@ -10,7 +10,7 @@ new SkinBuy[MAX_MODELS_SKIN]; // Подсчет покупок скинов за
 new SkinBuyGold[MAX_MODELS_SKIN]; // Подсчет покупок скинов за голду
 new SkinSale[MAX_MODELS_SKIN]; // Доступен ли скин для продажи
 new SkinName[MAX_MODELS_SKIN][MAX_SKIN_NAME]; // Название скина
-new bool:SkinTop[MAX_MODELS_SKIN]; // Топовый скин или нет (для системы кейсов)
+new bool:SkinTop[MAX_MODELS_SKIN]; // Топовый скин или нет (для системы шкатулок)
 
 new skinNameAll[][] =
 {
@@ -1262,7 +1262,7 @@ function LoadPriceSkin()
 		}
 		printf("[MODE]: Настройки Скинов [%d ms]", GetTickCount() - time);
 
-		// Собираем набор скинов для кейса
+		// Собираем набор скинов для шкатулке
 		CreateSkinGiftCase();
 	}
 	return 1;

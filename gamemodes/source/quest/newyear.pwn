@@ -929,14 +929,14 @@ stock GiveNewYesrCase(playerid)
     if(put_inva == -1)
     {
         Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
-        SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вам выпал кейс в подарок. {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
+        SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вам выпал шкатулка в подарок. {ffcc66}[ В инвентаре нет места, шкатулка упала на землю ]");
     }
     new quan = 0;
     for(new i; i < 13; i++)
     {
         if(PlayerInfo[playerid][pNewYearQuestComplete][i]) quan++;
     }
-    if(quan >= 13) CompleteBattlePassTask(playerid, 0, 2);
+    if(quan >= 12) CompleteBattlePassTask(playerid, 0, 2);
     return 1;
 }
 stock LifeNewYearQuestOne(playerid)

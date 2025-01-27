@@ -385,5 +385,20 @@ stock CasinoLog(game_id,
     return true;
 }
 
+stock SysInternalLog(const action[], const row = 0, const rows[] = "")
+{
+    new query[512];
+    mysql_format(pearsq_2, query, sizeof(query),
+        "INSERT INTO `sysinternal_logs` ( \
+            `action`, \
+            `row`, \
+            `rows`, \
+        ) VALUES ('%e', '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
+        action, row, rows
+    );
+    mysql_tquery(pearsq_2, query);
+    return true;
+}
+
 
 #undef LOGS_NULL_IF_NOT_ASSIGNED

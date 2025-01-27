@@ -275,9 +275,9 @@ stock OnDeathKatanaDuel(NPC:npc, killerid)
         GetNpcPosition(KatanaBot[killerid], npc_pos[0], npc_pos[1], npc_pos[2]);
         switch(random(2))
         {
-            case 0: // Кладём кейс Yakuza
+            case 0: // Кладём шкатулку Yakuza
             {
-                // Формируем кейс
+                // Формируем шкатулку
                 new thingId, thingQuan, thingType, thingPara, thingPack;
                 CreateCasePlayer(killerid, thingId, thingQuan, thingType, thingPara, thingPack, "yakuza");
                 CalculateVehicleLimited(thingId, thingType);

@@ -1,6 +1,6 @@
 
 #define REFERAL_PROCENT_DONATE 10
-#define MAX_DONATE_SERVICE 17
+#define MAX_DONATE_SERVICE 19
 
 new donatePrice[MAX_DONATE_SERVICE];
 
@@ -31,11 +31,13 @@ stock defaultPriceDonate()
     donatePrice[9] = 190; // Открыть слот транспорта
     donatePrice[10] = 100; // +1 уровень навыка
     donatePrice[11] = 90; // Максимальное знание языка
-    donatePrice[12] = 90; // Стоимость кейса
+    donatePrice[12] = 90; // Стоимость шкатулки
     donatePrice[13] = 90; // Стоимость ремонта транспорта
     donatePrice[14] = 10; // Стоимость замены одного ежедневного задания
-    donatePrice[15] = 790; // Стоимость голд кейса
+    donatePrice[15] = 790; // Стоимость голд шкатулки
     donatePrice[16] = 3900; // Увеличенный лимит мебели в доме
+    donatePrice[17] = 290; // Слот для архива интерьеров
+    donatePrice[18] = 890; // 5 слотов архивов для интерьеров
 }
 
 stock GetPriceGoldDonateMenu(donateid)
@@ -61,8 +63,8 @@ stock showDialogDonateMenu(playerid)
 	                        \n{cccccc}Услуги Аккаунта {666666}>>\
 	                        \n{cccccc}Навыки {666666}>>\
 	                        \n{cccccc}Создать Семью {ffcc00}[%d G]\
-                            \n{cccccc}Купить {FF9000}GOLD {cccccc}Кейс {ffcc00}[%d G]\
-                            \n{cccccc}Купить {FF9000}Аксессуарный {cccccc}Кейс {ffcc00}[%d G]\
+                            \n{cccccc}Купить {FF9000}GOLD {cccccc}Шкатулку {ffcc00}[%d G]\
+                            \n{cccccc}Купить {FF9000}Аксессуарную {cccccc}Шкатулку {ffcc00}[%d G]\
                             \n{cccccc}Ремонт Транспорта {ffcc00}[%d G]\
                             \n{666666}Где купить Скин/Одежду? {99ff66}>>\
                             \n{666666}Где купить Машину? {99ff66}>>\

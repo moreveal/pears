@@ -2,17 +2,17 @@ new BattlePassDailyTaskName[][] =
 {
     "Выполнить ежедневные задания (/quest)", 
     "Откопать сокровища археологии", 
-    "Открыть 3 любых кейса",
+    "Открыть 3 любых шкатулки",
     "Отыграть 3 часа"
 };
 
 new BattlePassDailyTaskSetting[sizeof(BattlePassDailyTaskName)][2] =
 {
     // 1 - Exp, 2 - Count
-    { 100, 1},        // 0 
+    { 500, 1},        // 0 
     { 100, 1},        // 1
-    { 100, 3},        // 2
-    { 100, 3}         // 2
+    { 500, 3},        // 2
+    { 300, 3}         // 2
 };
 
 new BattlePassWeeklyTaskDescription[][] =
@@ -31,11 +31,11 @@ new BattlePassWeeklyTaskDescription[][] =
     "   \nДля выполнения вы должны выстрелить последний патрон, который собьет НЛО"\
     "   \nНавык космонавта упростит процесс поиска НЛО, прочитайте описание навыка(/skill)", // 9
     "- Отправляйтесь к Доминику (/quest > Доминик), начните гонку и победите его!", // 10
-    "- Подробная информация как найти маньянка в меню квестов (/quest > Маньяк > Правила)", // 11
-    "- Откапывате могилы на кладбище и ждите пока не начнется битва со скелетом/духом и победите их!", // 12
+    "- Подробная информация как найти маньяка в меню квестов (/quest > Маньяк > Правила)", // 11
+    "- Откапывате могилы на кладбище, и ждите, пока не начнется битва со скелетом/духом, после чего победите их!", // 12
     "- Сокровища спавнятся 3 раза в день (10:00, 15:00, 20:00). Купите карту моряка для подробной информации", // 13
     "- Попросите кого-то управлять вертолетом, имейте веревку в инвентаре и воспользуйтесь командой (/rope)", // 14
-    "- Возьмите биту в руки и оглушите ей игрока, если повезет с него упадет предмет (имеет КД)", // 15
+    "- Возьмите биту в руки и оглушите ей игрока, если повезет — с него выпадет предмет (имеет КД)", // 15
     "- Убейте животное минимумом выстрелов, разделайте его, и получите шкуру отличного качества"\
     "   \nЖивотные водятся в лесах штата. Подробнее узнать можно в (/job > Охота)", // 16
     "- Отправляйтесь в леса штата в поисках медведя. Подробнее узнать можно в (/job > Охота)", // 17
@@ -48,14 +48,14 @@ new BattlePassWeeklyTaskDescription[][] =
     "- Летайте на вертолете по штату", // 24
     "- Плавайте на катере по штату", // 25
     "- Прокачивайте навык на работах/станках/используя действия. Подробнее (/skill)", // 26
-    "- Отправляйтесь в IKEA (/gps > Услуги > IKEA), и покупайте мебель", // 27
-    "- Отправляйтесь в IKEA (/gps > Услуги > IKEA), и покупайте мебель",  // 28
+    "- Отправляйтесь в IKEA (/gps > Услуги > IKEA) и покупайте мебель", // 27
+    "- Отправляйтесь в IKEA (/gps > Услуги > IKEA) и покупайте мебель",  // 28
     "- Просто помойтесь в душе в доме/отели/сауне.", // 29
     "- Отправляйтесь на кладбище в Лос-Сантосе. Возьмите лопату и раскапывайте могилы", // 30
-    "- Подойдите, нажмите [ N ] и воспользуйтесь крафтовым столом/хим-лабороторией/станком для крафта предмета"\
-    "   \nКупить их в дом можно в IKEA (gps > Услуги > IKEA)", // 31
+    "- Подойдите, нажмите [ N ] и воспользуйтесь крафтовым столом/хим-лабораторией/станком для крафта предмета"\
+    "   \nКупить их в дом можно в IKEA (/gps > Услуги > IKEA)", // 31
     "- Подойдите к плите, нажмите [ N ], и в меню начните готовить блюдо"\
-    "   \nКупить плиту в дом можно в IKEA (gps > Услуги > IKEA)", // 32
+    "   \nКупить плиту в дом можно в IKEA (/gps > Услуги > IKEA)", // 32
     "- Поучаствуйте в гонке от Семьи, и доедьте до финиша(во время гонок появляется значек финишного флага на карте)", // 33
     "- Поучаствуйте в гонке от Семьи, и доедьте до финиша первым", // 34
     "- Придите в спортзал (/gps > Услуги > Спортзал). И начните улучшать свою силу", // 35
@@ -168,7 +168,7 @@ new BattlePassOneTimeTaskName[][] =
 {
     "Пройти новогодние квесты", // 0
     "Получить питомца", // 1
-    "Открыть голд кейсов", // 2
+    "Открыть голд шкатулок", // 2
     "Купите трейлер", // 3
     "Купите транспорт в салоне", // 4
     "Собрать подарков Санты" // 5
@@ -236,7 +236,7 @@ new BattlePassAwarsdItem[MAX_LEVEL_BATTLEPASS][20] =
     { 256, 0, 10, 0, 0,     0, 0, 0, 0, 0,      256, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
     { 257, 0, 50, 0, 0,     0, 0, 0, 0, 0,      257, 0, 100, 0, 0,      0, 0, 0, 0, 0 },
     { 258, 0, 1, 0, 0,     0, 0, 0, 0, 0,      258, 0, 2, 0, 0,      0, 0, 0, 0, 0 },
-    { 12404, 2, 1, 0, 0,     0, 0, 0, 0, 0,      12418, 2, 1, 0, 0,      12419, 2, 1, 0, 0 }, // 45
+    { 12404, 2, 1, 0, 0,     0, 0, 0, 0, 0,      12418, 2, 1, 10, 0,      12419, 2, 1, 9, 0 }, // 45
     { 256, 0, 10, 0, 0,     0, 0, 0, 0, 0,      256, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
     { 256, 0, 10, 0, 0,     0, 0, 0, 0, 0,      256, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
     { 257, 0, 50, 0, 0,     0, 0, 0, 0, 0,      257, 0, 100, 0, 0,      0, 0, 0, 0, 0 },
@@ -321,6 +321,8 @@ stock dialogBattlePassLevelMenuInformation(playerid)
                                 "\n{cccccc}- За опыт повышается уровень пропуска, а уже за каждый уровень есть награды, которые может получить абсолютно любой игрок"\
                                 "\n{cccccc}- Задания бывают 3 типов. Ежедневные - обновляются каждый день. Еженедельные - обновляются раз в неделю"\
                                 "\n{cccccc}Разовые задания - не обновляются, и доступны 1 раз за сезон пропуска"\
+                                "\n\n{ff9000}Когда он закончится?"\
+                                "\n{cccccc}- Это зимний пропуск. Он закончится 28 февраля ночью в момент рестарта."\
                                 "\n\n{ff9000}- Пропуск бывает 2 типов:"\
                                 "\n{ffffff}Обычный {cccccc}- со стандартными наградами, доступен всем без вложений/доната"\
                                 "\n{ffcc00}Премиум {cccccc}- с премиум наградами, покупка уровня в 2 раза дешевле, доступен к покупке на нашем сайте"\
@@ -334,10 +336,10 @@ stock dialogBattlePassLevelMenuInformation(playerid)
                                 "\n{0088ff}Я не успеваю получить 50 уровень, что мне делать?"\
                                 "\n{cccccc}- Вы можете купить уровни за вирты или золото. С каждой покупкой уровня, его стоимость будет увеличиваться на %d$ или %d GOLD"\
                                 "\n{0088ff}Какие награды идут после 50 уровня?"\
-                                "\n{cccccc}- Каждый уровень вы будете получать по Новогоднему Кейсу, а каждый 5 уровень по одному Gold кейсу",
+                                "\n{cccccc}- Каждый уровень вы будете получать по Новогодней Шкатулки, а каждый 5 уровень по одной Gold Шкатулке",
                                 !BattlePass[playerid][bpDonate] ? "{cccccc}Обычный" : "{ffcc00}Премиум",
                                 !BattlePass[playerid][bpDonate] ? 1000000 : 500000, !BattlePass[playerid][bpDonate] ? 100 : 50);
-	format(string,sizeof(string),"{C8A2C8}Пропуск Зима 2024-2025");
+	format(string,sizeof(string),"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля");
 	ShowDialog(playerid,BATTLEPASS_SHOW_LEVELMENU_INFO,DIALOG_STYLE_MSGBOX, string, lines, "*", "");
 	return true;
 }
@@ -362,7 +364,7 @@ stock dialogBattlePassListTask(playerid,type)
             List[quan][playerid] = i;
             quan++;
         }
-        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Выбор","Отмена");
+        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Выбор","Отмена");
     }
     else if(type == 1)
     {
@@ -381,7 +383,7 @@ stock dialogBattlePassListTask(playerid,type)
             List[quan][playerid] = i;
             quan++;
         }
-        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Выбор","Отмена");
+        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Выбор","Отмена");
     }
     else if(type == 2)
     {
@@ -398,7 +400,7 @@ stock dialogBattlePassListTask(playerid,type)
             List[quan][playerid] = i;
             quan++;
         }
-        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Выбор","Отмена");
+        ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Выбор","Отмена");
     }
     return 1;
 }
@@ -432,6 +434,15 @@ stock ReceptionStatsBattlePass(playerid, &dailyquan, &weeklyquan, &onetimequan, 
 CMD:battlepass(playerid)
 {
     if(!OnlineInfo[playerid][oBattlePassLoad]) return ErrorMessage(playerid,"{ff6347}Попробуйте чуть позже, пропуск не успел загрузится");
+    if(PlayerInfo[playerid][pNewYearQuestComplete][0]) // VREMENNO
+    {
+        new quan = 0;
+        for(new i; i < 13; i++)
+        {
+            if(PlayerInfo[playerid][pNewYearQuestComplete][i]) quan++;
+        }
+        if(quan >= 12) CompleteBattlePassTask(playerid, 0, 2);
+    }
     dialogBattlePassMenu(playerid);
     return true;
 }
@@ -506,7 +517,7 @@ stock dialogCase_BattlePass(playerid, dialogid, response, listitem) {
                 new line[214],lines[4096];
                 format(line,sizeof(line),"{cccccc}Задание: {ff9000}%s", BattlePassWeeklyTaskName[BattlePass[playerid][bpTaskWeekly][TaskID]]), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{cccccc}%s", BattlePassWeeklyTaskDescription[BattlePass[playerid][bpTaskWeekly][TaskID]]), strcat(lines,line);
-                ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKINFO,DIALOG_STYLE_MSGBOX,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Ок","");
+                ShowDialog(playerid,BATTLEPASS_SHOW_MENU_TASKINFO,DIALOG_STYLE_MSGBOX,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Ок","");
             }
         }
         case BATTLEPASS_SHOW_MENU_TASKINFO:{
@@ -650,7 +661,7 @@ stock dialogBattlePassListAwards(playerid)
         GetNameThing(0, BattlePassAwarsdItem[i][15], BattlePassAwarsdItem[i][16], BattlePassAwarsdItem[i][19]),
         BattlePassAwarsdItem[i][17] != 0 ? tempText[3] : " "), strcat(lines,line);
     }
-    ShowDialog(playerid,BATTLEPASS_SHOW_MENU_AWARDS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025",lines,"Выбор","Отмена");
+    ShowDialog(playerid,BATTLEPASS_SHOW_MENU_AWARDS,DIALOG_STYLE_TABLIST_HEADERS,"{C8A2C8}Пропуск Зима 2024-2025. Закончится 28 февраля",lines,"Выбор","Отмена");
     return 1;
 }
 

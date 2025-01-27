@@ -1755,3 +1755,13 @@ CMD:logdp4(playerid)
 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Лог DP4 %s", OnlineInfo[playerid][oLogDP4] ? "включен" : "выключен");
 	return 1;
 }
+
+stock AdminAks(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] > 0 && ADUTY[playerid] == 1)
+	{
+		SetPlayerAttachedObject(playerid, 4, 12493, 2, 0.405000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.078000, 1.051999, 1.131999, 0, 0);
+	}
+	else RemovePlayerAttachedObject(playerid, 4);
+	return true;
+}

@@ -53,6 +53,7 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pSpawnChangeDop", "INT NOT NULL DEFAULT '0'"); // Доп параметр для спавна
     AddColumnIfNotExists("pp_igroki", "pMenstrDay", "INT NOT NULL DEFAULT '0'"); // День следующей менструации
     AddColumnIfNotExists("pp_igroki", "pMenstrProkl", "INT NOT NULL DEFAULT '0'"); // Применены ли прокладки на текущий день менструации
+    AddColumnIfNotExists("pp_igroki", "pPackInteriors", "INT NOT NULL DEFAULT '0'"); // Количество купленных слотов для архива интерьера
 
     AddColumnIfNotExists("pp_igroki", "WarnClearTime", "INT NOT NULL DEFAULT '0'"); // Когда будет снят варн
     AddColumnIfNotExists("pp_igroki", "GunWarns", "INT NOT NULL DEFAULT '0'"); // Количество ганварнов
@@ -64,6 +65,11 @@ stock CreateMysqlTable()
 
     //battlepass
     AddColumnIfNotExists("battlepass", "Name", "VARCHAR(24) DEFAULT ''");
+
+    //backpack
+    AddColumnIfNotExists("backpacks", "Name", "VARCHAR(24) DEFAULT ''");
+    AddColumnIfNotExists("backpacks", "user_id", "INT NOT NULL DEFAULT '0'");
+
 
     //Просьба дениса.
     AddColumnIfNotExists("blacklist", "type", "INT NOT NULL DEFAULT '0'"); // 0 - может вынести лидер. 1 Может вынести только админ
@@ -92,6 +98,7 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_bizz", "bElectroPayForConnect", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_bizz", "bElectroPayForRepair", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_bizz", "bChipsFee", "INT NOT NULL DEFAULT '0'"); // Для кзаино
+    AddColumnIfNotExists("pp_bizz", "bInteriorPack", "INT NOT NULL DEFAULT '0'");
 
     AddColumnIfNotExists("pp_organization", "gMedMoney", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_organization", "gWarehouse", "BOOLEAN NOT NULL DEFAULT '0'");
@@ -122,6 +129,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoIntX", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoIntY", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoIntZ", "FLOAT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_dom", "dInteriorPack", "INT NOT NULL DEFAULT '0'");
 
     // Аксессуары
     AddColumnIfNotExists("accessory", "acCase", "BOOLEAN NOT NULL DEFAULT '0'");

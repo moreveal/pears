@@ -260,17 +260,17 @@ cars
 15100, 	bentcabri, 	bentcabri, 	car, 		BENTCABRI, 	BENTCABRI, 	null,	executive, 	5, 	0,	0,		-1, 0.69, 0.69,		0
 15101,	bmwe30, 	bmwe30, 	car, 		BMWE30,	    BMWE30, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
 15102, 	armcargo, 	armcargo, 	heli, 		POLMAV, 	POLMAV, 	null,	ignore,		5,	0,	0,		-1, 0.74, 0.74,		-1
-15103,	silverado, 	silverado, 	car, 		SILVERADO, 	SILVERADO, 	null,	ignore, 	3,	0,	0,		-1, 1.00, 1.00,		-1
-15104, 	chargcop, 	chargcop, 	car, 		CHARGCOP, 	CHARGCOP, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
-15105, 	chargdep, 	chargdep, 	car, 		CHARGDEP, 	CHARGDEP, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
+15103, 	chargunm, 	chargunm, 	car, 		CHARGUNM, 	CHARGUNM, 	null,	executive, 	5, 	0,	0,		-1, 0.8, 0.8,		0
+15104, 	chargcop, 	chargcop, 	car, 		CHARGCOP, 	CHARGCOP, 	null,	executive, 	5, 	0,	0,		-1, 0.8, 0.8,		0
+15105, 	chargciv, 	chargciv, 	car, 		CHARGCIV, 	CHARGCIV, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
 15106, 	enforswat, 	enforswat, 	car, 		ENFORSWAT, 	ENFORSWAT, 	van,	ignore,		10,	0,	0,		-1, 0.936, 0.936,	-1
-15107, 	truckswat, 	truckswat, 	car, 		TRUCKSWAT, 	TRUCKSWAT, 	van,	big,	 	4, 	0,	0,		-1, 0.85, 0.85,		-1
+15107, 	truckswat, 	truckswat, 	car, 		TRUCKSWAT, 	TRUCKSWAT, 	van,	big,	 	4, 	0,	0,		-1, 1.15, 1.15,		-1
 15108,	frerrarif1, frerrarif1, car,        FRERRARIF1, FRERRARIF1, null,   ignore,     10, 7,  0,       0, 0.9, 0.9,     1
 15109, 	crownciv, 	crownciv, 	car, 		CROWNCIV, 	CROWNCIV,	null,	richfamily,		10,	0,	0,		-1, 0.7, 0.7,		0
 15110, 	crowndep, 	crowndep, 	car, 		CROWNDEP, 	CROWNDEP,	null,	richfamily,		10,	0,	0,		-1, 0.7, 0.7,		0
-15111,	expidit, 	expidit, 	car, 		EXPIDIT, 	EXPIDIT, 	null,	ignore, 	3,	0,	0,		-1, 1.00, 1.00,		-1
-15112,	explorerfbi, explorerfbi, 	car, 	EXPLFBI,    EXPLFBI,    null,	ignore, 	3,	0,	0,		-1, 1.00, 1.00,		-1
-15113,	explorercop, explorercop, 	car,    EXPLCOP, 	EXPLCOP, 	null,	ignore, 	3,	0,	0,		-1, 1.00, 1.00,		-1
+15111, 	enfpro, 	enfpro, 	car, 		ENFPRO, 	ENFPRO, 	van,	ignore,		10,	0,	0,		-1, 0.936, 0.936,	-1
+15112,	explorerfbi, explorerfbi, 	car, 	EXPLFBI,    EXPLFBI,    null,	ignore, 	3,	0,	0,		-1, 1.1, 1.1,		-1
+15113,	explorercop, explorercop, 	car,    EXPLCOP, 	EXPLCOP, 	null,	ignore, 	3,	0,	0,		-1, 1.1, 1.1,		-1
 15114,	focusst, 	focusst, 		car, 	FOCUSST,	FOCUSST, 	null,	normal, 	8,	0,	0,		-1, 0.74, 0.74,		0
 15115, 	silvias13,	silvias13,		car, 	SILVIAS13,	SILVIAS13,  null,	richfamily, 	7, 	0,	0,		-1, 0.68, 0.68,		1
 15116,	jwrang, 	jwrang, 		car, 	JWRANG,	 	JWRANG, 	null,	normal, 	8,	0,	0,		-1, 0.8, 0.8,		0
@@ -350,7 +350,7 @@ cars
 15288, 	volga21, 	volga21, 	car, 		VOLGA21, 	VOLGA21, 	null,	richfamily,	    10,	0,	0,	-1, 0.75, 0.75,		0
 15289, 	delorean, 	delorean, 	car, 		DELOREAN, 	DELOREAN, 	null,	executive, 	    5, 	0,	0,	-1, 0.70, 0.70,		0
 15290,	volga24,	volga24,	car, 		VOLGA24, 	VOLGA24, 	null,	richfamily, 	10, 0,	0,	-1, 0.75, 0.75,		0
-15291,	f90unm,		f90unm,		car, 		F90UNM, 	F90UNM, 	null,	richfamily, 	7, 	0,	0,	-1, 0.7, 0.7,		1
+15291, 	dchallunm, 	dchallunm, 	car, 		DCHALLUNM, 	DCHALLUNM, 	null,	executive, 	    5, 	0,	0,	-1, 0.8, 0.8,		0
 15292,	m5cs,		m5cs,		car, 		M5CS, 	    M5CS, 	    null,	richfamily, 	7, 	0,	0,	-1, 0.75, 0.75,		1
 15293, 	cnnheli,	cnnheli, 	heli, 		COASTMAV, 	SANMAV,		null,	ignore,		    6,	0,	0,	-1, 0.7, 0.7,		-1
 15294, 	robr44,	    robr44, 	heli, 		MAVERICK,	MAVERIC,	null,	ignore,		    10,	0,	0,	-1, 0.7, 0.7,		-1
@@ -388,7 +388,7 @@ cars
 15326, 	fleetwood,	fleetwood, 	car, 		FLEETWOOD,	FLEETWOOD,	 null,	normal,		    4, 	0,	0,	-1, 0.75, 0.75,		0
 15327, 	lurcher,	lurcher, 	car, 		LURCHER,	LURCHER,	 null,	normal,		    4, 	0,	0,	-1, 0.78, 0.78,		0
 15328,	armycad, 	armycad, 	car,		ARMYCAD, 	ARMYCAD, 	null,	richfamily,		6,	7,	0,	-1, 0.93, 0.93,		0
-15334,	bmwm3c,		bmwm3c,		car, 		BMWM3C, 	BMWM3C, 	null,	richfamily, 	7, 	0,	0,	1, 0.75, 0.75,		1
+15334,	bmwm3c,		bmwm3c,		car, 		BMWM3C, 	BMWM3C, 	null,	richfamily, 	7, 	0,	0,	-1, 0.75, 0.75,		1
 15335,	bmwm3g81,	bmwm3g81,	car, 		BMWM3G81, 	BMWM3G81, 	null,	richfamily, 	7, 	0,	0,	-1, 0.75, 0.75,		1
 15336,	cadxt6v, 	cadxt6v, 	car,		CADXT6V, 	CADXT6V, 	null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
 15337,	dodgeram, 	dodgeram, 	car,		DODGERAM, 	DODGERAM, 	null,	ignore,		    2,	0,	0,	-1, 0.97, 0.97,	-1
@@ -406,6 +406,7 @@ cars
 15349,	bmwxm,      bmwxm,     car,		    BMWXM,      BMWXM,     null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
 15350,	golf7gti, 	golf7gti, 	car, 		GOLF7GTI,	GOLF7GTI, 	null,	normal, 	    8,	0,	0,	-1, 0.74, 0.74,		0
 15351, 	bugbolid, 	bugbolid, 	car, 		BUGBOLID, 	BUGBOLID, 	null,	executive,  	5, 	0,	0,	-1, 0.81, 0.81,		0
+15352, 	imppriv, 	imppriv, 	car, 		IMPPRIV, 	IMPPRIV, 	null,	richfamily, 	10,	0,	0,	-1, 0.70, 0.70,		0
 #15499 LAST
 end
 
