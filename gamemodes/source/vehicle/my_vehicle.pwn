@@ -4752,14 +4752,7 @@ stock CreatePersonalVehicle(playerid, newid, dab, sostid, model, Float:x, Float:
 	return vehid;
 }
 
-stock ScrapDialog(playerid, vehicleid)
-{
-	new string[256];
-	format(string,sizeof(string),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (2/10 от стоимости)", GetVehiclePriceGos(VehInfo[vehicleid][vModel]) / 10 * 2);
-	ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль",string,"Да","Нет");
-
-	return 1;
-}
+#define VEHICLE_SCRAP_PERCENT 10.0 // Получаемый процент от гос.стоимости за сдачу транспорта в утиль
 
 CMD:scrap(playerid)
 {
@@ -4769,11 +4762,16 @@ CMD:scrap(playerid)
     	new v = GetPlayerVehicleID(playerid);
 		if(PlayerInfo[playerid][pTstat] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя сдать личный транспорт в утиль во время сделки");
 		
-		if(VehInfo[v][vNosell] >= 1) ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль","{ff9000}Вы уверены что хотите сдать транспорт в утиль?\
-			\n{ff0000}Внимание! {ffcc00}Этот транспорт был вам подарен или принадлежит Media, возврат денег невозможен","Да","Нет");
+		if(VehInfo[v][vNosell] >= 1)
+		{
+			ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль","{ff9000}Вы уверены, что хотите сдать транспорт в утиль?\n{ff0000}Внимание! {ffcc00}Этот транспорт был вам подарен или принадлежит Media, возврат денег невозможен",
+				"Да","Нет");
+		}
 		else
 		{
-			ScrapDialog(playerid, v);
+			new string[256];
+			format(string,sizeof(string),"{ff9000}Вы уверены, что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (%.2f%% от гос. стоимости)", ComputePercentOfNum(GetVehiclePriceGos(VehInfo[v][vModel]), VEHICLE_SCRAP_PERCENT), VEHICLE_SCRAP_PERCENT);
+			ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль",string,"Да","Нет");
 		}
 	}
 	return 1;
@@ -4788,22 +4786,39 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 	{
 		new slot = VehInfo[newcar][vDatabase];
 		new model = VehInfo[newcar][vModel];
-		new price = GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10 * 2;
+		new veh_price = GetVehiclePriceGos(VehInfo[newcar][vModel]);
 
+		new profit = (VehInfo[newcar][vNosell] >= 1) ? 0 : ComputePercentOfNum(veh_price, VEHICLE_SCRAP_PERCENT);
+		new treasury_profit = 0;
+		new money_to_destroy = 0;
+		profit = ComputeWithTwoShares(profit,
+			.first_out = treasury_profit,
+			.second_out = money_to_destroy,
+			.first_prop = PercentageToMultiplier(8), // 8% в казну
+			.second_prop = PercentageToMultiplier(2) // 2% на уничтожение
+		);
+		new final_fees = treasury_profit + money_to_destroy;
 		if(PlayerInfo[playerid][pVehTax][slot - 1] > 0) return ErrorMessage(playerid, "{FF6347}Вам необходимо оплатить налоги на транспорт");
 		if(VehInfo[newcar][vNosell] >= 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт сдан в утиль! Возвращение суммы за этот транспорт: {ff0000}Невозможно");
 		else
 		{
-			oGivePlayerMoney(playerid, price);
-			new string[90];
-			format(string,sizeof(string),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]", price);
+			oGivePlayerMoney(playerid, profit);
+			new string[144];
+			format(string,sizeof(string),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}] [ Налог: -%d$ ]", profit, final_fees);
 			SendClientMessage(playerid, COLOR_GREY, string);
 
-			format(string, sizeof(string), "В утиль %s [DB %d]", GetVehicleName(VehInfo[newcar][vModel]), VehInfo[newcar][vNewid]);
-    		MoneyLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", price, string);
+			format(string, sizeof(string), "В утиль %s [DB %d] [Налог %d]", GetVehicleName(VehInfo[newcar][vModel]), VehInfo[newcar][vNewid], final_fees);
+			MoneyLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", profit, string);
 		}
-		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], price, "");
-		
+		{
+			new log_str[144];
+			format(log_str, sizeof(log_str), "Сдан в утиль [ Гос.цена: %d ] [ Налог: %d ]", veh_price, final_fees);
+			CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], profit, log_str);
+		}
+		if (treasury_profit > 0)
+		{
+			PutMoneyToTreasury(treasury_profit, "Налог за сдачу машины в утиль");
+		}
 		PlayerInfo[playerid][pMyVeh][slot - 1] = 0;
 		PlayerInfo[playerid][pMyVehID][slot - 1] = 0;
 		

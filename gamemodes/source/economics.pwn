@@ -22,13 +22,23 @@ stock Float:PercentageToMultiplier(const Float:percentage)
 }
 
 /**
-    Функция считает процент от дробного числа
+    Функция считает часть от числа
     В amount необходимо передавать само число, а в multiplier -- множитель числа, например, результат функции PercentageToMultiplier
     Округляет числа в меньшую сторону
  */
 stock ComputePartOfNum(const amount, const Float:multiplier)
 {
     return floatround(float(amount) * multiplier, floatround_floor);
+}
+
+/**
+    Функция считает процент от числа
+    В amount необходимо передавать само число, а в percentage -- процент числа, например, 10%, 12%, 34.5%
+    Округляет числа в меньшую сторону
+ */
+stock ComputePercentOfNum(const amount, const Float:percentage)
+{
+    return ComputePartOfNum(amount, PercentageToMultiplier(percentage));
 }
 
 /**
@@ -55,6 +65,22 @@ stock ComputeShares(const amount, out[], const Float:out_props[], const out_size
     }
     if (result_percentage < 0.0 || result < 0) return -1;
     return result;
+}
+
+/**
+    Функция отнимает долю из указанный объёма, передаёт её в share_out и возвращает остаток
+    Может использоваться для отнятия из конечного объёма для налогов
+
+    Может вернуть -1, если произошла какая-то ошибка при попытке вычислений
+ */
+stock ComputeWithOneShare(const amount, &share_out, const Float:share_prop)
+{
+    new shares[1];
+    new Float:shares_proportions[1];
+    shares_proportions[0] = share_prop;
+    new res = ComputeShares(amount, shares, shares_proportions);
+    share_out = shares[0];
+    return res;
 }
 
 /**
