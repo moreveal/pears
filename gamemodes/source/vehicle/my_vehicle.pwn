@@ -4752,7 +4752,7 @@ stock CreatePersonalVehicle(playerid, newid, dab, sostid, model, Float:x, Float:
 	return vehid;
 }
 
-#define VEHICLE_SCRAP_PERCENT 10.0 // Получаемый процент от гос.стоимости за сдачу транспорта в утиль
+const Float:VEHICLE_SCRAP_PERCENT = 10.0; // Получаемый процент от гос.стоимости за сдачу транспорта в утиль
 
 CMD:scrap(playerid)
 {
