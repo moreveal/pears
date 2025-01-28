@@ -1615,6 +1615,27 @@ CMD:vehgoldall(playerid, const params[])
 	return 1;
 }
 
+CMD:rvgold(playerid, const params[]) return pc_cmd_rvehgold(playerid, params);
+CMD:rvehgold(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	mysql_tquery(pearsq, "START TRANSACTION;");
+	for(new v = 0; v < sizeof(vehSummaGoldCustom); v++)
+	{
+		new vehid = CorrectVehicleID(v + 2000);
+		VehGold[vehid] = vehSummaGoldCustom[v];
+		SaveVehicleGold(vehid);
+	}
+	mysql_tquery(pearsq, "COMMIT;");
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил gold стоимость всех кастомных тс", PlayerInfo[playerid][pName]);
+ 	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rvehgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Default gold цены на тс");
+	return 1;
+}
+
 stock PPAddVehicleComponent(vehicleid, component)
 {
 	if(VehInfo[vehicleid][vModel] >= 2000) // Если кастомная

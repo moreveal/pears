@@ -384,7 +384,7 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     20000000, // "BMW XM", // 2180
     6000000, // "Volkswagen Golf VII GTI" // 2181
     90000000, // "Bugatti Bolide" // 2182
-    30000000, // "Chevrolet Impala 1967" // 2183
+    30000000 // "Chevrolet Impala 1967" // 2183
 };
 
 new vehSummaGoldCustom[] = // Гос цены на авто в голде (Дефолтные) Кастомный транспорт
@@ -572,7 +572,7 @@ new vehSummaGoldCustom[] = // Гос цены на авто в голде (Де�
 	5000, // "BMW XM", // 2180  
 	1500, // "Volkswagen Golf VII GTI", // 2181  
 	22500, // "Bugatti Bolide", // 2182  
-	7500, // "Chevrolet Impala 1967", // 2183  
+	7500 // "Chevrolet Impala 1967", // 2183  
 };
 
 stock AddCustomVehicle() // Добавляем тс на карту

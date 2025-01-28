@@ -83,6 +83,8 @@ stock UpdateCollectorMoneyDelivery(playerid, b, const inputtext[])
 
 stock productbiz(playerid, b) // Заказ товаров в бизнес
 {
+	if(b <= 0 || b >= MAX_BIZ) return true;
+
 	new quan;
 	new line[140],lines[4048];
     format(line,sizeof(line),"{cccccc}Депозит {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
@@ -1720,8 +1722,10 @@ stock SaveTax_Biz(b)
 
 stock dialogChipsProcent(playerid, b)
 {
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "[ Мысли ]: Я не могу изменять комиссию (доступно с 19+ адм)"), productbiz(playerid, DP[4][playerid]);
+
 	new lines[300], string[60];
-	format(lines,sizeof(lines),"\n{cccccc}Введите налог, который вы будете забирать за продаваемые фишки\
+	format(lines,sizeof(lines),"\n{cccccc}Введите комиссию, которую вы будете забирать за продаваемые фишки\
 								\n\nТекущий комиссия: {0088ff}%d%%\
 								\n{FF6347}Не меньше %d%% и не больше %d%%", BizzInfo[b][bChipsFee], MIN_CHIPSFEE, MAX_CHIPSFEE);
 	format(string,sizeof(string),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);

@@ -292,13 +292,13 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     else if(strcmp(name,"car") == 0) thingType = 5;
     else 
     {
-        switch(random(15))
+        switch(random(18))
         {
             case 0: thingType = 0; // Обычный предмет
             case 1: thingType = 1; // Оружие
             case 2: thingType = 2; // Аксессуар
-            case 3, 4: thingType = 3; // Одежда
-            case 5: thingType = 5; // Транспорт
+            case 3: thingType = 3; // Одежда
+            case 4: thingType = 5; // Транспорт
             default: thingType = 0; // ПОДКРУТКА обычный предмет
         }
     }
