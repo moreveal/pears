@@ -133,16 +133,18 @@ CMD:remedy(playerid, const params[])
 			if(!getdiagnosis(playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Лекарства можно принимать только по рецепту от врача");
 			illn = params[0];
 		}
-		new bool: fullHeal = PlayerInfo[playerid][pSoska] > 0;
-		TakeInvent(playerid, params[0]+71, fullHeal ? 999 : 1, 0);
-		new medid = infectremedy(playerid, illn, fullHeal ? 9999 : 200);
 
-		if((PlayerInfo[playerid][pIllnessProg][medid]-1000)/200 < 0) infectremedy(playerid,PlayerInfo[playerid][pIllness][medid],9999);
+		TakeInvent(playerid, params[0]+71, 1, 0);
+		new healCount = 200;
+		if(PlayerInfo[playerid][pSoska] > 0 && server > 0) healCount = 9999;
+		new medid = infectremedy(playerid, illn, healCount);
+
+		if((PlayerInfo[playerid][pIllnessProg][medid]-1000)/200 <= 0) infectremedy(playerid,PlayerInfo[playerid][pIllness][medid],9999);
 		PlayerPlaySound(playerid, 32200, 0.0, 0.0, 0.0);
 		ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false);
 		
 		new line[120],lines[600];
-		if(PlayerInfo[playerid][pIllness][medid] <= 0 || fullHeal)
+		if(PlayerInfo[playerid][pIllness][medid] <= 0)
 		{
 			format(line,sizeof(line),"{99ff66}Вы приняли лекарство {ff9000}%s {99ff66}и полностью излечили болезнь", friskName[params[0]+71]), strcat(lines,line);
 			format(line,sizeof(line),"\n{99ff66}Проверьте медицинскую карту на наличие других болезней [ N - Инвентарь >> Мед Карта ]"), strcat(lines,line);
@@ -476,6 +478,7 @@ stock getmed(playerid, para1, bool:showProcess = false)
 	{
 		format(line,sizeof(line),"\n{cccccc}Позволяет находиться рядом с болеющим игроком и не заразиться"), strcat(lines,line);
 		format(line,sizeof(line),"\n{cccccc}Получить иммунитет можно только переболев болезнью"), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Covid-19 является исключением и иммунитет не поможет"), strcat(lines,line);
 	}
 
 	if(PlayerInfo[playerid][pSex] == 2)

@@ -496,6 +496,7 @@ stock QuestActorJoneMed(playerid)
     {
         if(get_invent4(playerid,63,0) == 0)
         {
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно подойти на ресепшен и {ff6666}Получить Медицинскую Карту");
             ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Подойдите на ресепшен и оформите мед.карту","*","");
             CreateGps(playerid, 1391.4603, -12.2399, 1000.9217, 0, 0, 5.0);
         }
