@@ -19,7 +19,7 @@ stock ConnectLog(playerid, const type[])
 {
     if(PlayerInfo[playerid][pHidden] > 0) return true;
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query),
         "INSERT INTO connection_logs ( \
             `account_id`, \
@@ -42,7 +42,7 @@ stock AdminLog(const action[],
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
     LOGS_NULL_IF_NOT_ASSIGNED(secondary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `admin_logs` ( \
             `action`, \
@@ -69,7 +69,7 @@ stock OrgLog(org_id, const action[],
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
     LOGS_NULL_IF_NOT_ASSIGNED(secondary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `org_logs` ( \
             `org_id`, \
@@ -97,7 +97,7 @@ stock MoneyLog(const action[],
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
     LOGS_NULL_IF_NOT_ASSIGNED(secondary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `money_logs` ( \
             `action`, \
@@ -122,7 +122,7 @@ stock CarLog(const action[],
 {
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `car_logs` ( \
             `car_id`, \
@@ -151,7 +151,7 @@ stock HouseLog(house_type, const action[],
     else if(house_type == 2) house_type_ = "trailer";
     else house_type_ = "unknown";
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `house_logs` ( \
             `house_type`, \
@@ -175,7 +175,7 @@ stock BizLog(const action[],
 {
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `business_logs` ( \
             `business_id`, \
@@ -200,7 +200,7 @@ stock FamilyLog(family_id, const action[],
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
     LOGS_NULL_IF_NOT_ASSIGNED(secondary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `family_logs` ( \
             `family_id`, \
@@ -228,7 +228,7 @@ stock DonateLog(const action[],
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
     LOGS_NULL_IF_NOT_ASSIGNED(secondary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `gold_logs` ( \
             `action`, \
@@ -251,7 +251,7 @@ stock OffenseLog(primary_player_id, const primary_player_name[], const primary_p
 {
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query),
         "INSERT INTO insult_logs ( \
             `primary_player_id`, \
@@ -273,7 +273,7 @@ stock UserLog(const action[],
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
     LOGS_NULL_IF_NOT_ASSIGNED(secondary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `inventory_logs` ( \
             `action`, \
@@ -347,7 +347,7 @@ stock SupportLog(report_id,
     LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
     LOGS_NULL_IF_NOT_ASSIGNED(secondary_player)
 
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `report_logs` ( \
             `report_id`, \
@@ -369,7 +369,7 @@ stock CasinoLog(game_id,
     primary_player_id, const primary_player_name[], const primary_player_ip[], 
     row, const rows[])
 {
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query), 
         "INSERT INTO `casino_logs` ( \
             `game_id`, \
@@ -387,7 +387,7 @@ stock CasinoLog(game_id,
 
 stock SysInternalLog(const action[], const row = 0, const rows[] = "")
 {
-    new query[512];
+    new query[768];
     mysql_format(pearsq_2, query, sizeof(query),
         "INSERT INTO `sysinternal_logs` ( \
             `action`, \
