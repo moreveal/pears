@@ -491,8 +491,22 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
             }
             else
             {
-                new thingTemp = random(ThingLimitedehicleQuan);
-                thingId = ThingLimitedVehiclecaseGift[thingTemp];
+                new bool:gave = false;
+                for (new i = 0; i < 3; i++)
+                {
+                    new thingTemp = random(ThingLimitedehicleQuan);
+                    thingId = ThingLimitedVehiclecaseGift[thingTemp];
+                    if ((VehQuan[thingId] + VehLimitedCase[thingId]) < VehLimited[thingId])
+                    {
+                        gave = true;
+                        break;
+                    }
+                }
+                if (!gave)
+                {
+                    giveLimitedVehicle = false; // Лимитированных машин нет
+                    givePremiumVehicle = true; // Попробуем выдать премиум машину
+                }
             }
         }
         if (givePremiumVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных машин в шкатулках
