@@ -4986,11 +4986,6 @@ CMD:addcar(playerid, const params[])
 	if(vehid == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 	if(!IsAVehExisting(vehid)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 
-	if (VehLimited[CorrectVehicleID(vehid)] > 0 && PlayerInfo[playerid][pSoska] < 22 && server != 0)
-	{
-		return ErrorMessage(playerid, "{FF6347}Выдача лимитированных машин доступна с 22 уровня админки");
-	}
-
     if(PlayerInfo[playerid][pSoska] < 19) nyche = 1; // Помечаем недоступный для продажи транспорт
     else nyche = 0;
     para1 = ReturnUser(tmp, 1);
