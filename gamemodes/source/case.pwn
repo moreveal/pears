@@ -496,7 +496,8 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
                 {
                     new thingTemp = random(ThingLimitedehicleQuan);
                     thingId = ThingLimitedVehiclecaseGift[thingTemp];
-                    if ((VehQuan[thingId] + VehLimitedCase[thingId]) < VehLimited[thingId])
+                    new correctVehId = CorrectVehicleID(thingId);
+                    if ((VehQuan[correctVehId] + VehLimitedCase[correctVehId]) < VehLimited[correctVehId])
                     {
                         gave = true;
                         break;
