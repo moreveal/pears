@@ -4977,7 +4977,7 @@ stock UnPackVehicle(playerid)
 
 CMD:addcar(playerid, const params[])
 {
-    if(!(PlayerInfo[playerid][pSoska] >= 14 || PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(!(PlayerInfo[playerid][pSoska] >= 22 || PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new para1,vehiclename[64],tmp[24],nyche;
     if(sscanf(params, "s[24]s[64]",tmp,vehiclename)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создание личного авто /addcar ID VehID");
