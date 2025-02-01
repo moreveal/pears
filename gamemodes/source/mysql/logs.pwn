@@ -26,9 +26,10 @@ stock ConnectLog(playerid, const type[])
             `account_name`, \
             `account_ip`, \
             `account_gpci`, \
-            `type` \
-        ) VALUES ('%d', '%e', '%e', '%e', '%e')",
-        PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[playerid][pGpci], type
+            `type`, \
+            `timestamp` \
+        ) VALUES ('%d', '%e', '%e', '%e', '%e', '%d')",
+        PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[playerid][pGpci], type, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -53,9 +54,10 @@ stock AdminLog(const action[],
             `secondary_player_name`, \
             `secondary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -81,9 +83,10 @@ stock OrgLog(org_id, const action[],
             `secondary_player_name`, \
             `secondary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%d', '%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        org_id, action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%d', '%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        org_id, action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -108,9 +111,10 @@ stock MoneyLog(const action[],
             `secondary_player_name`, \
             `secondary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -131,9 +135,10 @@ stock CarLog(const action[],
             `primary_player_name`, \
             `primary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%d', '%e', %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        carid, action, primary_player_id_, primary_player_name_, primary_player_ip_, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%d', '%e', %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        carid, action, primary_player_id_, primary_player_name_, primary_player_ip_, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -161,9 +166,10 @@ stock HouseLog(house_type, const action[],
             `primary_player_name`, \
             `primary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%e', '%d', '%e', %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        house_type_, house_id, action, primary_player_id_, primary_player_name_, primary_player_ip_, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%e', '%d', '%e', %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        house_type_, house_id, action, primary_player_id_, primary_player_name_, primary_player_ip_, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -184,9 +190,10 @@ stock BizLog(const action[],
             `primary_player_name`, \
             `primary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%d', '%e', %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        business_id, action, primary_player_id_, primary_player_name_, primary_player_ip_, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%d', '%e', %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        business_id, action, primary_player_id_, primary_player_name_, primary_player_ip_, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -212,9 +219,10 @@ stock FamilyLog(family_id, const action[],
             `secondary_player_name`, \
             `secondary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%d', '%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        family_id, action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%d', '%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        family_id, action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -239,9 +247,10 @@ stock DonateLog(const action[],
             `secondary_player_name`, \
             `secondary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -257,9 +266,10 @@ stock OffenseLog(primary_player_id, const primary_player_name[], const primary_p
             `primary_player_id`, \
             `primary_player_name`, \
             `primary_player_ip`, \
-            `rows` \
-        ) VALUES (%s, %s, %s, convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        primary_player_id_, primary_player_name_, primary_player_ip_, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES (%s, %s, %s, convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        primary_player_id_, primary_player_name_, primary_player_ip_, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -284,9 +294,10 @@ stock UserLog(const action[],
             `secondary_player_name`, \
             `secondary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%e', %s, %s, %s, %s, %s, %s, '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        action, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -325,15 +336,16 @@ stock TradeLog(trade_id, p, t)
             `slot_2_amount`, \
             `slot_3_name`, \
             `slot_3_id`, \
-            `slot_3_amount` \
+            `slot_3_amount`, \
+            `timestamp` \
         ) VALUES ('%d', '%d', '%e', '%e', '%d', '%e', '%e', \
             convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d', '%d', \
             convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d', '%d', \
-            convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d', '%d')",
+            convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d', '%d', '%d')",
         trade_id, PlayerInfo[p][pID], PlayerInfo[p][pName], PlayerInfo[p][pPlaIP], PlayerInfo[t][pID], PlayerInfo[t][pName], PlayerInfo[t][pPlaIP],
         slot_1_name, model[0], PlayerInfo[p][pTamount][0],
         slot_2_name, model[1], PlayerInfo[p][pTamount][1],
-        slot_3_name, model[2], PlayerInfo[p][pTamount][2]
+        slot_3_name, model[2], PlayerInfo[p][pTamount][2], gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -357,9 +369,10 @@ stock SupportLog(report_id,
             `secondary_player_id`, \
             `secondary_player_name`, \
             `secondary_player_ip`, \
-            `rows` \
-        ) VALUES ('%d', %s, %s, %s, %s, %s, %s, convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        report_id, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%d', %s, %s, %s, %s, %s, %s, convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        report_id, primary_player_id_, primary_player_name_, primary_player_ip_, secondary_player_id_, secondary_player_name_, secondary_player_ip_, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -377,9 +390,10 @@ stock CasinoLog(game_id,
             `primary_player_name`, \
             `primary_player_ip`, \
             `row`, \
-            `rows` \
-        ) VALUES ('%d', '%d', '%e', '%e', '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        game_id, primary_player_id, primary_player_name, primary_player_ip, row, rows
+            `rows`, \
+            `timestamp` \
+        ) VALUES ('%d', '%d', '%e', '%e', '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        game_id, primary_player_id, primary_player_name, primary_player_ip, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
@@ -393,8 +407,9 @@ stock SysInternalLog(const action[], const row = 0, const rows[] = "")
             `action`, \
             `row`, \
             `rows`, \
-        ) VALUES ('%e', '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        action, row, rows
+            `timestamp` \
+        ) VALUES ('%e', '%d', convertCharset('%e', \'windows-1251\', \'utf-8\'), '%d')",
+        action, row, rows, gettime()
     );
     mysql_tquery(pearsq_2, query);
     return true;
