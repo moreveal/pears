@@ -2,11 +2,11 @@
 #define GEO_IP_INFO_DETECT_URL_FIELDS   "?fields=131793"
  
 #define GEO_MAX_IP_LENGTH               16
-#define GEO_MAX_COUNTRY_NAME_LENGTH     32
+#define GEO_MAX_COUNTRY_NAME_LENGTH     64
 #define GEO_MAX_CITY_NAME_LENGTH        64
 #define GEO_MAX_LAT_LON_LENGTH          24
-#define GEO_MAX_PROVIDER_NAME_LENGTH    32
-#define GEO_MAX_PROXY_LENGTH            12
+#define GEO_MAX_PROVIDER_NAME_LENGTH    64
+#define GEO_MAX_PROXY_LENGTH            32
  
 enum e_PLAYER_GEO_INFORMATION
 {
