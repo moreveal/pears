@@ -4977,7 +4977,7 @@ stock UnPackVehicle(playerid)
 
 CMD:addcar(playerid, const params[])
 {
-    if(!(PlayerInfo[playerid][pSoska] >= 22 || (PlayerInfo[playerid][pMedia] >= 2 && server == 0))) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(!(PlayerInfo[playerid][pSoska] >= 14 || (PlayerInfo[playerid][pMedia] >= 2 && server == 0))) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new para1,vehiclename[64],tmp[24],nyche;
     if(sscanf(params, "s[24]s[64]",tmp,vehiclename)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создание личного авто /addcar ID VehID");
@@ -4985,6 +4985,11 @@ CMD:addcar(playerid, const params[])
 	new vehid = ReturnVehicle(vehiclename);
 	if(vehid == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 	if(!IsAVehExisting(vehid)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+
+	if (VehLimited[vehid] > 0 && PlayerInfo[playerid][pSoska] < 22 && server != 0)
+	{
+		return ErrorMessage(playerid, "{FF6347}Выдача лимитированных машин доступна с 22 уровня админки");
+	}
 
     if(PlayerInfo[playerid][pSoska] < 19) nyche = 1; // Помечаем недоступный для продажи транспорт
     else nyche = 0;
