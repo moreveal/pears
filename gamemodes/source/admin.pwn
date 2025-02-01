@@ -18,6 +18,7 @@ CMD:netstat(playerid)
 	format(line,sizeof(line), "%s", stats), strcat(lines, line);
 	format(line,sizeof(line), "\n\nIzTuryagi: %d ms", GlobalTickTimer), strcat(lines, line);
 	format(line,sizeof(line), "\nSkolkobenza: %d ms", GlobalTickTimer2), strcat(lines, line);
+	format(line,sizeof(line), "\n\nUnprocessed queries: main %d, logs %d, bridge %d", mysql_unprocessed_queries(pearsq), mysql_unprocessed_queries(pearsq_2), mysql_unprocessed_queries(pearsq_3)), strcat(lines, line);
 	format(line,sizeof(line), "\n\nRunning timers: %d", CountRunningTimers()), strcat(lines, line);
 	ShowDialog(playerid, 1700, DIALOG_STYLE_MSGBOX, "Server Network Stats", lines, "Close", "");
 	return true;
