@@ -341,7 +341,7 @@ CMD:gthinggro(playerid, const params[])
 	new quanPlayers;
 	foreach (Player, i)
 	{
-		if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(30.0, playerid, i))
+		if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(30.0, playerid, i) && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i))
 		{
 			GivePlayerItemCommand(playerid, i, thingItem, quan);
 			quanPlayers ++;

@@ -236,7 +236,7 @@ CMD:setskingro(playerid, const params[]) // Временно сменить ск
         if(playerid == i) continue;
         if(OnlineInfo[i][oLogged] == 0) continue;
 
-        if(GetDistanceBetweenPlayers(playerid, i) < 30)
+        if(GetDistanceBetweenPlayers(playerid, i) < 30 && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i))
         {
             format(string, sizeof(string), "Администратор %s временно изменил ваш скин", PlayerInfo[playerid][pName]);
             SendClientMessage(i, COLOR_WHITE, string);

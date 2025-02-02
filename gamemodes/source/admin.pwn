@@ -684,7 +684,7 @@ CMD:hpgro(playerid)
 	{
 		foreach (Player, i)
 		{
-			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
+			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i))
 			{
 				if(((IsPlayerInActiveVillage(i)
 					|| MineWar_IsPlayerInside(i)
@@ -706,7 +706,7 @@ CMD:armgro(playerid)
 	if(PlayerInfo[playerid][pSoska] < 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
 	foreach (Player, i)
 	{
-		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
+		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i))
 		{
 			if(((IsPlayerInActiveVillage(i)
 					|| MineWar_IsPlayerInside(i)

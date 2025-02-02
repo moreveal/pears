@@ -621,7 +621,7 @@ CMD:givecasegro(playerid, const params[])
     new amount = 0;
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(20.0, playerid, i) && playerid != i)
+        if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(20.0, playerid, i) && playerid != i && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i))
         {
             GivePlayerCase(playerid, i, nameCase, false);
             amount++;
