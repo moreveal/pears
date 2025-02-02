@@ -58,7 +58,7 @@ new vehNameCustom[][] =
     "F1 Ferrari",// 2042
 	"Ford Crown Victoria", // 2043
     "Unmarked Ford Crown Victoria", // 2044
-    "SWAT Headquarters Vehicle ", // 2045
+    "SWAT Headquarters Vehicle", // 2045
     "Unmarked Ford Explorer", // 2046
     "Ford Explorer Police", // 2047
     "Ford Focus ST", // 2048
@@ -196,7 +196,8 @@ new vehNameCustom[][] =
     "BMW XM", // 2180
     "Volkswagen Golf VII GTI", // 2181
     "Bugatti Bolide", // 2182
-    "Chevrolet Impala 1967" // 2183
+    "Chevrolet Impala 1967", // 2183
+    "XPeng Voyager X2" // 2184
     };
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
@@ -384,7 +385,8 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     20000000, // "BMW XM", // 2180
     6000000, // "Volkswagen Golf VII GTI" // 2181
     90000000, // "Bugatti Bolide" // 2182
-    30000000 // "Chevrolet Impala 1967" // 2183
+    30000000, // "Chevrolet Impala 1967" // 2183
+    900000000, // "XPeng Voyager X2" // 2184
 };
 
 new vehSummaGoldCustom[] = // Гос цены на авто в голде (Дефолтные) Кастомный транспорт
@@ -572,7 +574,8 @@ new vehSummaGoldCustom[] = // Гос цены на авто в голде (Де�
 	5000, // "BMW XM", // 2180  
 	1500, // "Volkswagen Golf VII GTI", // 2181  
 	22500, // "Bugatti Bolide", // 2182  
-	7500 // "Chevrolet Impala 1967", // 2183  
+	7500, // "Chevrolet Impala 1967", // 2183
+    100000, // "XPeng Voyager X2" // 2184  
 };
 
 stock AddCustomVehicle() // Добавляем тс на карту
@@ -761,6 +764,7 @@ stock AddCustomVehicle() // Добавляем тс на карту
     AddVehicleSyncModel(589, 2181); // "Volkswagen Golf VII GTI" // 2181
     AddVehicleSyncModel(411, 2182); // "Bugatti Bolide" // 2182
     AddVehicleSyncModel(445, 2183); // "Chevrolet Impala 1967" // 2183
+    AddVehicleSyncModel(469, 2184); // "XPeng Voyager X2" // 2184
     return 1;
 }
 
@@ -769,7 +773,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2183) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2184) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;
@@ -837,12 +841,12 @@ stock GetVehicleClass(m)
     || m == 574 || m == 582 || m == 583 || m == 596 || m == 597 || m == 598 || m == 599 || m == 601 
 	|| m == 2032 || m == 2036 || m == 2037 || m == 2038 || m == 2040 || m == 2041 || m == 2044 || m == 2045 || m == 2046
 	|| m == 2047 || m == 2060 || m == 2096 || m == 2100 || m == 2101 || m == 2102 || m == 2108 || m == 2122 || m == 2127
-    || m == 2129 || m == 2129 || m == 2132 || m == 2134 || m == 2135 || m == 2140 || m == 2151 || m == 2161 || m == 2164) class = 7;
+    || m == 2129 || m == 2132 || m == 2134 || m == 2135 || m == 2140 || m == 2151 || m == 2161 || m == 2164) class = 7;
 
     // Новый класс, типо лимитированные (8)
     else if(m == 2063 || m == 2064 || m == 2088 || m == 2104 || m == 2120 || m == 2124 || m == 2126 || m == 2128 || m == 2153
     || m == 2159 || m == 2160 || m == 2162 || m == 2163 || m == 2176 || m == 2177 || m == 2178
-    || m == 2179 || m == 2180 || m == 2181 || m == 2183) class = 8;
+    || m == 2179 || m == 2180 || m == 2181 || m == 2183 || m == 2184) class = 8;
 
     else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
     return class;
@@ -898,6 +902,7 @@ stock IsAHelicopter(model)
 {
     if(model == 417 || model == 447 || model == 469 || model == 487 || model == 488 
     || model == 497 || model == 548 || model == 563 || model == 2100 || model == 2102 
-    || model == 2129) return true;
+    || model == 2129 || model == 2130 || model == 2131 || model == 2132 || model == 2133 
+    || model == 2184) return true;
     return false;
 }
