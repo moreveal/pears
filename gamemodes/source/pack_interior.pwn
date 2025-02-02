@@ -727,8 +727,17 @@ function LoadPackInterior(playerid, typeInterior, ownerID, newid, i)
             }
         }
 
-        if(typeInterior == 0) SetDomThisInterior(ownerID, newid);
-        else if(typeInterior == 1) SetBizThisInterior(ownerID, newid);
+        if(typeInterior == 0) 
+        {
+            SetDomThisInterior(ownerID, newid);
+            DomInfo[ownerID][dEnterZ] = 1000.8868 + FixPosInInteriorZ(ownerID, 0);
+            SaveDom(ownerID);
+        }
+        else if(typeInterior == 1) 
+        {
+            SetBizThisInterior(ownerID, newid);
+            BizzInfo[ownerID][bEnterZ] = 1000.8868 + FixPosInInteriorZ(ownerID, 1);
+        }
     }
     else ErrorMessage(playerid, "{FF6347}Ошибка! Интерьер не найден в базе данных");
 
