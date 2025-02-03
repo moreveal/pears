@@ -90,6 +90,16 @@ enum pet_TaskToNpc
     PET_TASK_PLAYING
 }; 
 
+enum pet_Sound
+{
+    PET_SOUND_CRY,
+    PET_SOUND_ANGRY,
+    PET_SOUND_HAPPY,
+    PET_SOUND_ASKS,
+    PET_SOUND_VERYANGRY,
+    PET_SOUND_SNIFF
+};
+
 enum pet_Skills
 {
     PET_SKILL_INVALID,
@@ -166,6 +176,11 @@ stock CreatePet(playerid, pet, petSkin)
     PetInfo[pet][petKillerID] = INVALID_PLAYER_ID;
     PetInfo[pet][petType] = PetParam;
     PetInfo[pet][petSkills][PET_SKILL_FOLLOWME] = 10;
+    PetInfo[pet][petSkills][PET_SKILL_ATTAC] = 10;
+    PetInfo[pet][petSkills][PET_SKILL_SIT] = 10;
+    PetInfo[pet][petSkills][PET_SKILL_VOICE] = 10;
+    PetInfo[pet][petSkills][PET_SKILL_SITCAR] = 10;
+    PetInfo[pet][petSkills][PET_SKILL_SNIFF] = 10;
     PetInfo[pet][petUnix] = 0;
     PetInfo[pet][petAnim] = 0;
     PetInfo[pet][petSoundUnix] = 0;
@@ -246,7 +261,9 @@ stock LifePet(pet)
     }
     if(PetInfo[pet][petEvent] == PET_TASK_ATTAC) // Атакует
     {
+        PetPlaySound(pet, PET_SOUND_VERYANGRY);
         if(!IsOnline(PetInfo[pet][petAttactID])) PetInfo[pet][petAttactID] = INVALID_PLAYER_ID;
+        if(PlayerInGreenZonePosition(PetInfo[pet][petAttactID]) || PlayerInGreenZonePosition(PetInfo[pet][petPlayer])) return HandlerCreateTaskPets(pet, PET_TASK_WALKING), PetInfo[pet][petAttactID] = INVALID_PLAYER_ID;
         if(PetInfo[pet][petAttactID] == INVALID_PLAYER_ID || GetPlayerState(PetInfo[pet][petAttactID]) != PLAYER_STATE_ONFOOT || DeathInfo[PetInfo[pet][petAttactID]][deathStatus]) HandlerCreateTaskPets(pet, PET_TASK_WALKING);
         else{
             GetPlayerPos(PetInfo[pet][petAttactID],PcordX,PcordY,PcordZ);
@@ -274,6 +291,7 @@ stock LifePet(pet)
     }
     if(PetInfo[pet][petEvent] == PET_TASK_ATTACNPC)
     {
+        PetPlaySound(pet, PET_SOUND_VERYANGRY);
         if(!PetInfo[pet][petStartAttactNpcID]) TaskNpcStandStill(PetInfo[pet][petID]);
         new Float:tempHealth;
         if(IsValidNpc(PetInfo[pet][petAttactNpcID])) GetNpcHealth(PetInfo[pet][petAttactNpcID],tempHealth);
@@ -282,6 +300,7 @@ stock LifePet(pet)
     }
     if(PetInfo[pet][petEvent] == PET_TASK_SNIFF)
     {
+        PetPlaySound(pet, PET_SOUND_SNIFF);
         new tempUser = PetTaskGoFindSniffTarget(pet);
         if(tempUser != -1)
         {
@@ -292,6 +311,7 @@ stock LifePet(pet)
     }
     if(PetInfo[pet][petEvent] == PET_TASK_PLAYING)
     {
+        PetPlaySound(pet, PET_SOUND_HAPPY);
         if(DP[0][PetInfo[pet][petPlayer]] <= 3 && !PetInfo[pet][petDestinationStatus])
         {
             new Float:PcordA;
@@ -442,14 +462,28 @@ stock GetHungryPet(pet)
     if(PetInfo[pet][petHunger] < 0) PetInfo[pet][petHunger] = 0;
     return true;
 }
+
 stock PetTaskGoPlaying(playerid,pet)
 {
     if(!IsAFarNpcToPlayer(pet)) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Питомец далеко, и не может получить команду!");
     if(PetInfo[pet][petPlayingUnix] > gettime()) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Питомец не хочет играть в данный момент. Поиграть можно будет через %s минут", fine_time(PetInfo[pet][petPlayingUnix] - gettime()));
     if(PetInfo[pet][petHunger] < 50) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Питомец сильно голоден, и не может получить команду!");
     HandlerCreateTaskPets(pet, PET_TASK_PLAYING);
-    if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
+    if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid), CancelSelectTextDraw(playerid);
     PlayingWithPetStartProcess(playerid);
+    return true;
+}
+
+stock PetTaskGoVoice(playerid,pet)
+{
+    if(!IsAFarNpcToPlayer(pet)) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Питомец далеко, и не может получить команду!");
+    if(PetInfo[pet][petSoundUnix] > gettime()) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Питомец уже давал голос недавно. Подождите!");
+    if(PetInfo[pet][petHunger] < 50) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Питомец сильно голоден, и не может получить команду!");
+    if(CheckTaskValid(pet, PET_TASK_GOSEATCAR)) 
+    {
+        PetPlaySound(pet,PET_SOUND_ANGRY);
+        SendClientMessage(PetInfo[pet][petPlayer],COLOR_GREY,"[ Мысли ]: Я дал команду питомцу Голос");
+    }
     return true;
 }
 
@@ -493,6 +527,7 @@ stock PetTaskAttac(pet, targetid, bool:msg = false)
 {
     if(PetInfo[pet][petEvent] == PET_TASK_ATTAC || PetInfo[pet][petPlayer] == targetid || !PetInfo[pet][petAuto]) return false;
     if(!IsAFarNpcToPlayer(pet) && msg) return SendClientMessage(PetInfo[pet][petPlayer],COLOR_GREY,"[ Мысли ]: Питомец далеко, и не может получить команду!");
+    if(PlayerInGreenZonePosition(targetid) || PlayerInGreenZonePosition(PetInfo[pet][petPlayer])) return false;
     if(CheckTaskValid(pet, PET_TASK_ATTAC, msg)) 
     {
         HandlerCreateTaskPets(pet, PET_TASK_ATTAC, targetid);
@@ -597,8 +632,9 @@ stock IsAFarNpcToPlayer(pet, bool:FollowMe = false)
 
 stock IsAPetType(pet)
 {
-    if(pet == 609 || pet >= 632 && pet <= 648) return 1; // Собака
-    if(pet >= 626 && pet <= 631) return 2; // Кошки
+    new skin = PetsParam[PetInfo[pet][petType]][2];
+    if(skin == 609 || skin >= 632 && skin <= 648) return 1; // Собака
+    if(skin >= 626 && skin <= 631) return 2; // Кошки
     return 0;
 }
 
@@ -851,10 +887,10 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
         case PETS_SHOW_PETMANAGE_TASK: {
             new slot = DP[0][playerid];
             new pet = OnlineInfo[playerid][oPet][slot];
-            if(!response) dialogPetMenagment(playerid,slot);
+            if(!response) return dialogPetMenagment(playerid,slot);
             switch(listitem)
             {
-                case 0: PlayAudioStreamForPlayer(playerid,"https://cdn.pears.fun/sound/characters/maniac/screamer0.mp3");
+                case 0: PetTaskGoVoice(playerid, pet);
                 case 1: PetTaskAttacGeneral(pet); // Фас игрока/npc
                 case 2: PetTaskFollowMe(pet);// идти за мной
                 case 3: PetTaskSniff(pet); // принюхаться
@@ -863,6 +899,7 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
                 case 6: PetTaskGoPlaying(playerid,pet);// Играть
                 default: dialogPetMenagment(playerid,slot);
             }
+            return dialogPetCreateTask(playerid,slot);
         }
         case PET_CREATETASK_ATTAC: {
             if(!response) show_interaction(playerid, Moiplayer[playerid]);
@@ -1286,6 +1323,130 @@ stock FindLoadedPet(playerid)
             Pump_StartFeedPet(playerid,pet);
             break;
         }    
+    }
+    return true;
+}
+
+stock PetPlaySound(pet, pet_Sound: typesound)
+{
+    if(!IsValidNpc(PetInfo[pet][petID])) return false;
+    if(PetInfo[pet][petSoundUnix] > gettime()) return false;
+    PetInfo[pet][petSoundUnix] = gettime()+10;
+    new Float:PetX, Float:PetY, Float:PetZ;
+    GetNpcPosition(PetInfo[pet][petID],PetX,PetY,PetZ);
+    new type = IsAPetType(pet);
+    foreach(Player,playerid)
+    {
+        if(!IsPlayerConnected(playerid)) continue;
+        if(OnlineInfo[playerid][oListenRadioPears] != 0) continue;
+        if(!IsPlayerInRangeOfPoint(playerid,30.0,PetX,PetY,PetZ)) continue;
+        if(typesound == PET_SOUND_ANGRY)
+        {
+            if(type == 1) // Собаки
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/gaf0.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/gaf1.mp3",PetX,PetY,PetZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/gaf2.mp3",PetX,PetY,PetZ, 30.0, true);
+                }
+            }
+            else if(type == 2) // Кошки
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "http://cdn.pears.fun/sound/animals/cat/fr0.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "http://cdn.pears.fun/sound/animals/cat/fr1.mp3",PetX,PetY,PetZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "http://cdn.pears.fun/sound/animals/cat/fr2.mp3",PetX,PetY,PetZ, 30.0, true);
+                }
+            }
+        }
+        else if(typesound == PET_SOUND_CRY)
+        {
+            if(type == 1) // Собаки
+            {
+                switch(random(9))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/cry0.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/cry1.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 2: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/cry2.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 3: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/cry3.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 4: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/cry4.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 5: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/cry5.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 6: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/cry6.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 7: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/cry7.mp3",PetX,PetY,PetZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/cry8.mp3",PetX,PetY,PetZ, 30.0, true);
+                }
+            }
+            else if(type == 2) // Кошки
+            {
+                switch(random(5))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "http://cdn.pears.fun/sound/animals/cat/cry0.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "http://cdn.pears.fun/sound/animals/cat/cry1.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 2: PlayAudioStreamForPlayer(playerid, "http://cdn.pears.fun/sound/animals/cat/cry2.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 3: PlayAudioStreamForPlayer(playerid, "http://cdn.pears.fun/sound/animals/cat/cry3.mp3",PetX,PetY,PetZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "http://cdn.pears.fun/sound/animals/cat/cry4.mp3",PetX,PetY,PetZ, 30.0, true);
+                }
+            }
+        }
+        else if(typesound == PET_SOUND_HAPPY)
+        {
+            if(type == 1) // Собаки
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/funny_gaf.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/game.mp3",PetX,PetY,PetZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/heh0.mp3",PetX,PetY,PetZ, 30.0, true);
+                }
+            }
+            else if(type == 2) // Кошки
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/cat/mrr0.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/cat/mrr1.mp3",PetX,PetY,PetZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/cat/mrr2.mp3",PetX,PetY,PetZ, 30.0, true);
+                }
+            }
+        }
+        else if(typesound == PET_SOUND_SNIFF)
+        {
+            if(type == 1) // Собаки
+            {
+                PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/sniffs0.mp3",PetX,PetY,PetZ, 30.0, true);
+            }
+            else if(type == 2) // Кошки
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/cat/mrr0.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/cat/mrr1.mp3",PetX,PetY,PetZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/cat/mrr2.mp3",PetX,PetY,PetZ, 30.0, true);
+                }
+            }
+        }
+        else if(typesound == PET_SOUND_VERYANGRY)
+        {
+            if(type == 1) // Собаки
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/rik0.mp3",PetX,PetY,PetZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/rik1.mp3",PetX,PetY,PetZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/dog/rik2.mp3",PetX,PetY,PetZ, 30.0, true);
+                }
+            }
+            else if(type == 2) // Кошки
+            {
+                switch(random(2))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/cat/scream0.mp3",PetX,PetY,PetZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/cat/scream1.mp3",PetX,PetY,PetZ, 30.0, true);
+                }
+            }
+        }
     }
     return true;
 }
