@@ -277,7 +277,7 @@ stock WildPetPlaySound(pet)
         new model = 0;
         GetPlayerAttachedObject(playerid, 1, model);
 
-        if(model == 19847 && IsPlayerAttachedObjectSlotUsed(playerid, 1))
+        if(model == 12727 && IsPlayerAttachedObjectSlotUsed(playerid, 1))
         {
             if(WildPetInfo[pet][wildpetEvent] == WILDPET_FOLLOW) return false;
             TaskNpcFollowPlayer(WildPetInfo[pet][wildpetID], playerid);

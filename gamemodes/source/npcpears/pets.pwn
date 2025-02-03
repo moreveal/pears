@@ -2,6 +2,7 @@
 #define MAX_PETS_TYPE 24 // Тип животинки
 #define MAX_PETS_PARAM 2 // Кол-во параметров для животных
 #define MAX_PETS 2000 // Общие кол-во питомцев на сервере
+#define MAX_PETS_FEATURES 10 // Сколько максимально способностей может быть у питомца
 
 new PlayingWithPetProcessTime[MAX_REALPLAYERS];
 new bool: PlayingWithPetProcessTimers[MAX_REALPLAYERS];
@@ -34,7 +35,7 @@ new PetsParam[MAX_PETS_TYPE][4] =
     { 15834, 50, 646, 0 },      // Пудиль
     { 15835, 50, 647, 0 },      // Гончая
     { 15836, 50, 648, 0 }      // Долматинец
-};
+}; 
 
 new PetsFeaturesName[][] =
 {
@@ -122,7 +123,7 @@ enum petsnpc
     petPower, // Сила
     petAgility, // Ловкость
     petEndurance, // Выносливость
-    petFeatures[10], // Особенности питомца
+    petFeatures[MAX_PETS_FEATURES], // Особенности питомца
     petDonateFeatures, // кол-во купленных слотов
     bool:petDestinationStatus, // Идет или пришел
     pet_TaskToNpc: petEvent,
@@ -181,6 +182,7 @@ stock CreatePet(playerid, pet, petSkin)
     PetInfo[pet][petSkills][PET_SKILL_VOICE] = 10;
     PetInfo[pet][petSkills][PET_SKILL_SITCAR] = 10;
     PetInfo[pet][petSkills][PET_SKILL_SNIFF] = 10;
+    PetInfo[pet][petDonateFeatures] = 2;
     PetInfo[pet][petUnix] = 0;
     PetInfo[pet][petAnim] = 0;
     PetInfo[pet][petSoundUnix] = 0;
@@ -1449,4 +1451,25 @@ stock PetPlaySound(pet, pet_Sound: typesound)
         }
     }
     return true;
+}
+
+stock UsePetItem(playerid, inva)
+{
+    if(Hold[playerid] >= 262 && Hold[playerid] <= 266)
+    {
+        Hold[playerid] = 0, HoldStat[playerid] = 0, HoldFrisk[playerid] = 0, HoldQuan[playerid] = 0, HoldInva[playerid] = 0, HoldPara[playerid] = 0, HoldQara[playerid] = 0;
+        RemovePlayerAttachedObject(playerid,1), PlayerPlaySound(playerid,5601,0,0,0), ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
+        return 1;
+    }
+    if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+    if(!IsPlayerInAnyVehicle(playerid) && GetPlayerSpeed(playerid) > 3) return ErrorMessage(playerid, "{FF6347}Нельзя достать предмет в движении");
+    if(Hand[playerid] > 0 || Hold[playerid] > 0 || (GetPlayerWeapon(playerid) >= WEAPON:2 && GetPlayerWeapon(playerid) != WEAPON:46) || OnlineInfo[playerid][oInHandThing][0] > 0
+    || Piss[playerid] == 6 || Piss[playerid] == 2 || Piss[playerid] == 1 || Sleep[playerid] >= 1
+    || SleepRP[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Ваш персонаж не может сейчас достать предмет [ Заняты руки или выполняется действие ]");
+
+    new string[200];
+    format(string, sizeof(string), "{ffcc66}Вы взяли в руки %s {ff9000}[ Это предмет для взаимодействия с питомцами ]\n{cccccc}Подойдите к вашему питомцу и начните взаимодействовать с ним: Кнопка ALT\n{cccccc}Далее кликайте %s для взаимодействия",friskName[PlayerInfo[playerid][pInven][inva]], buttonName[Device[playerid]]);
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
+    in_hand_item(playerid, inva, PlayerInfo[playerid][pInven][inva], PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenQara][inva], PlayerInfo[playerid][pInvenQuan][inva]);
+    return 1;
 }
