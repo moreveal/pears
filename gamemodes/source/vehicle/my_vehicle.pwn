@@ -4223,6 +4223,19 @@ stock pts(p, v)
 	{
 		if(IsOnline(vladid)) format(line,sizeof(line),"\n{cccccc}Владелец: {0088ff}%s[%d]",PlayerInfo[vladid][pName],vladid), strcat(lines,line);
 	}
+	if(PlayerInfo[p][pSoska] > 0 || vladid == p)
+	{
+		new unix = gettime();
+		foreach (Player, i)
+		{
+			if(PlayerInfo[i][pKeyVeh][0] > 0 && PlayerInfo[i][pKeyVeh][3] > unix && PlayerInfo[i][pKeyVehID] == v)
+			{
+				new tyear, tmonth, tday, thour, tminute, tsecond;
+				stamp2datetime(PlayerInfo[i][pKeyVeh][3], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+				format(line,sizeof(line),"\n{cccccc}У %s [%d] ключи до %02d.%02d.%d %02d:%02d", rpplayername(i), i, tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+			}
+		}
+	}
 	if(Cars[v] == 88) format(line,sizeof(line),"\n{cccccc}Номер: {666666}%s", VehInfo[v][vNumer]), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}Налог: {FF6347}%d$ {555555}каждый PayDay",Procent(1, GetVehiclePriceGos(model))), strcat(lines,line);
 
