@@ -124,7 +124,7 @@ stock TradeSorting(playerid)
     else if(OnlineInfo[playerid][oSorting][1] == 3) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{ffffff}Мои трейды"), strcat(lines,line);
 
     format(line,sizeof(line),"\n{cccccc}Количество:\t{ffcc00}От %dG - До %dG", OnlineInfo[playerid][oSorting][2], OnlineInfo[playerid][oSorting][3]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Курс:\t{ffcc00}От %dG - До %dG", OnlineInfo[playerid][oSorting][4], OnlineInfo[playerid][oSorting][5]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Курс:\t{ffcc00}От %d$ - До %d$", OnlineInfo[playerid][oSorting][4], OnlineInfo[playerid][oSorting][5]), strcat(lines,line);
 
     format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t"), strcat(lines,line);
 
@@ -276,13 +276,13 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if(listitem == 1)
             {
                 DP[0][playerid] = 0;
-				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок","{cccccc}Введите диапазон для отображения сделок по {ff9000}Количеству Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше 100.000$ ]\n{ff9000}Пример: 10 100","Принять","Отмена");
+				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок","{cccccc}Введите диапазон для отображения сделок по {ff9000}Количеству Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1G и не больше 100.000G ]\n{ff9000}Пример: 10 100","Принять","Отмена");
             }
             if(listitem == 2)
             {
                 DP[0][playerid] = 1;
                 new string[210];
-                format(string,sizeof(string),"{cccccc}Введите диапазон для отображения сделок по {ff9000}Курсу Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше %d$ ]\n{ff9000}Пример: 10 100", MAX_GOLD_COURSE);
+                format(string,sizeof(string),"{cccccc}Введите диапазон для отображения сделок по {ff9000}Курсу Gold\n{cccccc}Через пробел минимальный и максимальный курс [ Не меньше 1$ и не больше %d$ ]\n{ff9000}Пример: 10 100", MAX_GOLD_COURSE);
 				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок",string,"Принять","Отмена");
             }
             if(listitem == 3) // Сбросить Фильтр
