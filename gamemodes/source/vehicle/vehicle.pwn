@@ -1363,7 +1363,7 @@ CMD:vehlimit(playerid, const params[])
 	new v = CorrectVehicleID(model);
 	if(VehLimited[v] == 0) return ErrorMessage(playerid, "{FF6347}Это не лимитированный транспорт");
 
-	new string_mysql[120];
+	new string_mysql[256];
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT pp_cars.sost, pp_igroki.Name AS player_name FROM `pp_cars` INNER JOIN pp_igroki ON pp_cars.sost = pp_igroki.user_id WHERE pp_cars.model = '%d'", model);
 	mysql_tquery(pearsq, string_mysql, "Call_CheckLimitedVehicle", "ddd", playerid, model, v);
 	return 1;
