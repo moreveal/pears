@@ -4213,7 +4213,7 @@ stock pts(p, v)
 	if (!IsValidVehicle(v)) return 0;
 	
 	new model = VehInfo[v][vModel], vladid = VehInfo[v][vIdvlad];
-	new line[80],lines[1840];
+	new line[192],lines[2048];
 
 	if(PlayerInfo[p][pSoska] > 0) format(line,sizeof(line),"\n{555555}DataBaseID: %d OwnerID: %d Slot: %d (Видит только админ)\n",VehInfo[v][vNewid], VehInfo[v][vSost], VehInfo[v][vDatabase]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Марка ТС: {0088ff}%s [ID: %d]",GetVehicleName(model),v), strcat(lines,line);
