@@ -130,6 +130,9 @@ stock Sampvoice3InitializationPlayer(playerid) // Запускаем игрок�
             lstream[playerid] = CreateAudioStream();
             AttachAudioStreamToPlayer(lstream[playerid], playerid);
             SetAudioStreamAutostreamState(lstream[playerid], true);
+            SetAudioStreamAutostreamDist(lstream[playerid], 22.0);
+            SetAudioStreamMinDistance(lstream[playerid], 1.5);
+            SetAudioStreamMaxDistance(lstream[playerid], 15.0);
             SetAudioStreamSpatialState(lstream[playerid], true);
             AttachAudioStreamSpeaker(lstream[playerid], playerid);
         }
