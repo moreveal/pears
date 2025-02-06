@@ -4838,7 +4838,6 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		PlayerPlaySound(playerid,1138,0,0,0);
 		if(PlayerInfo[playerid][pSex] == 1)SetPlayerChatBubble(playerid,"сдал транспорт в утиль",COLOR_PURPLE,20.0,3000);
 		else if(PlayerInfo[playerid][pSex] == 2)SetPlayerChatBubble(playerid,"сдала транспорт в утиль",COLOR_PURPLE,20.0,3000);
-		ACDestroyVehicle(newcar);
 
 		mysql_tquery(pearsq, "START TRANSACTION;");
 
@@ -4851,10 +4850,12 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
         query_empty(pearsq, string_mysql);
 
 		// Подсчитываем транспорт на руках игроков
-		VehicleQuan(model, -1);
+		if(VehInfo[newcar][vNosell] == 0) VehicleQuan(model, -1);
 
 		mysql_tquery(pearsq, "COMMIT;");
 
+		ACDestroyVehicle(newcar);
+		
 		if(IsPlayerInRangeOfPoint(playerid,10.0,2276.8972,534.0618,1.0)) PPSetPlayerPos(playerid,2284.4485,521.0029,1.7217), PPSetPlayerFacingAngle(playerid,270.0); // Лодки
 		else if(IsPlayerInRangeOfPoint(playerid,10.0,-1467.3530,669.2661,1.0)) PPSetPlayerPos(playerid,-1460.5260,678.3433,1.5122), PPSetPlayerFacingAngle(playerid,90.0); // Лодки
 		else if(IsPlayerInRangeOfPoint(playerid,10.0,2741.2739,-2316.9890,1.0)) PPSetPlayerPos(playerid,2733.0496,-2312.8413,1.5468), PPSetPlayerFacingAngle(playerid,180.0); // Лодки
@@ -4913,9 +4914,9 @@ function Call_delcar(playerid, str_name[], str_id, slot)
 		new model;
 		cache_get_value_name_int(0, "model", model);
 
+		new datad1;
 		if(PlayerInfo[playerid][pSoska] < 19)
 	    {
-			new datad1;
 			cache_get_value_name_int(0, "nosell", datad1);
 			if(datad1 == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете удалить этот транспорт [ Только созданный через медиа ]");
 		}
@@ -4932,7 +4933,7 @@ function Call_delcar(playerid, str_name[], str_id, slot)
         query_empty(pearsq, string);
 
 		// Подсчитываем транспорт на руках игроков
-		VehicleQuan(model, -1);
+		if(datad1 == 0) VehicleQuan(model, -1);
 
 		mysql_tquery(pearsq, "COMMIT;");
 
@@ -4999,8 +5000,8 @@ CMD:addcar(playerid, const params[])
 	if(vehid == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 	if(!IsAVehExisting(vehid)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 
-    if(PlayerInfo[playerid][pSoska] < 19) nyche = 1; // Помечаем недоступный для продажи транспорт
-    else nyche = 0;
+    nyche = 1; // Помечаем недоступный для продажи транспорт
+
     para1 = ReturnUser(tmp, 1);
     if(IsOnline(para1))
     {
@@ -5087,7 +5088,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 		query_empty(pearsq, string_mysql);
 
 		// Подсчитываем транспорт на руках игроков
-		VehicleQuan(carid, 1);
+		if(nyche == 0) VehicleQuan(carid, 1);
 
 		mysql_tquery(pearsq, "COMMIT;");
 	}
@@ -5176,7 +5177,7 @@ function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Fl
 		query_empty(pearsq, string_mysql);
 
 		// Подсчитываем транспорт на руках игроков
-		VehicleQuan(carid, 1);
+		if(nyche == 0) VehicleQuan(carid, 1);
 
 		mysql_tquery(pearsq, "COMMIT;");
 	}
