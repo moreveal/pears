@@ -504,8 +504,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             }
             else 
             {
-                if(TradeCrypt[id][tcActive] == 1) gotobuycrypto(playerid,id);
-                else if(TradeCrypt[id][tcActive] == 0) gotosellcrypto(playerid,id);
+                inserttobuy(playerid, id);
             }
         }
         else TradeList(playerid, DP[1][playerid]);
