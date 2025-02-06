@@ -1329,7 +1329,7 @@ stock ReloadLimitedVehicle(model)
 
 	ReloadLimitedProcess = true;
 	new string_mysql[120];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT newid, model FROM `pp_cars` WHERE `model` = '%d'", model);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT newid, model FROM `pp_cars` WHERE `model` = '%d' AND `nosell` = '0'", model);
 	mysql_tquery(pearsq, string_mysql, "Call_ReloadLimitedVehicle", "d", v);
 	return 1;
 }
@@ -1361,10 +1361,10 @@ CMD:vehlimit(playerid, const params[])
 	if(!IsAVehExisting(model)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 
 	new v = CorrectVehicleID(model);
-	if(VehLimited[v] == 0) return ErrorMessage(playerid, "{FF6347}Это не лимитированный транспорт");
+	//if(VehLimited[v] == 0) return ErrorMessage(playerid, "{FF6347}Это не лимитированный транспорт");
 
-	new string_mysql[120];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT sost FROM `pp_cars` WHERE `model` = '%d'", model);
+	new string_mysql[256];
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT pp_cars.sost, pp_igroki.Name AS player_name FROM `pp_cars` INNER JOIN pp_igroki ON pp_cars.sost = pp_igroki.user_id WHERE pp_cars.model = '%d' AND pp_cars.nosell = '0'", model);
 	mysql_tquery(pearsq, string_mysql, "Call_CheckLimitedVehicle", "ddd", playerid, model, v);
 	return 1;
 }
@@ -1376,12 +1376,14 @@ function Call_CheckLimitedVehicle(playerid, model, v)
 	if(rows)
 	{
 		new user_id, line[214], lines[4096];
+		new user_name[25];
 		format(line,sizeof(line),"{ff9000}%s {cccccc}[ Лимит: %d | На руках: %d ]\n", GetVehicleName(model), VehLimited[v], VehQuan[v]), strcat(lines,line);
 
 		for(new i = 0; i < rows; i++)
 		{
 			cache_get_value_name_int(i, "sost", user_id);
-			format(line,sizeof(line),"\n{cccccc}user_id: %d", user_id), strcat(lines,line);
+			cache_get_value_name(i, "player_name", user_name);
+			format(line,sizeof(line),"\n{cccccc}user_id: %d; %s", user_id, user_name), strcat(lines,line);
 		}
 		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{999999}*",lines,"*","");
 	}

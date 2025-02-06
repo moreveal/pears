@@ -124,7 +124,7 @@ stock TradeSorting(playerid)
     else if(OnlineInfo[playerid][oSorting][1] == 3) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{ffffff}Мои трейды"), strcat(lines,line);
 
     format(line,sizeof(line),"\n{cccccc}Количество:\t{ffcc00}От %dG - До %dG", OnlineInfo[playerid][oSorting][2], OnlineInfo[playerid][oSorting][3]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Курс:\t{ffcc00}От %dG - До %dG", OnlineInfo[playerid][oSorting][4], OnlineInfo[playerid][oSorting][5]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Курс:\t{ffcc00}От %d$ - До %d$", OnlineInfo[playerid][oSorting][4], OnlineInfo[playerid][oSorting][5]), strcat(lines,line);
 
     format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t"), strcat(lines,line);
 
@@ -276,13 +276,13 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if(listitem == 1)
             {
                 DP[0][playerid] = 0;
-				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок","{cccccc}Введите диапазон для отображения сделок по {ff9000}Количеству Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше 100.000$ ]\n{ff9000}Пример: 10 100","Принять","Отмена");
+				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок","{cccccc}Введите диапазон для отображения сделок по {ff9000}Количеству Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1G и не больше 100.000G ]\n{ff9000}Пример: 10 100","Принять","Отмена");
             }
             if(listitem == 2)
             {
                 DP[0][playerid] = 1;
                 new string[210];
-                format(string,sizeof(string),"{cccccc}Введите диапазон для отображения сделок по {ff9000}Курсу Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше %d$ ]\n{ff9000}Пример: 10 100", MAX_GOLD_COURSE);
+                format(string,sizeof(string),"{cccccc}Введите диапазон для отображения сделок по {ff9000}Курсу Gold\n{cccccc}Через пробел минимальный и максимальный курс [ Не меньше 1$ и не больше %d$ ]\n{ff9000}Пример: 10 100", MAX_GOLD_COURSE);
 				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок",string,"Принять","Отмена");
             }
             if(listitem == 3) // Сбросить Фильтр
@@ -499,13 +499,22 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             new id = DP[3][playerid];
             if(listitem == 0)
             {
-                if(TradeCrypt[id][tcActive] == 1) gotobuycrypto(playerid,id);
-                else if(TradeCrypt[id][tcActive] == 0) gotosellcrypto(playerid,id);
+                if(TradeCrypt[id][tcActive] == 1)
+                {
+                    new body[256];
+                    format(body, sizeof(body), "{cccccc}Чтобы {ffcc00}продать {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000\n{cccccc}Курс: 1G = %d$\nДоступно: %d", TradeCrypt[id][tcCourse], TradeCrypt[id][tcCount]);
+                    ShowDialog(playerid,_:GOLDEXC_BUY_GOLD_AMOUNT,DIALOG_STYLE_INPUT,"Биржевая Сделка",body,"Принять","Отмена");
+                }
+                else 
+                {
+                    new body[256];
+                    format(body, sizeof(body), "{cccccc}Чтобы {ffcc00}купить {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000\n{cccccc}Курс: 1G = %d$\nДоступно: %d", TradeCrypt[id][tcCourse], TradeCrypt[id][tcCount]);
+                    ShowDialog(playerid,_:GOLDEXC_SELL_GOLD_AMOUNT,DIALOG_STYLE_INPUT,"Биржевая Сделка",body,"Принять","Отмена");
+                }
             }
-            else 
+            else
             {
-                if(TradeCrypt[id][tcActive] == 1) gotobuycrypto(playerid,id);
-                else if(TradeCrypt[id][tcActive] == 0) gotosellcrypto(playerid,id);
+                inserttobuy(playerid, id);
             }
         }
         else TradeList(playerid, DP[1][playerid]);
@@ -565,6 +574,32 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             DialogMenuSorting(playerid);
         }
         else DialogMenuSorting(playerid);
+        return true;
+    }
+    else if (dialogid == _:GOLDEXC_BUY_GOLD_AMOUNT)
+    {
+        new id = DP[3][playerid];
+        if (response)
+        {
+            new input = strval(inputtext);
+			if(input < 1 || input > 10000) return ErrorText(playerid, "{FF6347}Не меньше 1 и не больше 10.000"), inserttobuy(playerid, id);
+
+            if(TradeCrypt[id][tcActive] == 1) gotobuycrypto(playerid,id,input);
+        }
+        else inserttobuy(playerid, id);
+        return true;
+    }
+    else if (dialogid == _:GOLDEXC_SELL_GOLD_AMOUNT)
+    {
+        new id = DP[3][playerid];
+        if (response)
+        {
+            new input = strval(inputtext);
+			if(input < 1 || input > 10000) return ErrorText(playerid, "{FF6347}Не меньше 1 и не больше 10.000"), inserttobuy(playerid, id);
+
+            if(TradeCrypt[id][tcActive] == 0) gotosellcrypto(playerid,id,input);
+        }
+        else inserttobuy(playerid, id);
         return true;
     }
     return false;
@@ -683,14 +718,15 @@ stock savetradecrypto(idx)
   	return 1;
 }
 
-stock gotobuycrypto(playerid,id)
+stock gotobuycrypto(playerid,id,count) // playerid продаёт голду
 {
     if (TradeCrypt[id][tcVlad] == 0) return ErrorText(playerid, "{FF6347}Упс.. вы не успели. Кто-то уже совершил сделку по этому трейду"), TradeList(playerid, 0);
-    new price = TradeCrypt[id][tcCount]*TradeCrypt[id][tcCourse];
-    if(PlayerInfo[playerid][pDonateMoney] < TradeCrypt[id][tcCount]) return ErrorText(playerid, "{FF6347}Вам не хватает золота"), inserttobuy(playerid, id);
+    if (TradeCrypt[id][tcCount] < count || count <= 0) return ErrorText(playerid, "{FF6347}Введите корректную сумму"), inserttobuy(playerid, id);
+    if(PlayerInfo[playerid][pDonateMoney] < count) return ErrorText(playerid, "{FF6347}Вам не хватает золота"), inserttobuy(playerid, id);
+
+    new price = count*TradeCrypt[id][tcCourse];
 
     new string[140];
-    new count = TradeCrypt[id][tcCount];
     new temp_name[24];
     format(temp_name, 24, "%s", TradeCrypt[id][tcName]);
 
@@ -712,18 +748,34 @@ stock gotobuycrypto(playerid,id)
 
         format(string, sizeof(string),"Купил %dG за %d$", count, price);
         DonateLog("buygold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], count, string);
+
+        ////////////////////////////////
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        MoneyLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], price, string);
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        MoneyLog("buygold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -price, string);
     }
     else
     {
         new string_mysql[120];
 		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT DonateMoney FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
-		mysql_tquery(pearsq, string_mysql, "get_tobuytradecrypto", "ddddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcCount], TradeCrypt[id][tcName]);
+		mysql_tquery(pearsq, string_mysql, "get_tobuytradecrypto", "ddddds", playerid, TradeCrypt[id][tcVlad], price, id, count, TradeCrypt[id][tcName]);
 
         format(string, sizeof(string),"Продал %dG за %d$", count, price);
         DonateLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", -count, string);
 
         format(string, sizeof(string),"Купил %dG за %d$", count, price);
         DonateLog("buygold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], count, string);
+
+        ////////////////////////////////
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        MoneyLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", price, string);
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        MoneyLog("buygold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -price, string);
     }
     oGivePlayerMoney(playerid, price);
     PlayerInfo[playerid][pDonateMoney] -= count;
@@ -733,7 +785,17 @@ stock gotobuycrypto(playerid,id)
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я продал%s %s {ffcc00}%dG {cccccc}за {99ff66}%d$", gender(playerid), temp_name, count, price);
     CryptoLog(0, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "", count, TradeCrypt[id][tcCourse]);
 	
-    deltradecrypto(id);
+    TradeCrypt[id][tcCount] -= count;
+    if (TradeCrypt[id][tcCount] <= 0)
+    {
+        deltradecrypto(id);
+    }
+    else
+    {
+        new string_mysql[256];
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_tradecrypto` SET `count`='%d' WHERE `newid` = '%d'", TradeCrypt[id][tcCount], TradeCrypt[id][tcNewid]);
+		mysql_tquery(pearsq, string_mysql);
+    }
     TradeList(playerid, DP[1][playerid]);
     return 1;
 }
@@ -756,14 +818,14 @@ function get_tobuytradecrypto(playerid, userid, price, id, gold, const name_sell
 	return 1;
 }
 
-stock gotosellcrypto(playerid,id)
+stock gotosellcrypto(playerid,id,count) // playerid покупает голду
 {
     if (TradeCrypt[id][tcVlad] == 0) return ErrorText(playerid, "{FF6347}Упс.. вы не успели. Кто-то уже совершил сделку по этому трейду"), TradeList(playerid, 0);
-    new price = TradeCrypt[id][tcCount]*TradeCrypt[id][tcCourse];
+    if (TradeCrypt[id][tcCount] < count || count <= 0) return ErrorText(playerid, "{FF6347}Введите корректную сумму"), inserttobuy(playerid, id);
+    new price = count*TradeCrypt[id][tcCourse];
     if(oGetPlayerMoney(playerid) < price) return ErrorText(playerid, "{FF6347}Вам не хватает денег"), inserttobuy(playerid, id);
 
     new string[140];
-    new count = TradeCrypt[id][tcCount];
     new temp_name[24];
     format(temp_name, 24, "%s", TradeCrypt[id][tcName]);
 
@@ -785,6 +847,14 @@ stock gotosellcrypto(playerid,id)
 
         format(string, sizeof(string),"Продал %dG за %d$", count, price);
         DonateLog("sellgold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -count, string);
+
+        ////////////////////////////////
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        MoneyLog("buygold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], -price, string);
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        MoneyLog("sellgold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], price, string);
     }
     else
     {
@@ -797,16 +867,34 @@ stock gotosellcrypto(playerid,id)
 
         format(string, sizeof(string),"Продал %dG за %d$", count, price);
         DonateLog("sellgold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -count, string);
+
+        ////////////////////////////////
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        MoneyLog("buygold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", -price, string);
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        MoneyLog("sellgold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], price, string);
     }
     oGivePlayerMoney(playerid, -price);
     PlayerInfo[playerid][pDonateMoney] += count;
     mysql_save(playerid,4);
 
     PlayerPlaySound(playerid, 6401, 0,0,0);
-    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я приобрел%s у %s {ffcc00}%dG {cccccc} за {99ff66}%d$", gender(playerid), temp_name, count, price);
+    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я приобрел%s у %s {ffcc00}%dG {cccccc}за {99ff66}%d$", gender(playerid), temp_name, count, price);
     CryptoLog(1, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "", count, TradeCrypt[id][tcCourse]);
     
-    deltradecrypto(id);
+    TradeCrypt[id][tcCount] -= count;
+    if (TradeCrypt[id][tcCount] <= 0)
+    {
+        deltradecrypto(id);
+    }
+    else
+    {
+        new string_mysql[256];
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_tradecrypto` SET `count`='%d' WHERE `newid` = '%d'", TradeCrypt[id][tcCount], TradeCrypt[id][tcNewid]);
+		mysql_tquery(pearsq, string_mysql);
+    }
     TradeList(playerid, DP[1][playerid]);
     return 1;
 }

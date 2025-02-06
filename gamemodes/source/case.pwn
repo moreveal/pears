@@ -635,6 +635,50 @@ CMD:givecasegro(playerid, const params[])
     return 1;
 }
 
+CMD:givecaserandom(playerid, const params[])
+{
+    if (PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+
+    new caseType[24], randomQuan;
+    if (!sscanf(params, "s[24]i", caseType, randomQuan))
+    {
+        new quanPlayers = 0;
+        new PlayerForCase[MAX_REALPLAYERS];
+
+        // Собираем всех залогиненных игроков в массив
+        foreach(Player, i)
+        {
+            if (OnlineInfo[i][oLogged] == 1)
+            {
+                PlayerForCase[quanPlayers] = i;
+                quanPlayers++;
+            }
+        }
+
+        // Если игроков меньше, чем указано, выдаем кейс всем
+        if (randomQuan > quanPlayers) randomQuan = quanPlayers;
+
+        // Перемешиваем массив игроков (алгоритм Фишера-Йетса)
+        for (new i = quanPlayers - 1; i > 0; i--)
+        {
+            new j = random(i + 1);
+            new temp = PlayerForCase[i];
+            PlayerForCase[i] = PlayerForCase[j];
+            PlayerForCase[j] = temp;
+        }
+
+        // Выдаем кейс первичным randomQuan игрокам (уникальные игроки)
+        for (new i = 0; i < randomQuan; i++) GivePlayerCase(playerid, PlayerForCase[i], caseType, false);
+
+        new string[140];
+        format(string, sizeof(string), " [ ADM ]: %s выдал шкатулку %d игрокам [ %s ]", PlayerInfo[playerid][pName], randomQuan, caseType);
+        ABroadCast(COLOR_ADM, string, 1);
+        AdminLog("givecaserandom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", randomQuan, caseType);
+    }
+    else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс рандомному количеству игроков [ /givecaserandom default количество ]");
+    return 1;
+}
+
 stock GivePlayerCase(playerid, giveplayerid, const name[] = "default", bool:onePlayer = true)
 {
     new thingId, thingQuan, thingType, thingPara, thingPack;

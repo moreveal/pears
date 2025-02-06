@@ -475,7 +475,7 @@ stock GetPlayerRefrigerator(playerid)
     }
     else if(world >= 5000 && world <= 5999) // Трейлеры
     {
-        result = world - 4000;
+        result = world - 3999;
     }
     else if(world > 15000 && world <= 16600) // Квартиры
     {

@@ -268,6 +268,10 @@ enum e_DialogId {
     PACK_INTERIORS_DONATE,
 
     // Клонируем объект в интерьере дома или биза
-    CLONE_OBJECT_INTERIOR
+    CLONE_OBJECT_INTERIOR,
+
+    // Внутриигровые биржевые сделки
+    GOLDEXC_BUY_GOLD_AMOUNT,
+    GOLDEXC_SELL_GOLD_AMOUNT
 };
 
