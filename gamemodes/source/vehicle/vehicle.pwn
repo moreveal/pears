@@ -1329,7 +1329,7 @@ stock ReloadLimitedVehicle(model)
 
 	ReloadLimitedProcess = true;
 	new string_mysql[120];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT newid, model FROM `pp_cars` WHERE `model` = '%d'", model);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT newid, model FROM `pp_cars` WHERE `model` = '%d' AND `nosell` = '0'", model);
 	mysql_tquery(pearsq, string_mysql, "Call_ReloadLimitedVehicle", "d", v);
 	return 1;
 }
@@ -1364,7 +1364,7 @@ CMD:vehlimit(playerid, const params[])
 	if(VehLimited[v] == 0) return ErrorMessage(playerid, "{FF6347}Это не лимитированный транспорт");
 
 	new string_mysql[256];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT pp_cars.sost, pp_igroki.Name AS player_name FROM `pp_cars` INNER JOIN pp_igroki ON pp_cars.sost = pp_igroki.user_id WHERE pp_cars.model = '%d'", model);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT pp_cars.sost, pp_igroki.Name AS player_name FROM `pp_cars` INNER JOIN pp_igroki ON pp_cars.sost = pp_igroki.user_id WHERE pp_cars.model = '%d' AND pp_cars.nosell = '0'", model);
 	mysql_tquery(pearsq, string_mysql, "Call_CheckLimitedVehicle", "ddd", playerid, model, v);
 	return 1;
 }

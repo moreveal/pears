@@ -364,6 +364,7 @@ stock AddFamilyVehicle(playerid, f, type)
 	new string[144];
 	if(!IsAtFamCar(playerid)) return ErrorMessage(playerid, "{FF6347}Гараж семьи недоступен или вы далеко от него");
 	if(f == 0) return ErrorMessage(playerid, "{FF6347}У вас нет семьи");
+	if(VehInfo[vehicleid][vNosell] != 0) return ErrorMessage(playerid, "{FF6347}Данный транспорт нельзя поставить в гараж семьи(транспорт квеста/медиа/админа)");
 	if(!FamilyInfo[f][fStatusGarage]) return ErrorMessage(playerid, "{FF6347}У вашей семьи нет гаража");
 	if(PlayerInfo[playerid][pFamrank] < FamilyInfo[f][fAccgarage]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу управлять гаражом [ %d+ Ранг ]",FamilyInfo[f][fAccgarage]);
 	if(!IsValidVehicle(vehicleid) || GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid, "{FF6347}Транспорт отсутствует, чтобы установить вам нужно быть за рулём");
