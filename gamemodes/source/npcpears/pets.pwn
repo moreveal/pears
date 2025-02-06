@@ -47,21 +47,23 @@ enum pet_FeaturesQuality
 new QuanFeatures[3];
 new PetsFeaturesName[][] =
 {
-    "Грязные когти", // 0
-    "Сточеные зубы", // 1
-    "Быстрые лапки", // 2
-    "Острый нюх", // 3
-    "Громкий голос" // 4
+    "", // 0
+    "Грязные когти", // 1
+    "Сточеные зубы", // 2
+    "Быстрые лапки", // 3
+    "Острый нюх", // 4
+    "Громкий голос" // 5
 };
 
 new PetsFeaturesSetting[sizeof(PetsFeaturesName)][2] =
 {
     // 1 - Rare, 2 - Count
-    { PET_FEATURES_USUAL, 1},        // 0 
-    { PET_FEATURES_RARE, 1},        // 1
-    { PET_FEATURES_LEGENDARY, 3},        // 2
-    { PET_FEATURES_RARE, 3},         // 3
-    { PET_FEATURES_USUAL, 25}         // 4
+    { -1, -1},                        // 0
+    { PET_FEATURES_USUAL, 20},        // 1 
+    { PET_FEATURES_RARE, 1},        // 2
+    { PET_FEATURES_LEGENDARY, 5},        // 3
+    { PET_FEATURES_RARE, 5},         // 4
+    { PET_FEATURES_USUAL, 25}         // 5
 };
 
 new PetsFeaturesColor[][] =
@@ -73,17 +75,18 @@ new PetsFeaturesColor[][] =
 
 new PetsFeaturesDescription[][] =
 {
+    "", // 0
     "Заражает (ТОЛЬКО ИГРОКА) болезнью Акне"\
     "   \n- Заражение не дает эффекта сразу, болезнь будет прогрессировать со временем"\
-    "   \n- Эффект данной особенности означает какой шанс на заражение", // 0
+    "   \n- Эффект данной особенности означает какой шанс на заражение", // 1
     "Урон питомца повышается по игроку/NPC"\
-    "   \n- Повышает базовый урон питомца по игроку/NPC в процентах", // 1
+    "   \n- Повышает базовый урон питомца по игроку/NPC в процентах", // 2
     "Питомец уворачивается от пуль"\
-    "   \n- Эффект данной особенности это шанс с которого ваш питомец не получит урона", // 2
+    "   \n- Эффект данной особенности это шанс с которого ваш питомец не получит урона", // 3
     "Раз в час может найти какой-то предмет на земле"\
-    "   \n- Эффект данной особенности означает шанс на успешную находку предмета", // 3
+    "   \n- Эффект данной особенности означает шанс на успешную находку предмета", // 4
     "Оглушения проходят быстрее"\
-    "   \n- Эффект данной особенности - это на сколько времени сокращается длительность оглушения" // 4
+    "   \n- Эффект данной особенности - это на сколько времени сокращается длительность оглушения" // 5
 };
 
 enum pet_TaskToNpc
@@ -122,7 +125,9 @@ enum pet_Skills
 
 enum petsnpc
 {
+    petNewID, // New id
 	NPC:petID, // ID бота
+    petName[20], // Имя
     petPlayer, // playerid владельца
     petHunger, // Голод 
     petLevel, // Уровень
@@ -136,7 +141,6 @@ enum petsnpc
     bool:petDestinationStatus, // Идет или пришел
     pet_TaskToNpc: petEvent,
     petSkills[pet_Skills:pet_Skills],
-    petUnix, // Время убийства для деспавна
     petPlayingUnix, // Юникс для игры
     petUnixLastEating, // Последнее время кормежки
     petType, // Тип животного
@@ -168,7 +172,33 @@ stock FindPet(thingid)
     return result;
 }
 
-stock CreatePet(playerid, pet, petSkin)
+stock GetPetHealthBasic(type)
+{
+    new healthPet = 0;
+    for(new i = 0; i < MAX_PETS_TYPE; i++)
+    {
+        if(i == type)
+        {
+            healthPet = PetsParam[i][1];
+            break;
+        }
+    }
+    return healthPet;
+}
+
+stock GetPetParam(type)
+{
+    for(new i = 0; i < MAX_PETS_TYPE; i++)
+    {
+        if(PetsParam[i][3] == 0 && i == type)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+stock CreatePet(playerid, pet)
 {
     if(IsValidNpc(PetInfo[pet][petID])) return false;
     new Float:PetX, Float:PetY, Float:PetZ = 50;
@@ -178,33 +208,24 @@ stock CreatePet(playerid, pet, petSkin)
     if(PetZ >= tempZ + 1.0) PetZ = tempZ;
     else PetZ += 1.5;
 
-    new PetParam = FindPet(petSkin);
-    if(PetParam == -1) return ErrorMessage(playerid,"{ff6347}Данный питомец не найден в списке питомцев");
-
     PetInfo[pet][petPlayer] = playerid;
     PetInfo[pet][petAttactID] = INVALID_PLAYER_ID;
     PetInfo[pet][petAttactNpcID] = INVALID_NPC;
     PetInfo[pet][petKillerID] = INVALID_PLAYER_ID;
-    PetInfo[pet][petType] = PetParam;
-    PetInfo[pet][petSkills][PET_SKILL_FOLLOWME] = 10;
-    PetInfo[pet][petSkills][PET_SKILL_ATTAC] = 10;
-    PetInfo[pet][petSkills][PET_SKILL_SIT] = 10;
-    PetInfo[pet][petSkills][PET_SKILL_VOICE] = 10;
-    PetInfo[pet][petSkills][PET_SKILL_SITCAR] = 10;
-    PetInfo[pet][petSkills][PET_SKILL_SNIFF] = 10;
-    PetInfo[pet][petDonateFeatures] = 2;
-    PetInfo[pet][petUnix] = 0;
+
     PetInfo[pet][petAnim] = 0;
     PetInfo[pet][petSoundUnix] = 0;
-    PetInfo[pet][petHunger] = 100;
+
     PetInfo[pet][petAuto] = false;
     PetInfo[pet][petEvent] = pet_TaskToNpc:PET_TASK_WALKING;
     PetInfo[pet][petID] = CreateNpc(PetsParam[PetInfo[pet][petType]][0], PetX + 0.5, PetY + 0.5, PetZ);
-    PetInfo[pet][petHealth] = float(PetsParam[PetInfo[pet][petType]][1]);
+
     SetNpcStunAnimationEnabled(PetInfo[pet][petID], true);
     SetNpcVirtualWorld(PetInfo[pet][petID], GetPlayerVirtualWorld(playerid));
     SetNpcHealth(PetInfo[pet][petID], PetInfo[pet][petHealth]);
 
+    OnlineInfo[playerid][oPetLoad] = 0;
+    dialogPetsList(playerid);
     return true;
 }
 
@@ -212,6 +233,7 @@ stock DestroyPet(playerid, slotpet)
 {
     if(OnlineInfo[playerid][oPet][slotpet] == -1) return ErrorMessage(playerid, "{ff6347}У меня не загружен данный питомец");
     new pet = OnlineInfo[playerid][oPet][slotpet];
+    SavePet(playerid,pet);
     OnlineInfo[playerid][oPet][slotpet] = -1;
     OnlineInfo[playerid][oPetID][slotpet] = -1;
 
@@ -343,6 +365,13 @@ stock LifePet(pet)
     return true;
 }
 
+stock SetPetNames(playerid,pet)
+{
+    if(IsEmptyString(PetInfo[pet][petName])) ShowDialog(playerid,PETS_SET_NAME,DIALOG_STYLE_INPUT,"{ff9000}Имя Питомцу","{cccccc}Введите кличку которую хотите дать питомцу {ff9000}[1 - 20 символов]","Принять","Отмена");
+    else ShowDialog(playerid,PETS_SET_DONATENAME,DIALOG_STYLE_MSGBOX,"{ff9000}Имя Питомцу","{cccccc}У вашего питомца уже есть имя \n{ff9000}Хотите изменить его за {ffcc00}90G","Принять","Отмена");
+    return true;
+}
+
 stock CheckTaskValid(pet, pet_TaskToNpc: PetTask, bool: msg = true)
 {
     new pet_Skills:typeSkill = PET_SKILL_INVALID;
@@ -437,15 +466,23 @@ stock HandlerCreateTaskPets(pet, pet_TaskToNpc: type, targetid = INVALID_PLAYER_
     return true;
 }
 
-stock LoadPlayerPet(playerid,slotpet, petId)
+stock LoadPlayerPet(playerid,slotpet, petId, inva)
 {
     if(OnlineInfo[playerid][oPet][slotpet] != -1) return ErrorMessage(playerid, "{ff6347}У меня уже есть загруженный питомец!");
     for(new pet = 0; pet < MAX_PETS; pet++)
     {
         if(IsValidNpc(PetInfo[pet][petID])) continue;
         OnlineInfo[playerid][oPet][slotpet] = pet;
-        OnlineInfo[playerid][oPetID][slotpet] = petId;
-        CreatePet(playerid,pet,petId);
+        new string_mysql[100];
+        if(petId == 0)
+        {
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pets` SET `petHunger` = '50'");
+			mysql_tquery(pearsq, string_mysql, "Call_getidPet", "ddd", playerid, slotpet, inva);
+        }
+        else{
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `pets` WHERE `petID` = '%d'", petId);
+            mysql_tquery(pearsq, string_mysql, "OnPlayerPetLoad", "ddddd",playerid, g_MysqlRaceCheck[playerid],slotpet, pet, inva);
+        }
         break;
     }
     return true;
@@ -472,6 +509,7 @@ stock GetHungryPet(pet)
     new GetHungryInTenMinuts = tempUnix/600;
     if(GetHungryInTenMinuts > 0 && PetInfo[pet][petHunger] > 0) PetInfo[pet][petUnixLastEating] = gettime()+600, PetInfo[pet][petHunger] -= GetHungryInTenMinuts;
     if(PetInfo[pet][petHunger] < 0) PetInfo[pet][petHunger] = 0;
+    SavePet(PetInfo[pet][petPlayer], pet);
     return true;
 }
 
@@ -658,6 +696,7 @@ stock IsAPetExisting(pet)
 
 stock dialogPetsList(playerid)
 {
+    if(OnlineInfo[playerid][oPetLoad] == 1) return ErrorMessage(playerid,"{ff6347}В данный момент у вас загружается питомец!");
 	new line[100],lines[4000];
 	format(line,sizeof(line),"{ffcc00}Название \t {444444}ID"), strcat(lines,line);
 
@@ -670,7 +709,7 @@ stock dialogPetsList(playerid)
         format(temptext, 10, "{cccccc}");
         for(new pet = 0; pet < MAX_PETS_AT_PLAYER; pet++)
         {
-            if(OnlineInfo[playerid][oPetID][pet] == PlayerInfo[playerid][pInven][i]) 
+            if(OnlineInfo[playerid][oPetID][pet] == PlayerInfo[playerid][pInvenPara][i]) 
             {
                 format(temptext, 10, "{ff9000}");
                 ListParam[quan][playerid] = pet+1;
@@ -693,13 +732,13 @@ stock dialogPetMenagment(playerid,slot)
     DP[0][playerid] = slot;
     new type = PetInfo[pet][petType];
 
-	new lines[500], string[60];
-	format(lines,sizeof(lines),"{ff9000}Питомец: %s\t Голод: %d"\
-                                "\n{ff9000}Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/100 ]"\
-                                "\n{0088ff}Выгрузить питомца\t "\
-                                "\n{0088ff}Команды питомцу\t "\
-								"\n{0088ff}Всегда следовать за мной %s\t ",
-                                GetSkinName(PetsParam[type][2]), PetInfo[pet][petHunger],
+	new lines[600], string[60];
+	format(lines,sizeof(lines),"{ff9000}Питомец: %s [ %s ]\t Голод: %d\t HP: %.0f"\
+                                "\n{ff9000}Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/100 ]\t "\
+                                "\n{0088ff}Выгрузить питомца\t \t "\
+                                "\n{0088ff}Команды питомцу\t \t "\
+								"\n{0088ff}Автоматизация действий %s\t \t ",
+                                PetInfo[pet][petName], GetSkinName(PetsParam[type][2]), PetInfo[pet][petHunger], PetInfo[pet][petHealth],
                                 PetInfo[pet][petLevel],PetInfo[pet][petExp],
                                 PetInfo[pet][petAuto] ? "{44ff99} [ On ]" : "{ff6347}[ Off ]");
 	format(string,sizeof(string),"{ff9000}Управление питомцем");
@@ -715,7 +754,8 @@ stock dialogPetInformation(playerid,pet)
                                 "\n{0088ff}Сила\t \t{cccccc}%d"\
                                 "\n{0088ff}Ловкость\t \t{cccccc}%d"\
                                 "\n{0088ff}Выносливость\t \t{cccccc}%d"\
-								"\n{0088ff}Прокачка команд питомца\t \t ",
+								"\n{0088ff}Прокачка команд питомца\t \t "\
+                                "\n{0088ff}Изменить клику питомцу\t \t ",
                                 PetInfo[pet][petLevel],PetInfo[pet][petExp], PetInfo[pet][petPoint],
                                 PetInfo[pet][petPower],PetInfo[pet][petAgility], PetInfo[pet][petEndurance]);
 	format(string,sizeof(string),"{ff9000}Управление питомцем");
@@ -764,7 +804,7 @@ stock dialogPetEndurence(playerid,pet)
 	return true;
 }
 
-stock dialogPetsFeatures(playerid,pet)
+stock dialogPetsFeatures(playerid,pet, featur = 0)
 {
     new slot = DP[0][playerid];
 	new line[120],lines[120*MAX_PETS_FEATURES+500], quan = 0;
@@ -776,8 +816,16 @@ stock dialogPetsFeatures(playerid,pet)
         PetsFeaturesSetting[PetInfo[pet][petFeatures][features]][1]), strcat(lines,line);
         quan++;
     }
-    if(quan == 0) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: У моего питомца нет способностей"), dialogPetMenagment(playerid,slot);
-    ShowDialog(playerid,PETS_SHOW_FEATURES_LIST,DIALOG_STYLE_TABLIST,"{ff9000}Особые навыки питомца",lines,"Выбрать","Отмена");
+    if(featur == 0)
+    {
+        if(quan == 0) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: У моего питомца нет способностей"), dialogPetMenagment(playerid,slot);
+        ShowDialog(playerid,PETS_SHOW_FEATURES_LIST,DIALOG_STYLE_TABLIST,"{ff9000}Особые навыки питомца",lines,"Выбрать","Отмена");
+    }
+    else 
+    {
+        DP[1][playerid] = featur;
+        ShowDialog(playerid,PETS_SHOW_FEATURES_CHOICE,DIALOG_STYLE_TABLIST,"{ff9000}Выберите навык для замены",lines,"Выбрать","Отмена");
+    }
     return true;
 }
 
@@ -843,7 +891,7 @@ stock dialogPetCreateTask(playerid,slot)
                                 "\n{0088ff}Садись в машину\t%s\t%s"\
                                 "\n{0088ff}Давай играть\t%s\t%s",
                                 GetSkinName(PetsParam[type][2]),
-                                PetInfo[pet][petSkills][PET_SKILL_VOICE] == 10 ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petUnix] ? "{44ff99}Выполняет" : "", 
+                                PetInfo[pet][petSkills][PET_SKILL_VOICE] == 10 ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petSoundUnix] ? "{44ff99}Выполняет" : "", 
                                 PetInfo[pet][petSkills][PET_SKILL_ATTAC] == 10 ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_ATTAC ? "{44ff99}Выполняет" : "", 
                                 PetInfo[pet][petSkills][PET_SKILL_FOLLOWME] == 10 ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_WALKING ? "{44ff99}Выполняет" : "", 
                                 PetInfo[pet][petSkills][PET_SKILL_SNIFF] == 10 ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_SNIFF ? "{44ff99}Выполняет" : "", 
@@ -877,7 +925,7 @@ CMD:givepet(playerid, const params[]) // Выдать питомца в инве
 	return 1;
 }
 
-stock dialogCase_Pets(playerid, dialogid, response, listitem) {
+stock dialogCase_Pets(playerid, dialogid, response, listitem, const inputtext[]) {
     switch (e_DialogId: dialogid) {
         case PETS_SHOW_LIST: {
             if(!response) return true;
@@ -889,12 +937,12 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
                 for(new pet = 0; pet < MAX_PETS_AT_PLAYER; pet++)
                 {
                     if(OnlineInfo[playerid][oPetID][pet] != -1) continue;
-                    LoadPlayerPet(playerid, pet, PlayerInfo[playerid][pInven][inva]);
+                    LoadPlayerPet(playerid, pet, PlayerInfo[playerid][pInvenPara][inva], inva);
+                    OnlineInfo[playerid][oPetLoad] = 1;
                     yes = true;
                     break;   
                 }
                 if(!yes) return ErrorMessage(playerid,"{ff6347}У меня нет слотов для загрузки питомцев!");
-                else dialogPetsList(playerid);
             }
         }
         case PETS_SHOW_PETMANAGE: {
@@ -952,6 +1000,7 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
                     case 2: dialogPetAgility(playerid,pet);
                     case 3: dialogPetEndurence(playerid,pet);
                     case 4: dialogPetUpdateSkill(playerid,pet);
+                    case 5: SetPetNames(playerid,pet);
                 }
             }
         }
@@ -996,19 +1045,69 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
             dialogHelpPet(playerid);
         }
         case PETS_HELP_LIST_FEATURES: {
+            DP[0][playerid] = 9999;
             if(!response) dialogHelpPet(playerid);
-            else dialogInformationPetsFeaturesItem(playerid, listitem);
+            else dialogInformationPetsFeaturesItem(playerid, listitem+1);
         }
         case PETS_HELP_FEATURES: {
-            dialogInformationPetsFeatures(playerid);
+            new pet, slot;
+            if(DP[0][playerid] == 9999) dialogInformationPetsFeatures(playerid), DP[0][playerid] = 0;
+            else 
+            {
+                slot = DP[0][playerid];
+                pet = OnlineInfo[playerid][oPet][slot];
+                dialogPetsFeatures(playerid,pet);
+            }
         }
         case PETS_SHOW_FEATURES_ACCEPT:{
             new pet = DP[0][playerid];
             new features = DP[1][playerid];
             if(!response) return false;
             else{
-                PetInfo[pet][petFeatures][0] = features;
+                PetSetFeaturesOrChoiceSlot(playerid,pet,features);
             }
+        }
+        case PETS_SHOW_FEATURES_LIST:{
+            new slot = DP[0][playerid];
+            new pet = OnlineInfo[playerid][oPet][slot];
+            if(!response) return dialogPetInformation(playerid,pet);
+            else dialogInformationPetsFeaturesItem(playerid, PetInfo[pet][petFeatures][listitem]);
+        }
+        case PETS_SHOW_FEATURES_CHOICE:{
+            new slot = DP[0][playerid];
+            new pet = OnlineInfo[playerid][oPet][slot];
+            new features = DP[1][playerid];
+            if(!response) return dialogPetInformation(playerid,pet);
+            else {
+                PetInfo[pet][petFeatures][listitem] = features;
+                SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я заменил одну из способностей питомца на новую");
+                dialogPetInformation(playerid,pet);
+                SavePet(playerid,pet);
+            }
+        }
+        case PETS_SET_DONATENAME:{
+            new slot = DP[0][playerid];
+            new pet = OnlineInfo[playerid][oPet][slot];
+            if(!response) return dialogPetInformation(playerid,pet);
+            else{
+                if(PlayerInfo[playerid][pDonateMoney] < 90) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: У меня недостаточно золота!"), dialogPetInformation(playerid,pet);
+                else {
+                    DP[2][playerid] = 1;
+                    ShowDialog(playerid,PETS_SET_NAME,DIALOG_STYLE_INPUT,"{ff9000}Имя Питомцу","{cccccc}Введите кличку которую хотите дать питомцу {ff9000}[1 - 20 символов]","Принять","Отмена");
+                }
+            }
+        }
+        case PETS_SET_NAME:{
+            new slot = DP[0][playerid];
+            new pet = OnlineInfo[playerid][oPet][slot];
+            new donate = DP[2][playerid];
+            if(!response) return dialogPetInformation(playerid,pet);
+            if(strlen(inputtext) < 0 || strlen(inputtext) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кличка не меньше 0 и не больше 20 символов"), dialogPetInformation(playerid,pet);
+		    if(checksimvol(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я использую запрещённый символ [ Только буквы, цифры и стандартные символы ]"), dialogPetInformation(playerid,pet);
+            if(PlayerInfo[playerid][pDonateMoney] < 90) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: У меня недостаточно золота!"), dialogPetInformation(playerid,pet);
+            format(PetInfo[pet][petName],20, inputtext);
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я успешно сменил кличку своему питомцу!");
+            if(donate) PlayerInfo[playerid][pDonateMoney] -= 90, mysql_save(playerid, 4), tclArifmetikAllGold -= 90;
         }
     }
     return false;
@@ -1086,7 +1185,7 @@ stock dialogHelpPet(playerid)
 	new lines[240], string[60];
 	format(lines,sizeof(lines),"\n{cccccc}Что за кошки/собаки гуляют по улицам?\n"\
                                 "\n{cccccc}Что за питомцы и чем они полезны?"\
-                                "\n{cccccc}Особые навыки питомцев");
+                                "\n{cccccc}Способности питомцев");
 	format(string,sizeof(string),"{ff9000}Питомцы");
 	ShowDialog(playerid,PETS_HELP,DIALOG_STYLE_TABLIST, string, lines, "Выбрать", "Отмена");
 	return true;
@@ -1098,12 +1197,13 @@ stock dialogPetRepleceFeatures(playerid,pet, features)
     DP[1][playerid] = features;
 	new lines[1020], string[60];
 	format(lines,sizeof(lines),"\n{ff9000}Вам выпала способность %s%s\n"\
-                                "\n{cccccc}Данная способность дает следующие бонусы: %d%%"\
+                                "\n{cccccc}Данная способность дает следующие бонусы или шанс на срабатывание: %s%d%%"\
                                 "\n{cccccc}%s\n\n"\
                                 "{ff9000}Хотите оставить данную способность?",
-                                PetsFeaturesColor[features], PetsFeaturesName[features],PetsFeaturesSetting[features][1], PetsFeaturesDescription[features]);
+                                PetsFeaturesColor[PetsFeaturesSetting[features][0]], PetsFeaturesName[features],PetsFeaturesColor[PetsFeaturesSetting[features][0]],
+                                PetsFeaturesSetting[features][1], PetsFeaturesDescription[features]);
 	format(string,sizeof(string),"{ff9000}Питомцы");
-	ShowDialog(playerid,PETS_SHOW_FEATURES_ACCEPT,DIALOG_STYLE_TABLIST, string, lines, "Да", "Нет");
+	ShowDialog(playerid,PETS_SHOW_FEATURES_ACCEPT,DIALOG_STYLE_MSGBOX, string, lines, "Да", "Нет");
 	return true;
 }
 
@@ -1117,13 +1217,16 @@ stock dialogInformationPets(playerid)
                                 "\n{cccccc}- Питомцу можно давать команды, но для этого его нужно прокачать играясь с ним в миниигру и постоянно кормя его"\
                                 "\n{cccccc}Примеры команд: Фас на игрока/NPC, принюхаться(найти запрещенные предметы у игроков рядом), следовать за мной и сидеть на месте"\
                                 "\n{cccccc}голос, играть. Этот список будет пополняться с будущими обновлениями!\n"\
-                                "\n{cccccc}- У питомцев так же есть несколько особенностей, разных уровней: %sБазовые, %sРедкие, %sЛегендарные"\
-								"\n{cccccc}Примеры особенностей можно посмотреть в /help > Питомцы > Особенности питомцев"\
+                                "\n{cccccc}- У питомцев так же есть несколько способностей, разных уровней: %sБазовые, %sРедкие, %sЛегендарные"\
+								"\n{cccccc}Примеры способностей можно посмотреть в /help > Питомцы > Особенности питомцев"\
+                                "\n{cccccc}Получить способность можно покормив питомца 'Лакомством для питомца'(выпадает из кейса Питомцев)"\
                                 "\n{cccccc}- Можно иметь только одного загруженного питомца. А с раширением только двух загружаемыех питомцев"\
                                 "\n{cccccc}- В данный момент на сервере есть %s разных видов питомцев.\n"\
                                 "\n{ff6347}ВНИМАНИЕ!!"\
                                 "\n{cccccc}- Если питомца не кормить, то он умрет. Не совершайте ошибок, ухаживайте за братьями нашими меньшими!"\
-                                "\n{cccccc}- Дальше я забил хуй что-то писать, потом сделаю!",PetsFeaturesColor[0],PetsFeaturesColor[1],PetsFeaturesColor[2], MAX_PETS_TYPE - 1);
+                                "\n{cccccc}- Если питомец умрет с голода, или его кто-то убьет, то его можно будет вылечить специальным лекарством."\
+                                "\n{cccccc}Лекарство можно купить в вет.клинике, либо же вылечить питомца прям там."\
+                                "\n{cccccc}- Вет.клиника это место где можно будет сдать своего питомца или приобрести нового, а так же вылечить его",PetsFeaturesColor[0],PetsFeaturesColor[1],PetsFeaturesColor[2], MAX_PETS_TYPE - 1);
 	format(string,sizeof(string),"{ff9000}Что дают питомцы?");
 	ShowDialog(playerid,PETS_HELP_LIST,DIALOG_STYLE_MSGBOX, string, lines, "Назад", "");
 	return true;
@@ -1133,9 +1236,9 @@ stock dialogInformationPetsFeatures(playerid)
 {
 	new line[120],lines[120*sizeof(PetsFeaturesName)+500];
 
-    for(new i = 0; i < sizeof(PetsFeaturesName); i++)
+    for(new i = 1; i < sizeof(PetsFeaturesName); i++)
     {
-        format(line,sizeof(line),"{ffffff}%d. %s%s\t{cccccc}Эффект: %d%%\n",i+1,PetsFeaturesColor[PetsFeaturesSetting[i][0]], PetsFeaturesName[i], PetsFeaturesSetting[i][1]), strcat(lines,line);
+        format(line,sizeof(line),"{ffffff}%d. %s%s\t{cccccc}Эффект: %d%%\n",i,PetsFeaturesColor[PetsFeaturesSetting[i][0]], PetsFeaturesName[i], PetsFeaturesSetting[i][1]), strcat(lines,line);
     }
     ShowDialog(playerid,PETS_HELP_LIST_FEATURES,DIALOG_STYLE_TABLIST,"{ff9000}Особые навыки питомцев",lines,"Выбрать","Отмена");
     return true;
@@ -1171,7 +1274,7 @@ stock PlayingWithPetStopProcess(playerid, stat)
         PlayerPlaySound(playerid, 31205);
         if(pet != -1) GivePetsExp(pet, 25), PetInfo[pet][petPlayingUnix] = gettime() + 18000;
     }
-    if(pet != -1) PetHunger(pet, 5), HandlerCreateTaskPets(pet, PET_TASK_WALKING);
+    if(pet != -1) PetHunger(pet, 10), HandlerCreateTaskPets(pet, PET_TASK_WALKING);
 
     for (new i = 0; i <= 5; i++) TextDrawHideForPlayer(playerid, InputDraw[i]);
     PlayerTextDrawHide(playerid, InputDraw1);
@@ -1302,6 +1405,8 @@ stock GivePetsExp(pet, exp)
     new string[110];
     format(string, sizeof(string), "{0088ff}Вы поиграли с питомцем и он получил {99ff66}%d {0088ff}опыта",exp);
     SendClientMessage(PetInfo[pet][petPlayer], COLOR_GREY, string);
+
+    SavePet(PetInfo[pet][petPlayer],pet);
     return true;
 }
 
@@ -1309,6 +1414,7 @@ stock PetHunger(pet, hunger)
 {
     PetInfo[pet][petHunger] -= hunger;
     if(PetInfo[pet][petHunger] < 0) PetInfo[pet][petHunger] = 0;
+    SavePet(PetInfo[pet][petPlayer],pet);
     return true;
 }
 
@@ -1316,7 +1422,7 @@ stock LoadPetFeaturesQuan()
 {
     for(new pet_FeaturesQuality:i; i < pet_FeaturesQuality; i++)
     {
-        for(new features; features < sizeof(PetsFeaturesName); features++)
+        for(new features = 1; features < sizeof(PetsFeaturesName); features++)
         {
             if(PetsFeaturesSetting[features][0] == _:i) QuanFeatures[i]++;
         }
@@ -1329,10 +1435,19 @@ stock PetRandomFeatures(playerid, pet)
     new chance = PetInfo[pet][petLevel]/10;
     new pet_FeaturesQuality: features;
     new selectFeatures = 0;
+    new chanceRandom = 100;
 
-    if(chance > 100) chance = 99;
+    if(GetPetParam(PetInfo[pet][petType])) chanceRandom = 50;
+    if(chanceRandom == 100)
+    {
+        if(chance >= 100) chance = 99;
+    }
+    else if(chanceRandom == 50)
+    {
+        if(chance >= 50) chance = 40;
+    }
 
-    switch(random(100-chance))
+    switch(random(chanceRandom-chance))
     {
         case 0..1: features = PET_FEATURES_LEGENDARY;
         case 2..30: features = PET_FEATURES_RARE;
@@ -1344,7 +1459,7 @@ stock PetRandomFeatures(playerid, pet)
     {
         case PET_FEATURES_LEGENDARY:{
             new randomQuan = random(QuanFeatures[2]);
-            for(new i; i < sizeof(PetsFeaturesName); i++)
+            for(new i = 1; i < sizeof(PetsFeaturesName); i++)
             {
                 if(PetsFeaturesSetting[i][0] == _:PET_FEATURES_LEGENDARY) tempQuan++;
                 if(tempQuan == randomQuan) 
@@ -1356,7 +1471,7 @@ stock PetRandomFeatures(playerid, pet)
         }
         case PET_FEATURES_RARE:{
             new randomQuan = random(QuanFeatures[1]);
-            for(new i; i < sizeof(PetsFeaturesName); i++)
+            for(new i = 1; i < sizeof(PetsFeaturesName); i++)
             {
                 if(PetsFeaturesSetting[i][0] == _:PET_FEATURES_RARE) tempQuan++;
                 if(tempQuan == randomQuan) 
@@ -1368,7 +1483,7 @@ stock PetRandomFeatures(playerid, pet)
         }
         case PET_FEATURES_USUAL:{
             new randomQuan = random(QuanFeatures[0]);
-            for(new i; i < sizeof(PetsFeaturesName); i++)
+            for(new i = 1; i < sizeof(PetsFeaturesName); i++)
             {
                 if(PetsFeaturesSetting[i][0] == _:PET_FEATURES_USUAL) tempQuan++;
                 if(tempQuan == randomQuan) 
@@ -1379,7 +1494,38 @@ stock PetRandomFeatures(playerid, pet)
             }
         }
     }
+    if(selectFeatures == 0) selectFeatures = 1;
     return dialogPetRepleceFeatures(playerid, pet, selectFeatures);
+}
+
+stock PetSetFeaturesOrChoiceSlot(playerid,pet,features)
+{
+    new slot = -1;
+    for(new i = 0; i < PetInfo[pet][petDonateFeatures]; i++)
+    {
+        if(PetInfo[pet][petFeatures][i] == 0)
+        {
+            slot = i;
+            break;
+        }
+    }
+    if(slot == -1) return dialogPetsFeatures(playerid,pet,features);
+    PetInfo[pet][petFeatures][slot] = features;
+    SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Мой питомец получил новую способность");
+    dialogPetsFeatures(playerid,pet);
+    SavePet(playerid,pet);
+    return true;
+}
+
+stock SetPetHealth(pet)
+{
+    new Float:healthPet = float(GetPetHealthBasic(PetInfo[pet][petType]));
+    healthPet += float(5*(PetInfo[pet][petEndurance]+PetInfo[pet][petPower]));
+
+    SetNpcHealth(PetInfo[pet][petID], healthPet);
+    PetInfo[pet][petHealth] = healthPet;
+    SavePet(PetInfo[pet][petPlayer],pet);
+    return true;
 }
 
 stock Pump_FeedPet(playerid)
@@ -1402,6 +1548,7 @@ stock Pump_FeedPet(playerid)
 	if(GetPVarInt(playerid,"oryjtemp") >= 10)
 	{
 	 	GameTextForPlayer(playerid, RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Кормление: ~w~10/10"), 1500, 3);
+
         if(HoldStat[playerid] >= 262 && HoldStat[playerid] <= 264)
         {
             if(HoldStat[playerid] == 262)
@@ -1410,12 +1557,14 @@ stock Pump_FeedPet(playerid)
             }
             else
             {
-                if(PetInfo[pet][petHunger] <= 80) PetInfo[pet][petHunger] += 20;
+                if(PetInfo[pet][petHunger] <= 80) PetInfo[pet][petHunger] += 10;
                 else PetInfo[pet][petHunger] = 100;
                 PetInfo[pet][petPlayingUnix] -= 7200;
             }
         }
         else if(HoldStat[playerid] == 265) PetRandomFeatures(playerid, pet);
+        else if(HoldStat[playerid] == 266) SetPetHealth(pet);
+
         ClearPlayerInven(playerid, HoldInva[playerid]);
 	    Hold[playerid] = 0, HoldStat[playerid] = 0, HoldQuan[playerid] = 0, HoldInva[playerid] = -1;
         RemovePlayerAttachedObject(playerid,1);
@@ -1447,6 +1596,8 @@ stock Pump_StartFeedPet(playerid, pet)
         }
         if(HoldStat[playerid] == 263 || HoldStat[playerid] == 264)
         {
+            if(IsAPetType(pet) == 2 && HoldStat[playerid] == 264) return ErrorMessage(playerid,"Зачем мне кормить кошку, собачьим кормом?");
+            if(IsAPetType(pet) == 1 && HoldStat[playerid] == 263) return ErrorMessage(playerid,"Зачем мне кормить собаку, кошачьим кормом?");
             if(HoldPara[playerid] < gettime()) return ErrorMessage(playerid,"{ff6347}У вас в руках испорченная консерва!\nЕё можно только выкинуть");
         }
     }
@@ -1612,8 +1763,151 @@ stock UsePetItem(playerid, inva)
     || SleepRP[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Ваш персонаж не может сейчас достать предмет [ Заняты руки или выполняется действие ]");
 
     new string[200];
-    format(string, sizeof(string), "{ffcc66}Вы взяли в руки %s {ff9000}[ Это предмет для взаимодействия с питомцами ]\n{cccccc}Подойдите к вашему питомцу и начните взаимодействовать с ним: Кнопка ALT\n{cccccc}Далее кликайте %s для взаимодействия",friskName[PlayerInfo[playerid][pInven][inva]], buttonName[Device[playerid]]);
+    format(string, sizeof(string), "{ffcc66}Вы взяли в руки %s {ff9000}[ Это предмет для взаимодействия с питомцами ]\n{cccccc}Подойдите к вашему питомцу и начните взаимодействовать с ним: Кнопка ALT\n{cccccc}Далее кличкайте %s для взаимодействия",friskName[PlayerInfo[playerid][pInven][inva]], buttonName[Device[playerid]]);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
     in_hand_item(playerid, inva, PlayerInfo[playerid][pInven][inva], PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenQara][inva], PlayerInfo[playerid][pInvenQuan][inva]);
+    return 1;
+}
+
+stock OnPlayerLoadPet(playerid,slot, pet, inva)
+{
+    cache_get_value_name_int(0,"petID",PetInfo[pet][petNewID]);
+    OnlineInfo[playerid][oPetID][slot] = PetInfo[pet][petNewID];
+    PlayerInfo[playerid][pInvenPara][inva] = PetInfo[pet][petNewID];
+    SaveInvent(playerid, inva);
+
+	cache_get_value_name(0,"petName",PetInfo[pet][petName]);
+    cache_get_value_name_int(0,"petHunger",PetInfo[pet][petHunger]);
+    cache_get_value_name_int(0,"petLevel",PetInfo[pet][petLevel]);
+    cache_get_value_name_int(0,"petExp",PetInfo[pet][petExp]);
+    cache_get_value_name_int(0,"petPoint",PetInfo[pet][petPoint]);
+    cache_get_value_name_int(0,"petPower",PetInfo[pet][petPower]);
+    cache_get_value_name_int(0,"petAgility",PetInfo[pet][petAgility]);
+    cache_get_value_name_int(0,"petEndurance",PetInfo[pet][petEndurance]);
+
+    cache_get_value_name_int(0,"petDonateFeatures",PetInfo[pet][petDonateFeatures]);
+    if(PetInfo[pet][petDonateFeatures] == 0) PetInfo[pet][petDonateFeatures] = 2;
+
+    cache_get_value_name_int(0,"petPlayingUnix",PetInfo[pet][petPlayingUnix]);
+    cache_get_value_name_int(0,"petUnixLastEating",PetInfo[pet][petUnixLastEating]);
+    cache_get_value_name_int(0,"petType",PetInfo[pet][petType]);
+    cache_get_value_name_float(0,"petHealth",PetInfo[pet][petHealth]);
+
+    new bool:is_null = false;
+    cache_is_value_name_null(0, "petFeatures", is_null);
+
+    if(is_null == false)
+    {
+        new string_json[512];
+        cache_get_value_name(0, "petFeatures", string_json, 512);
+
+        new JsonNode:node = JSON_INVALID_NODE;
+        if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+        {
+            JSON_GetInt(node, "features0", PetInfo[pet][petFeatures][0]);
+            JSON_GetInt(node, "features1", PetInfo[pet][petFeatures][1]);
+            JSON_GetInt(node, "features2", PetInfo[pet][petFeatures][2]);
+            JSON_GetInt(node, "features3", PetInfo[pet][petFeatures][3]);
+            JSON_GetInt(node, "features4", PetInfo[pet][petFeatures][4]);
+            JSON_GetInt(node, "features5", PetInfo[pet][petFeatures][5]);
+            JSON_GetInt(node, "features6", PetInfo[pet][petFeatures][6]);
+            JSON_GetInt(node, "features7", PetInfo[pet][petFeatures][7]);
+            JSON_GetInt(node, "features8", PetInfo[pet][petFeatures][8]);
+            JSON_GetInt(node, "features9", PetInfo[pet][petFeatures][9]);
+        }
+    }
+
+    is_null = false;
+    cache_is_value_name_null(0, "petSkills", is_null);
+    if(is_null == false)
+    {
+        new string_json[512];
+        cache_get_value_name(0, "petSkills", string_json, 512);
+
+        new JsonNode:node = JSON_INVALID_NODE;
+        if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+        {
+            JSON_GetInt(node, "PET_SKILL_VOICE", PetInfo[pet][petSkills][PET_SKILL_VOICE]);
+            JSON_GetInt(node, "PET_SKILL_ATTAC", PetInfo[pet][petFeatures][PET_SKILL_ATTAC]);
+            JSON_GetInt(node, "PET_SKILL_FOLLOWME", PetInfo[pet][petFeatures][PET_SKILL_FOLLOWME]);
+            JSON_GetInt(node, "PET_SKILL_SNIFF", PetInfo[pet][petFeatures][PET_SKILL_SNIFF]);
+            JSON_GetInt(node, "PET_SKILL_SIT", PetInfo[pet][petFeatures][PET_SKILL_SIT]);
+            JSON_GetInt(node, "PET_SKILL_SITCAR", PetInfo[pet][petFeatures][PET_SKILL_SITCAR]);
+        }
+    }
+    CreatePet(playerid,pet);
+	return 1;
+}
+
+function OnPlayerPetLoad(playerid, race_check,slot, pet, inva)
+{
+	new rows;
+	cache_get_row_count(rows);
+
+	if(rows)
+	{
+	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
+		OnPlayerLoadPet(playerid,slot, pet, inva);
+	}
+	return 1;
+}
+
+stock SavePet(playerid, pet)
+{
+	new JsonNode:nodeFeatures, JsonNode:nodeSkills;
+	CreateJsonPetFeatures(pet, nodeFeatures);
+    CreateJsonPetSkills(pet, nodeSkills);
+    new string_jsonFeatures[512], string_jsonSkills[512];
+    if (JSON_Stringify(nodeFeatures, string_jsonFeatures) == JSON_CALL_NO_ERR && JSON_Stringify(nodeSkills, string_jsonSkills) == JSON_CALL_NO_ERR) 
+    {
+        new string_mysql[840];
+        mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pets` SET `petName`= '%e',`petHunger`= '%d',`petLevel`= '%d',`petExp`= '%d',\
+        `petPoint`= '%d',`petPower`= '%d',`petAgility`= '%d',`petEndurance`= '%d',`petFeatures`= '%e',`petSkills`= '%e',`petDonateFeatures` ='%d',\
+        `petPlayingUnix`= '%d',`petUnixLastEating`= '%d',`petType`= '%d',`petHealth`= '%f',`petLastUserName`= '%e',`petLastUserID`= '%d' WHERE `petID` = '%d'",
+        PetInfo[pet][petName], PetInfo[pet][petHunger], PetInfo[pet][petLevel], PetInfo[pet][petExp], 
+        PetInfo[pet][petPoint], PetInfo[pet][petPower], PetInfo[pet][petAgility], PetInfo[pet][petEndurance], string_jsonFeatures, string_jsonSkills, PetInfo[pet][petDonateFeatures],
+        PetInfo[pet][petPlayingUnix], PetInfo[pet][petUnixLastEating], PetInfo[pet][petType], PetInfo[pet][petHealth],PlayerInfo[playerid][pName],PlayerInfo[playerid][pID], PetInfo[pet][petNewID]);
+        mysql_tquery(pearsq, string_mysql);
+    }
+	return 1;
+}
+
+stock CreateJsonPetFeatures(pet, &JsonNode:node)
+{
+	node = JSON_Object(
+        "features0", JSON_Int(PetInfo[pet][petFeatures][0]),
+        "features1", JSON_Int(PetInfo[pet][petFeatures][1]),
+        "features2", JSON_Int(PetInfo[pet][petFeatures][2]),
+        "features3", JSON_Int(PetInfo[pet][petFeatures][3]),
+        "features4", JSON_Int(PetInfo[pet][petFeatures][4]),
+        "features5", JSON_Int(PetInfo[pet][petFeatures][5]),
+        "features6", JSON_Int(PetInfo[pet][petFeatures][6]),
+        "features7", JSON_Int(PetInfo[pet][petFeatures][7]),
+        "features8", JSON_Int(PetInfo[pet][petFeatures][8]),
+        "features9", JSON_Int(PetInfo[pet][petFeatures][9])
+	);
+
+	return 1;
+}
+
+stock CreateJsonPetSkills(pet, &JsonNode:node)
+{
+	node = JSON_Object(
+        "PET_SKILL_VOICE", JSON_Int(PetInfo[pet][petSkills][PET_SKILL_VOICE]),
+        "PET_SKILL_ATTAC", JSON_Int(PetInfo[pet][petFeatures][PET_SKILL_ATTAC]),
+        "PET_SKILL_FOLLOWME", JSON_Int(PetInfo[pet][petFeatures][PET_SKILL_FOLLOWME]),
+        "PET_SKILL_SNIFF", JSON_Int(PetInfo[pet][petFeatures][PET_SKILL_SNIFF]),
+        "PET_SKILL_SIT", JSON_Int(PetInfo[pet][petFeatures][PET_SKILL_SIT]),
+        "PET_SKILL_SITCAR", JSON_Int(PetInfo[pet][petFeatures][PET_SKILL_SITCAR])
+	);
+
+	return 1;
+}
+
+function Call_getidPet(playerid,slot, inva) {
+	OnlineInfo[playerid][oPetID][slot] = cache_insert_id();
+	new string_mysql[256];
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `pets` WHERE `petID` = '%d'", OnlineInfo[playerid][oPetID][slot]);
+    mysql_tquery(pearsq, string_mysql, "OnPlayerPetLoad", "ddddd",playerid, g_MysqlRaceCheck[playerid],slot, OnlineInfo[playerid][oPet][slot],inva);
     return 1;
 }

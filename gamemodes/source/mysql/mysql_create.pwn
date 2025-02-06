@@ -63,6 +63,25 @@ stock CreateMysqlTable()
     //Top
     AddColumnIfNotExists("pp_igroki_top", "pCraftCount", "INT NOT NULL DEFAULT '0'"); // Кол-во очков для крафта.
 
+    // Pets
+    AddColumnIfNotExists("pets", "petName", "VARCHAR(20) DEFAULT ''");
+    AddColumnIfNotExists("pets", "petHunger", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petLastUserName", "VARCHAR(24) DEFAULT ''");
+    AddColumnIfNotExists("pets", "petLastUserID", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petLevel", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petExp", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petPoint", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petPower", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petAgility", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petEndurance", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petFeatures", "BLOB NULL DEFAULT NULL");
+    AddColumnIfNotExists("pets", "petDonateFeatures", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petSkills", "BLOB NULL DEFAULT NULL");
+    AddColumnIfNotExists("pets", "petPlayingUnix", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petUnixLastEating", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petType", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pets", "petHealth", "FLOAT NOT NULL DEFAULT '0'");
+
     //battlepass
     AddColumnIfNotExists("battlepass", "Name", "VARCHAR(24) DEFAULT ''");
 

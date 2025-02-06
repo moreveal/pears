@@ -256,7 +256,7 @@ stock DestroyWildPet(pet)
     WildPetPosOccupied[WildPetInfo[pet][wildpetPos]] = 0;
     // Очищаем все переменные WildPet
 	for(new wildpetnpc:i; i < wildpetnpc; ++i) WildPetInfo[pet][i] = 0;
-    WildPetInfo[pet][wildpetUnix] += 3600;
+    WildPetInfo[pet][wildpetUnix] = 3600 + gettime();
 
     return true;
 }
