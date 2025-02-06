@@ -1361,7 +1361,7 @@ CMD:vehlimit(playerid, const params[])
 	if(!IsAVehExisting(model)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 
 	new v = CorrectVehicleID(model);
-	if(VehLimited[v] == 0) return ErrorMessage(playerid, "{FF6347}Это не лимитированный транспорт");
+	//if(VehLimited[v] == 0) return ErrorMessage(playerid, "{FF6347}Это не лимитированный транспорт");
 
 	new string_mysql[256];
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT pp_cars.sost, pp_igroki.Name AS player_name FROM `pp_cars` INNER JOIN pp_igroki ON pp_cars.sost = pp_igroki.user_id WHERE pp_cars.model = '%d' AND pp_cars.nosell = '0'", model);
