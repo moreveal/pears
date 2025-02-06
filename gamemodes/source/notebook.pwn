@@ -508,7 +508,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
                 else 
                 {
                     new body[256];
-                    format(body, sizeof(body), "{cccccc}Чтобы {ffcc00}продать {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000\n{cccccc}Курс: 1G = %d$\nДоступно: %d", TradeCrypt[id][tcCourse], TradeCrypt[id][tcCount]);
+                    format(body, sizeof(body), "{cccccc}Чтобы {ffcc00}купить {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000\n{cccccc}Курс: 1G = %d$\nДоступно: %d", TradeCrypt[id][tcCourse], TradeCrypt[id][tcCount]);
                     ShowDialog(playerid,_:GOLDEXC_SELL_GOLD_AMOUNT,DIALOG_STYLE_INPUT,"Биржевая Сделка",body,"Принять","Отмена");
                 }
             }
