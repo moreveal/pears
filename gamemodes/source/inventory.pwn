@@ -326,6 +326,28 @@ CMD:gthing(playerid, const params[])
 	return 1;
 }
 
+alias:givecar("gc")
+CMD:givecar(playerid, const params[])
+{
+	new vehiclename[64];
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Только для Системных администраторов");
+	if(sscanf(params, "is[64]",params[0],vehiclename)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать транспорт в инвентарь [ ID, ID машины ]");
+
+	new vehid = ReturnVehicle(vehiclename);
+	if(vehid == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+	if(!IsAVehExisting(vehid)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+
+	new put_inva = GiveThingPlayer(params[0], vehid, 1, 0, 0, 5, 0, 9999);
+	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+
+	PlayerPlaySound(params[0],1052,0,0,0);
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы выдали %s %s **", PlayerInfo[params[0]][pName], GetNameThing(0, vehid, 5, 0));
+    if(playerid != params[0]) SendClientMessage(params[0], COLOR_LIGHTBLUE, "** %s выдал вам %s **", PlayerInfo[playerid][pName], GetNameThing(0, vehid, 5, 0));
+
+	AdminLog("givecar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 1, GetNameThing(0, vehid, 5, 0));
+	return 1;
+}
+
 alias:gthinggro("gtgro")
 CMD:gthinggro(playerid, const params[])
 {
