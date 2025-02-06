@@ -1641,6 +1641,17 @@ CMD:tag(playerid)
 	return true;
 }
 
+CMD:fullpotreb(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 1) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я не могу это сделать..");
+	PlayerInfo[playerid][pCap] = 100; // Нужда
+	PlayerInfo[playerid][pMechSkill] = 1000; // Бодрость
+	UpdateHunger(playerid, 1000); // Сытость 
+	PlayerInfo[playerid][pInfoload] = 1000; // Гигиена
+	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: Потребности пополнены");
+	return 1;
+}
+
 alias:ahelp("ah")
 CMD:ahelp(playerid)
 {
