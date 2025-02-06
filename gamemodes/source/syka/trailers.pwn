@@ -49,6 +49,7 @@ stock PlaceTrailer(id, model, Float: x, Float: y, Float: z, Float: rx, Float: ry
         case 3172: GetRelativePos(x, y, z, rx, ry, rz, (1350.9469 - 1352.759643), (1573.7472 - 1574.919677), (11.0155 - 9.820312), doorX, doorY, doorZ);
         case 3174: GetRelativePos(x, y, z, rx, ry, rz, (1360.8247 - 1362.623901), (1592.9111 - 1593.942260), (10.8203 - 9.820312), doorX, doorY, doorZ);
         case 3168: GetRelativePos(x, y, z, rx, ry, rz, (1369.5554 - 1371.515380), (1576.9391 - 1577.505981), (10.8125 - 9.820312), doorX, doorY, doorZ);
+        case 12304: GetRelativePos(x, y, z, rx, ry, rz, (1.8), (-5.6), (-2.0), doorX, doorY, doorZ);
     }
 
     new string_mysql[100];
@@ -90,6 +91,13 @@ stock UnloadPlacedTrailer(id)
     return 1;
 }
 
+// Объект, которому не нужна невидимость прицепа
+stock PohVirtualWorldTrailer(objectid)
+{
+    if(objectid == 12304) return true;
+    return false;
+}
+
 // Создает объект трейлера с указанной моделью, прикрепляя его к автомобилю, в котором находится игрок
 // Возвращает ID транспорта, к которому прикреплен трейлер, а также ID трейлера и прикрепленного объекта
 stock AttachTrailer(playerid, model, vehicleid, &trailerid, &trailerobj)
@@ -103,8 +111,11 @@ stock AttachTrailer(playerid, model, vehicleid, &trailerid, &trailerobj)
     GetXYInFrontOfPoint(vehicleX, vehicleY, vehicleA - 180.0, trailer_car_distance);
 
     trailerid = PP_CreateVehicle(TRAILER_INVISIBLE_VEH_MODEL,player_pos[0], player_pos[1], player_pos[2] - 10.0, 0.0, 0, 0, 600, 0, -1, 2000.0);
-    SetVehicleVirtualWorld(trailerid, TRAILER_INVISIBLE_VEH_INTERIOR);
-    LinkVehicleToInterior(trailerid, TRAILER_INVISIBLE_VEH_INTERIOR);
+    if(!PohVirtualWorldTrailer(model))
+    {
+        SetVehicleVirtualWorld(trailerid, TRAILER_INVISIBLE_VEH_INTERIOR);
+        LinkVehicleToInterior(trailerid, TRAILER_INVISIBLE_VEH_INTERIOR);
+    }
 
     trailerobj = CreateDynamicObject(model, 0.0, 0.0, -1000.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0, 300.0);
     
@@ -113,6 +124,7 @@ stock AttachTrailer(playerid, model, vehicleid, &trailerid, &trailerobj)
         case 3172: AttachDynamicObjectToVehicle(trailerobj, trailerid, 0.172, -4.417, -1.000, 0.000, 0.000, -180.000);
         case 3174: AttachDynamicObjectToVehicle(trailerobj, trailerid, 0.070, -2.189, -1.000, 0.000, 0.000, 0.000);
         case 3168: AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.122, -4.363, -1.000, 0.000, -0.099, 180.000);
+        case 12304: AttachDynamicObjectToVehicle(trailerobj, trailerid, 0.709999, -0.089999, 2.630012, 0.000000, 0.000000, 0.000000); //Object Model: 12304 | 
 
         default: {
             DestroyDynamicObject(trailerobj);
@@ -285,6 +297,7 @@ stock TrailerBuy(playerid)
     format(line,sizeof(line),"{cccccc}Mini Trailer\t{99ff66}750.000$\n"), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Middle Trailer\t{99ff66}900.000$\n"), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Big Trailer\t{99ff66}1.200.000$\n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Future Capsule\t{99ff66}9.000.000$\n"), strcat(lines,line);
     format(line,sizeof(line),"{FF6347}Уничтожить Трейлер\n"), strcat(lines,line);
 	ShowDialog(playerid,1395, DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}Покупка Трейлера", lines,"Выбрать","Отмена");
 	return 1;
@@ -353,8 +366,8 @@ stock dialogCase_Trailer(playerid, dialogid, response)
 
 stock IsAHimLab(playerid)
 {
-    if(IsPlayerInRangeOfPoint(playerid, 1.5, -3.280344, 1566.091430, 12.861586) &&
-       GetPlayerInterior(playerid) == INT_TRAILER && GetPlayerVirtualWorld(playerid) >= MIN_TRAILER_WORLD && GetPlayerVirtualWorld(playerid) <= MAX_TRAILER_WORLD) return 1;
+    if((IsPlayerInRangeOfPoint(playerid, 1.5, -3.280344, 1566.091430, 12.861586) || IsPlayerInRangeOfPoint(playerid, 1.5, 31.160867, 1540.481567, 12.666768)) 
+        && GetPlayerInterior(playerid) == INT_TRAILER && GetPlayerVirtualWorld(playerid) >= MIN_TRAILER_WORLD && GetPlayerVirtualWorld(playerid) <= MAX_TRAILER_WORLD) return 1;
     return 0;
 }
 
@@ -399,6 +412,7 @@ stock trailer_add(playerid, model, trailer)
     else if(trailer == 1) money = 750000;
     else if(trailer == 2) money = 900000;
     else if(trailer == 3) money = 1200000;
+    else if(trailer == 4) money = 9000000;
 
     if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
     new infocreate = AddPlayerTrailer(playerid, model);
@@ -557,6 +571,7 @@ CMD:placetrailer(playerid) {
             case 3172: PlaceTrailer(tid, TrailerInfo[tid][tModel], trailerX, trailerY, trailerZ - 1.000, trailerRX, trailerRY, trailerRZ - 180.0);
             case 3174: PlaceTrailer(tid, TrailerInfo[tid][tModel], trailerX, trailerY, trailerZ - 1.000, trailerRX, trailerRY, trailerRZ);
             case 3168: PlaceTrailer(tid, TrailerInfo[tid][tModel], trailerX, trailerY, trailerZ - 1.000, trailerRX, trailerRY - 0.099, trailerRZ + 180.0);
+            case 12304: PlaceTrailer(tid, TrailerInfo[tid][tModel], trailerX, trailerY, trailerZ + 2.000, trailerRX, trailerRY, trailerRZ);
         }
 
         VehInfo[vehicleid][vTrailerID] = 0;
@@ -745,8 +760,8 @@ stock EnterTrailer(playerid)
                         keep(playerid);
                         S_SetPlayerVirtualWorld(playerid,i+5000,187);
                         PPSetPlayerInterior(playerid,187);
-                        PPSetPlayerPos(playerid,-0.6773,1567.1011,12.7694);
-                        PPSetPlayerFacingAngle(playerid, 91);
+                        if(TrailerInfo[i][tModel] == 12304) PPSetPlayerPos(playerid,27.9451,1540.2938,12.7768), PPSetPlayerFacingAngle(playerid, 268.6617);
+                        else PPSetPlayerPos(playerid,-0.6773,1567.1011,12.7694), PPSetPlayerFacingAngle(playerid, 91);
                         SetCameraBehindPlayer(playerid);
                         GameTextForPlayer(playerid," ",5000,3);
                     }
