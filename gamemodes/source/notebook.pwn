@@ -849,7 +849,7 @@ stock gotosellcrypto(playerid,id,count) // playerid покупает голду
     mysql_save(playerid,4);
 
     PlayerPlaySound(playerid, 6401, 0,0,0);
-    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я приобрел%s у %s {ffcc00}%dG {cccccc} за {99ff66}%d$", gender(playerid), temp_name, count, price);
+    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я приобрел%s у %s {ffcc00}%dG {cccccc}за {99ff66}%d$", gender(playerid), temp_name, count, price);
     CryptoLog(1, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "", count, TradeCrypt[id][tcCourse]);
     
     TradeCrypt[id][tcCount] -= count;
