@@ -134,12 +134,12 @@ CMD:remedy(playerid, const params[])
 			illn = params[0];
 		}
 
-		TakeInvent(playerid, params[0]+71, 1, 0);
 		new healCount = 200;
 		if(PlayerInfo[playerid][pSoska] > 0 && server > 0) healCount = 9999;
 		new medid = infectremedy(playerid, illn, healCount);
+		if(medid == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Болезнь не была найдена");
 
-		if((PlayerInfo[playerid][pIllnessProg][medid]-1000)/200 <= 0) infectremedy(playerid,PlayerInfo[playerid][pIllness][medid],9999);
+		TakeInvent(playerid, params[0]+71, 1, 0);
 		PlayerPlaySound(playerid, 32200, 0.0, 0.0, 0.0);
 		ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false);
 		
@@ -750,7 +750,7 @@ stock infect(playerid, stat, prog)
 }
 stock infectremedy(playerid, stat, prog)
 {
-	new medid;
+	new medid = -1;
 	for(new i = 0; i < 5; i++)
 	{
 		if(PlayerInfo[playerid][pIllness][i] == stat)
@@ -772,11 +772,10 @@ stock infectremedy(playerid, stat, prog)
 					update_cold(playerid);
 				}
 			}
-
-			return medid;
+			medid = i;
 		}
 	}
-	return 0;
+	return medid;
 }
 
 // Сбросить иммунитет

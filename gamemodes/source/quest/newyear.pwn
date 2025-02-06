@@ -227,7 +227,7 @@ stock SaveNewYearQuestPlayer(playerid)
 
 stock SendMessageDedMoroz(playerid)
 {
-    if(!IsANewYearSoon() && PlayerInfo[playerid][pSoska] <= 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я смогу написать письмо только с 20 декабря по 31 декабря ;(");
+    if(!IsADecember() && PlayerInfo[playerid][pSoska] <= 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я смогу написать письмо только в декабре ;(");
     if(PlayerInfo[playerid][pDedMorozMessage]) return ErrorMessage(playerid, "{ff6347}Вы уже отправили письмо!");
     if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid, "{ff6347}Подождите, ваш аккаунт еще не до конца загрузился!");
     if(GetPVarInt(playerid,"antiflood") > 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кхм... использование команды раз в 30 секунд");

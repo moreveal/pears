@@ -1722,7 +1722,7 @@ stock SaveTax_Biz(b)
 
 stock dialogChipsProcent(playerid, b)
 {
-	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "[ Мысли ]: Я не могу изменять комиссию (доступно с 19+ адм)"), productbiz(playerid, DP[4][playerid]);
+	//if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "[ Мысли ]: Я не могу изменять комиссию (доступно с 19+ адм)"), productbiz(playerid, DP[4][playerid]);
 
 	new lines[300], string[60];
 	format(lines,sizeof(lines),"\n{cccccc}Введите комиссию, которую вы будете забирать за продаваемые фишки\

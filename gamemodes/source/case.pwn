@@ -491,8 +491,23 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
             }
             else
             {
-                new thingTemp = random(ThingLimitedehicleQuan);
-                thingId = ThingLimitedVehiclecaseGift[thingTemp];
+                new bool:gave = false;
+                for (new i = 0; i < 3; i++)
+                {
+                    new thingTemp = random(ThingLimitedehicleQuan);
+                    thingId = ThingLimitedVehiclecaseGift[thingTemp];
+                    new correctVehId = CorrectVehicleID(thingId);
+                    if ((VehQuan[correctVehId] + VehLimitedCase[correctVehId]) < VehLimited[correctVehId])
+                    {
+                        gave = true;
+                        break;
+                    }
+                }
+                if (!gave)
+                {
+                    giveLimitedVehicle = false; // Лимитированных машин нет
+                    givePremiumVehicle = true; // Попробуем выдать премиум машину
+                }
             }
         }
         if (givePremiumVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных машин в шкатулках
@@ -606,7 +621,7 @@ CMD:givecasegro(playerid, const params[])
     new amount = 0;
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(20.0, playerid, i) && playerid != i)
+        if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(20.0, playerid, i) && playerid != i && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i))
         {
             GivePlayerCase(playerid, i, nameCase, false);
             amount++;

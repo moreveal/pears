@@ -236,7 +236,7 @@ CMD:setskingro(playerid, const params[]) // Временно сменить ск
         if(playerid == i) continue;
         if(OnlineInfo[i][oLogged] == 0) continue;
 
-        if(GetDistanceBetweenPlayers(playerid, i) < 30)
+        if(GetDistanceBetweenPlayers(playerid, i) < 30 && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i))
         {
             format(string, sizeof(string), "Администратор %s временно изменил ваш скин", PlayerInfo[playerid][pName]);
             SendClientMessage(i, COLOR_WHITE, string);
@@ -1357,5 +1357,43 @@ CMD:rskinquan(playerid, const params[])
 	format(string, sizeof(string), " [ ADM ]: %s сбросил подсчёт всех скинов (SkinBuy, SkinBuyGold)", PlayerInfo[playerid][pName]);
  	ABroadCast(COLOR_ADM,string,1);
 	AdminLog("rskinquan", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
+	return 1;
+}
+
+CMD:readskingold(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	printf("new skinGoldCustom[] = ");
+	printf("{");
+	for(new s = 0; s < MAX_MODELS_SKIN; s++)
+	{
+		printf("%d, // %d", SkinGold[s]);
+	}
+	printf("};");
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s записал gold стоимость скинов в log.txt", PlayerInfo[playerid][pName]);
+ 	ABroadCast(COLOR_ADM,string,1);
+	return 1;
+}
+
+CMD:rsgold(playerid, const params[]) return pc_cmd_rskingold(playerid, params);
+CMD:rskingold(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	mysql_tquery(pearsq, "START TRANSACTION;");
+	for(new s = 0; s < MAX_MODELS_SKIN; s++)
+	{
+		SkinGold[s] = skinGoldCustom[s];
+		SaveSkinGold(s);
+	}
+	mysql_tquery(pearsq, "COMMIT;");
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил gold стоимость всех скинов", PlayerInfo[playerid][pName]);
+ 	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rskingold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Default gold цены на скины");
 	return 1;
 }

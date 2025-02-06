@@ -326,7 +326,7 @@ stock commandD(playerid, typeCommand, const params[])
 
     if(IsADepartID(g) || IsAGangID(g) || IsAMafiaID(g))
     {
-        if(!GetAccessRankOrg(playerid, g, 39, PlayerInfo[playerid][pFbi])) return 1;
+        if(PlayerInfo[playerid][pSoska] <= 0 && !GetAccessRankOrg(playerid, g, 39, PlayerInfo[playerid][pFbi])) return 1;
 
         new realRank = PlayerInfo[playerid][pRank];
         if(g == 2 && PlayerInfo[playerid][pFbi] > 0) realRank = PlayerInfo[playerid][pFbi];

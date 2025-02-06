@@ -18,6 +18,7 @@ CMD:netstat(playerid)
 	format(line,sizeof(line), "%s", stats), strcat(lines, line);
 	format(line,sizeof(line), "\n\nIzTuryagi: %d ms", GlobalTickTimer), strcat(lines, line);
 	format(line,sizeof(line), "\nSkolkobenza: %d ms", GlobalTickTimer2), strcat(lines, line);
+	format(line,sizeof(line), "\n\nUnprocessed queries: main %d, logs %d, bridge %d", mysql_unprocessed_queries(pearsq), mysql_unprocessed_queries(pearsq_2), mysql_unprocessed_queries(pearsq_3)), strcat(lines, line);
 	format(line,sizeof(line), "\n\nRunning timers: %d", CountRunningTimers()), strcat(lines, line);
 	ShowDialog(playerid, 1700, DIALOG_STYLE_MSGBOX, "Server Network Stats", lines, "Close", "");
 	return true;
@@ -203,6 +204,20 @@ CMD:mysql(playerid)
 	printf("%s\n", stats);
     return true;
 }
+
+CMD:mysql_test(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 22+ ]");
+	if (pearsq_2 != MYSQL_INVALID_HANDLE)
+	{
+		mysql_close(pearsq_2);
+		pearsq_2 = MYSQL_INVALID_HANDLE;
+	}
+	pearsq_2 = mysql_connect_file("mysql_logs.ini");
+	mysql_set_charset("cp1251", pearsq_2);
+	return 1;
+}
+
 CMD:rnamechange(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 5) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 5+ ]");
@@ -669,7 +684,7 @@ CMD:hpgro(playerid)
 	{
 		foreach (Player, i)
 		{
-			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
+			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i))
 			{
 				if(((IsPlayerInActiveVillage(i)
 					|| MineWar_IsPlayerInside(i)
@@ -691,7 +706,7 @@ CMD:armgro(playerid)
 	if(PlayerInfo[playerid][pSoska] < 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
 	foreach (Player, i)
 	{
-		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
+		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i))
 		{
 			if(((IsPlayerInActiveVillage(i)
 					|| MineWar_IsPlayerInside(i)

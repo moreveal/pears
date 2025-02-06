@@ -116,18 +116,44 @@ stock GetCoordFrame(model, &Float:x, &Float:y, &Float:z, &Float:rx, &Float:ry, &
 		case 12488: x = 1398.843872, y = -16.868043, z = 1003.521728, rx = 0.000000, ry = 0.000000, rz = 180.000000; // Треугольный, коричневый инт
 
 		// Custom Interior 12360 зверь сделал
-		case 12360: x = 1378.149291, y = -1.029935, z = 1003.975646, rx = 0.000000, ry = 0.000000, rz = 90.000000;
+		case 12360: x = 1378.149291, y = -1.029935, z = 1004.220336, rx = 0.000000, ry = 0.000000, rz = 90.000000;
 
 		// Custom Interior 2 and 3
-		case 12489: x = 1386.507690, y= -17.355667, z = 1003.591857, rx = 0.000000, ry = 0.000000, rz = -90.000000; 
-		case 12490: x = 1384.798461, y= -7.303909,  z = 1004.5, rx = 0.000000, ry = 0.000000, rz = -45.000000; 
+		case 12489: x = 1386.507690, y= -17.355667, z = 1003.610656, rx = 0.000000, ry = 0.000000, rz = -90.000000; 
+		case 12490: x = 1384.798461, y= -7.303909,  z = 1004.95, rx = 0.000000, ry = 0.000000, rz = -45.000000; 
 
 		// Custom Victor Int
-		case 12491: x = 1360.381347, y= 25.437261, z = 1008.950561, rx = 0.000000, ry = 0.000000, rz = 90.000000; 
+		case 12491: x = 1360.381347, y= 25.437261, z = 1010.372192, rx = 0.000000, ry = 0.000000, rz = 90.000000; 
 
 		default: x = 0.0, y = 0.0, z = 0.0, rx = 0.0, ry = 0.0, rz = 0.0;
 	}
     return 1;
+}
+
+// Если у интерьера есть выделенная нижняя часть, например басик, нужно корректировать Z позицию для игрока
+// Когда он входит в инт, его надо ставить чуть выше. Но не в воздухе (чтобы он не висел замороженный над полом, а чётко на полу стоял)
+forward Float:FixPosInInteriorZ(ownerID, intType);
+public Float:FixPosInInteriorZ(ownerID, intType)
+{
+	new model;
+	if(intType == 0)
+	{
+		if(ownerID <= 0 || ownerID >= MAX_DOM) return 0.0;
+		model = DomInfo[ownerID][dOmodel][0];
+	}
+	else if(intType == 1)
+	{
+		if(ownerID <= 0 || ownerID >= MAX_BIZ) return 0.0;
+		model = BizzInfo[ownerID][bOmodel][0];
+	}
+	else return 0;
+
+	if(server == 0 && serverType == 0) SendClientMessageToAll(-1, "model %d", model);
+
+	if(model == 12360) return 0.3;
+	else if(model == 12490) return 0.3;
+	else if(model == 12491) return 1.0;
+	return 0.0;
 }
 
 // Если каркас требует второй объект

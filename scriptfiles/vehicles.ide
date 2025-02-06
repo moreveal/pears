@@ -407,6 +407,7 @@ cars
 15350,	golf7gti, 	golf7gti, 	car, 		GOLF7GTI,	GOLF7GTI, 	null,	normal, 	    8,	0,	0,	-1, 0.74, 0.74,		0
 15351, 	bugbolid, 	bugbolid, 	car, 		BUGBOLID, 	BUGBOLID, 	null,	executive,  	5, 	0,	0,	-1, 0.81, 0.81,		0
 15352, 	imppriv, 	imppriv, 	car, 		IMPPRIV, 	IMPPRIV, 	null,	richfamily, 	10,	0,	0,	-1, 0.70, 0.70,		0
+15353, 	xpengx2,	xpengx2, 	heli, 		XPENGX2,	XPENGX2,	null,	ignore,		    10,	0,	0,	-1, 0.7, 0.7,		-1
 #15499 LAST
 end
 

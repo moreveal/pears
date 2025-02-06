@@ -378,7 +378,7 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
     }
 
     // Урон по союзникам на МП
-    if(!GameInfo[gamTeamKill] && Pognalinamp && (MPSpawn[playerid] == MPSpawn[damagedid])) return false;
+    if(MPGO[playerid] != 0 && MPGO[damagedid] != 0 && !GameInfo[gamTeamKill] && Pognalinamp && (MPSpawn[playerid] == MPSpawn[damagedid])) return false;
 
     // Защита для новичков
     if(BeginnerDamage(playerid, damagedid)) return false;

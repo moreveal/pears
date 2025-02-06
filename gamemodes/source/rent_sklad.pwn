@@ -22,7 +22,7 @@ CMD:rentsklad(playerid)
 
 					    InHandClear(playerid);
 
-						new string[70];
+						new string[144];
 						format(string,sizeof(string),"[ Мысли ]: Я положил%s ящик на склад {ff9000}[ %s | %d ]", gender(playerid), GetNameThing(1, fpick, thingType, thingPack),fquan);
 		    			SendClientMessage(playerid, COLOR_GREY, string);
 						OrgLog(WhInfo[r][wStat], "putrentwh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, GetNameThing(1, fpick, thingType, thingPack));
