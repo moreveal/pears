@@ -160,3 +160,96 @@ stock ShowPlane()
 	SetVehicleVirtualWorld(flyveh, 0);
     return 1;
 }
+
+
+stock CreateRobPlane()
+{
+    new actorid;
+
+    // LS
+    actorid = CreateDynamicActor(473, 1599.1719,-2301.9814,13.5466,358.7466, true, 100.0, 0, 0, -1, 100.0, -1, 0);
+    CreateDynamic3DTextLabel("{cccccc}Грабитель Самолета [ALT]",0xA9C4E4FF, 1599.1719,-2301.9814,13.5466 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0);
+    ApplyDynamicActorAnimation(actorid, "DEALER","DEALER_IDLE" , 3.8, true, false, false, true, false);
+
+    // LV
+    actorid = CreateDynamicActor(473, 1723.7291,1418.8016,10.8467,282.2926, true, 100.0, 0, 0, -1, 100.0, -1, 0);
+    CreateDynamic3DTextLabel("{cccccc}Грабитель Самолета [ALT]",0xA9C4E4FF, 1723.7291,1418.8016,10.8467 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0);
+    ApplyDynamicActorAnimation(actorid, "DEALER","DEALER_IDLE" , 3.8, true, false, false, true, false);
+    return true;
+}
+
+// Стоим рядом с ботом грабителем самолёта
+stock IsARobPlane(playerid)
+{
+    if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+    {
+        if(IsPlayerInRangeOfPoint(playerid,2.0,1599.1719,-2301.9814,13.5466) || IsPlayerInRangeOfPoint(playerid,2.0,1723.7291,1418.8016,10.8467))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Меню грабителя самолёта
+stock showDialogRobPlane(playerid)
+{
+    new line[200];
+    format(line, sizeof(line), "{99ff66}Ты кто? \t \
+                                \n{ff9000}Где сейчас самолёт? \t%s", NpcStatus(4) ? "{99ff66}[ Замечен над штатом ]" : "{ff6347}[ Неизвестно ]");
+    ShowDialog(playerid, ROB_PLANE_INFO, DIALOG_STYLE_TABLIST, "{ff9000}Грабитель Самолёта", line, "Выбор", "Отмена");
+    return true;
+}
+
+stock dialogCase_PlaneRob(playerid, dialogid, response, listitem)
+{
+    switch (e_DialogId: dialogid) 
+    {
+        case ROB_PLANE_INFO:
+        {
+            if(response) 
+            {
+                if(listitem == 0)
+                {
+                    new line[1000];
+                    format(line, sizeof(line), "{ff9000}Эй.. Здарова!\
+                                                \n{cccccc}Каждые 30 минут над штатом пролетает правительственный самолёт\
+                                                \n{cccccc}На хвосте самолёта висит сумка с деньгами\
+                                                \n{cccccc}Если повредить самолёт, то сумка упадет и ты сможешь её подобрать\
+                                                \n\n{ff9000}В этой сумке можно найти:\
+                                                \n{cccccc}- Шкатулка\
+                                                \n{cccccc}- Деньги в размере от {99ff66}%d$ {cccccc}до {99ff66}%d$\
+                                                \n{cccccc}- Слиток золота (Иногда его может не быть)\
+                                                \n\n{444444}Я могу сообщить где сейчас самолёт, если спросишь меня..", ServerInfo[3], ServerInfo[4]);
+                    ShowDialog(playerid, ROB_PLANE_BACK, DIALOG_STYLE_MSGBOX, "{ff9000}Грабитель Самолёта", line, "Ок","");
+                }
+                if(listitem == 1)
+                {
+                    new line[1000];
+                    if(!NpcStatus(4))
+                    {
+                        format(line, sizeof(line), "{FF6347}Мои люди не видят самолёт в небе над штатом!\
+                                                \n{cccccc}Самолёт отправляется каждый 30 минут, но я не знаю когда точно\
+                                                \n{cccccc}Возвращайся чуть позже, чтобы обнаружить самолёт");
+                        ShowDialog(playerid, 1742, DIALOG_STYLE_MSGBOX, "{ff9000}Грабитель Самолёта", line, "Ок","");
+                    }
+                    else
+                    {
+                        new Float:pos[3];
+	                    GetVehiclePos(flyveh, pos[0], pos[1], pos[2]);
+	                    CreateGps(playerid, pos[0], pos[1], pos[2], 0, 0, 10.0);
+
+                        format(line, sizeof(line), "{99ff66}Я знаю где самолёт и скинул его GPS координаты!\
+                                                \n{cccccc}Самолёт продолжает двигаться и я не знаю куда именно он летит\
+                                                \n{cccccc}К тому моменту, когда ты приедешь, он может оказаться далеко\
+                                                \n{cccccc}Я думаю, тебе понадобится напарник");
+                        ShowDialog(playerid, 1742, DIALOG_STYLE_MSGBOX, "{ff9000}Грабитель Самолёта", line, "Ок","");
+                    }
+                }
+                return true;
+            }
+        }
+        case ROB_PLANE_BACK: showDialogRobPlane(playerid);
+    }
+    return false;
+}

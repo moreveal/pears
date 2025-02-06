@@ -266,6 +266,10 @@ enum e_DialogId {
 
     // Внутриигровые биржевые сделки
     GOLDEXC_BUY_GOLD_AMOUNT,
-    GOLDEXC_SELL_GOLD_AMOUNT
+    GOLDEXC_SELL_GOLD_AMOUNT,
+
+    // Бот грабитель самолёта
+    ROB_PLANE_INFO,
+    ROB_PLANE_BACK
 };
 
