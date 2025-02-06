@@ -748,6 +748,14 @@ stock gotobuycrypto(playerid,id,count) // playerid продаёт голду
 
         format(string, sizeof(string),"Купил %dG за %d$", count, price);
         DonateLog("buygold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], count, string);
+
+        ////////////////////////////////
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        MoneyLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], price, string);
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        MoneyLog("buygold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -price, string);
     }
     else
     {
@@ -760,6 +768,14 @@ stock gotobuycrypto(playerid,id,count) // playerid продаёт голду
 
         format(string, sizeof(string),"Купил %dG за %d$", count, price);
         DonateLog("buygold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], count, string);
+
+        ////////////////////////////////
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        MoneyLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", price, string);
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        MoneyLog("buygold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -price, string);
     }
     oGivePlayerMoney(playerid, price);
     PlayerInfo[playerid][pDonateMoney] -= count;
@@ -831,6 +847,14 @@ stock gotosellcrypto(playerid,id,count) // playerid покупает голду
 
         format(string, sizeof(string),"Продал %dG за %d$", count, price);
         DonateLog("sellgold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -count, string);
+
+        ////////////////////////////////
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        MoneyLog("buygold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], -price, string);
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        MoneyLog("sellgold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], price, string);
     }
     else
     {
@@ -843,6 +867,14 @@ stock gotosellcrypto(playerid,id,count) // playerid покупает голду
 
         format(string, sizeof(string),"Продал %dG за %d$", count, price);
         DonateLog("sellgold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -count, string);
+
+        ////////////////////////////////
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        MoneyLog("buygold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", -price, string);
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        MoneyLog("sellgold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], price, string);
     }
     oGivePlayerMoney(playerid, -price);
     PlayerInfo[playerid][pDonateMoney] += count;
