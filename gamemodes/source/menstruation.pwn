@@ -16,7 +16,7 @@ stock TimeMenstruation(playerid)
         }
         else if(unix <= PlayerInfo[playerid][pMenstrDay] && unix >= PlayerInfo[playerid][pMenstrDay] - TIME_MENSTRUATION) // Настал тот самый день
         {
-            if(PlayerInfo[playerid][pMenstrProkl] == 0) ShowMenstruation(playerid); // Запускаем менструацию (если не применены прокладки на сегодняшний день)
+            if(PlayerInfo[playerid][pMenstrProkl] == 0 && getillness(playerid, 18) == -1) ShowMenstruation(playerid); // Запускаем менструацию (если не применены прокладки на сегодняшний день)
         }
     }
     return true;
@@ -79,6 +79,7 @@ CMD:menstruation(playerid, const params[])
 	if(sscanf(params, "u", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить менструацию сегодня [ /menstruation ID ]");
 	if(IsOnline(params[0]))
 	{
+        if(getillness(params[0], 18) >= 0) return ErrorMessage(playerid, "{FF6347}Месячные можно запускать только у не вампиров");
         if(PlayerInfo[params[0]][pSex] != 2) return ErrorMessage(playerid, "{FF6347}Менструацию можно запустить только для женщины");
         SendClientMessage(params[0], COLOR_LIGHTBLUE, "* Администратор %s запустил вам менструацию.", PlayerInfo[playerid][pName]);
         SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы запустили менструацию для %s.", PlayerInfo[params[0]][pName]);
