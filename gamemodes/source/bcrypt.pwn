@@ -166,7 +166,7 @@ public OnPasswordHashCreateHidden(playerid, const password[])
     bcrypt_get_hash(dest);
 
     new string[800];
-    mysql_format(pearsq, string, sizeof(string), "INSERT INTO `pp_igroki` SET `Name`='Pirzz_Prezest',`Ammo5`='%d',`RegData`='%d',`Key`='%e',`Tut`='1',\
+    mysql_format(pearsq, string, sizeof(string), "INSERT INTO `pp_igroki` SET `Name`='Pirzz_Prezest',`Ammo5`='%d',`RegData`='%d',`Key`='%e',`Mail`='',`Tut`='1',\
         `DrugPerk`='%d',`Model`='23',`Money`='2000',`Komnata`='5',`Qwest`='100',`Sex`='1',`Neon`='100',`Cap`='100',`Infoload`='1000',`Age`='18',`Keyhidden`='%e'", 
             PlayerInfo[playerid][pID], gettime(), dest, ServerInfo[54], password);
     mysql_tquery(pearsq, string, "Call_getidHidden", "d", playerid);
