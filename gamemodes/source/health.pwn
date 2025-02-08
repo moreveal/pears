@@ -129,12 +129,12 @@ CMD:suncreen(playerid, const params[])
     ApplyAnimation(playerid,"OTB","betslp_loop",4.0, false, true, true, false, false, SYNC_ALL);
 	if(PlayerInfo[playerid][pSex] == 1) 
     {
-        SetPlayerChatBubble(playerid,"намазался солнцезащитным кремом",COLOR_TALK_PLAYER,35.0,10000);
+        SetPlayerChatBubble(playerid,"намазался солнцезащитным кремом",COLOR_PURPLE,35.0,10000);
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я намазался кремушком (Время действия 2 часа)");
     }
     else 
     {
-        SetPlayerChatBubble(playerid,"намазалась солнцезащитным кремом",COLOR_TALK_PLAYER,35.0,10000);
+        SetPlayerChatBubble(playerid,"намазалась солнцезащитным кремом",COLOR_PURPLE,35.0,10000);
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я намазалась кремушком (Время действия 2 часа)");
     }
     PlayerInfo[playerid][pSunScreen] = 7200;
