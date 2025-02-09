@@ -1652,6 +1652,39 @@ CMD:fullpotreb(playerid)
 	return 1;
 }
 
+CMD:fuel(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выполнить это действие");
+	new vehid, driverplayer = INVALID_PLAYER_ID, string[124];
+	if(!sscanf(params, "i", vehid))
+	{
+		if(!IsValidVehicle(vehid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Неверный ID транспорта");
+		if(VehInfo[vehid][vModel] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этого транспорта не существует");
+	}
+	else
+	{
+		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Полностью заправить авто [ /fuel VehID ]");
+		vehid = GetPlayerVehicleID(playerid);
+	}
+	if(vehid == train || vehid == train + 1 || vehid == train + 2 || vehid == train + 3
+		|| IsAVehicleNPC(vehid)) return ErrorMessage(playerid, "{FF6347}Этот транспорт нельзя заправить");
+	VehInfo[vehid][vGas] = GasMax - VehInfo[vehid][vGelium];
+	format(string, sizeof(string), "[ Мысли ADM ]: %s [ID: %d] заправлен.", GetVehicleName(VehInfo[vehid][vModel]), vehid);
+	driverplayer = GetVehicleDriver(vehid);
+	if (driverplayer == INVALID_PLAYER_ID)
+	{
+		AdminLog("fuel", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 
+		0, "", "", VehInfo[vehid][vModel], "Моментально заправил авто");
+	}
+	else
+	{
+		AdminLog("fuel", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 
+		PlayerInfo[driverplayer][pID], PlayerInfo[driverplayer][pName], PlayerInfo[driverplayer][pPlaIP], VehInfo[vehid][vModel], "Моментально заправил авто");
+	}
+	SendClientMessage(playerid, COLOR_GREY, string);
+	return 1;
+}
+
 alias:ahelp("ah")
 CMD:ahelp(playerid)
 {
@@ -1684,7 +1717,7 @@ CMD:ahelp(playerid)
 		format(string,sizeof(string),"\n\n{007a08}Админ 4:"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/armgro /dynamiczz /areav /delareav /gotoareav /gomp /kickmp /offmp /freezeall /unfreezeall /flycam /flyveh /mc /weathergro /gotomap /rgungro"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/gototo /givegungro /vehhp /vehhpgro /setarm /animbot /bottext /botid /bot /delbot /cobject /eobject /dobject /veh /delveh /delvehgro /rvc"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/fixcam /snowall /freeze /unfreeze /fuelgro /map /setskingro /setskinmp /makeparty /fixvehgro /toearth"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/fixcam /snowall /freeze /unfreeze /fuel /fuelgro /map /setskingro /setskinmp /makeparty /fixvehgro /toearth"), strcat(str,string);
 	}
 	if(PlayerInfo[playerid][pSoska] >= 5)
 	{
