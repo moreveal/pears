@@ -1685,6 +1685,38 @@ CMD:fuel(playerid, const params[])
 	return 1;
 }
 
+CMD:delrname(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	new nick[24];
+	if(sscanf(params, "s[24]", nick)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить зарезервированный ник-нейм [ /delrname Nickname ]");
+	if(!CheckRP_Nickname(nick)) return ErrorMessage(playerid, "{FF6347}Неверный формат никнейма.");
+	new f_str[144];
+	mysql_format(pearsq, f_str, sizeof(f_str), "SELECT pp_name.acc, pp_igroki.name FROM pp_name LEFT JOIN pp_igroki ON pp_igroki.user_id = pp_name.acc WHERE pp_name.name = '%e'", nick);
+	mysql_tquery(pearsq, f_str, "Call_delrname", "ds", playerid, nick);
+
+	return 1;
+}
+
+function Call_delrname(playerid, const str_name[])
+{
+	new rows, f_str[144];
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		new datad1, datad2[24], str[64];
+		cache_get_value_name_int(0, "acc", datad1);
+		cache_get_value_name(0, "name", datad2);
+		format(str, sizeof(str), "Удалил %s", str_name);
+		mysql_format(pearsq, f_str,sizeof(f_str), "DELETE FROM `pp_name` WHERE `name` = '%e'", str_name);
+		query_empty(pearsq, f_str);
+		AdminLog("delrname", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], datad1, datad2, "", 0, str);
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, " Вы удалили зарезервированный ник %s у игрока %s", str_name, datad2);
+	}
+	else ErrorMessage(playerid, "{FF6347}Указанный никнейм не найден!");
+	return 1;
+}
+
 alias:ahelp("ah")
 CMD:ahelp(playerid)
 {
@@ -1793,7 +1825,7 @@ stock AHelpList(playerid)
 		format(string,sizeof(string),"\n{cccccc}/pricevehup /pricevehdown /takegold /reloadpriceveh /fuelcars /unfuelcars /reloadbiz /reloadbizpos /herfam /setbiz /setdom /setroom"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/setfam /agiverankfam /block /delmail /delgoogle /rslot /asellbiz /abizlvl /bizcity /abizdep /aselldom /dompos /rdomobject /domclass"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/domup /domdown /domupgold /domdowngold /dp /dg /domgoldall /vehgoldall /domfam /famdom /asellroom /delfam /setpas /setmail /setstat /setability /takemoneybank"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/takemoney /givecase /restart /dellave /reloadlog /givedrugs /idinahyi /delaccs /readsit /takechips /rkasino /clearorder /cleargraffity"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/takemoney /givecase /restart /dellave /reloadlog /givedrugs /idinahyi /delaccs /readsit /takechips /rkasino /clearorder /cleargraffity /delrname"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/gthinginfo /gthing /gthingunix /spoil /reloadbizparthner /ikea /settrailer /trailerpos /deletetrailer /setvote /createapartments /mapartments /ecapartments /efapartments /dapartments"), strcat(str,string);
 	}
    	if(PlayerInfo[playerid][pSoska] >= 22)
