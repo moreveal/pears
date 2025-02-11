@@ -20,6 +20,7 @@ stock GoCreateJason(playerid,zone)
     if(UnixZoneCreatedJason[zone]+1800 > gettime() || JasonInfo[zone][jasonCreateTimer] > 0) return false;
     JasonInfo[zone][jasonCreateTimer] = random(60);
     JasonInfo[zone][jasonAttackPlayer] = playerid;
+    if(server == 0) SendClientMessageToAll(-1, "Джейсон появится для %s, через %d", PlayerInfo[playerid][pName], JasonInfo[zone][jasonCreateTimer]);
     return true;
 }
 
