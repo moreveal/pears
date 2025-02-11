@@ -1100,7 +1100,7 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
      		OrgLog(7, "minfin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, GetVehicleName(v));
 
 			// Сбрасываем ценники в Бизнесах: Все Аренды Транспорта, Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
-     		for(new b = 42; b < 92; b++) ResetBizzPriceItem(playerid, b, v, 5, input);
+			ResetPriceVehicleInBusiness(playerid, v, 5, input, true);
 		}
 		else SettingGosPriceVehicle(playerid, OnlineInfo[playerid][oDialogMenu][3]);
 	}
@@ -1617,7 +1617,7 @@ CMD:vehgoldall(playerid, const params[])
 	return 1;
 }
 
-CMD:rvgold(playerid, const params[]) return pc_cmd_rvehgold(playerid, params);
+alias:rvehgold("rvgold")
 CMD:rvehgold(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
@@ -1635,6 +1635,30 @@ CMD:rvehgold(playerid, const params[])
 	format(string, sizeof(string), " [ ADM ]: %s сбросил gold стоимость всех кастомных тс", PlayerInfo[playerid][pName]);
  	ABroadCast(COLOR_ADM,string,1);
 	AdminLog("rvehgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Default gold цены на тс");
+	return 1;
+}
+
+alias:rvehprice("rvprice")
+CMD:rvehprice(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	mysql_tquery(pearsq, "START TRANSACTION;");
+	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	{
+		if(v <= 211) VehGos[v] = vehSumma[v];
+		else VehGos[v] = vehSummaCustom[v - 212];
+		SaveVehiclePrice(v);
+
+		// Сбрасываем ценники в Бизнесах: Все Аренды Транспорта, Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
+		new vehmodel = CorrectVehicleList(v);
+		ResetPriceVehicleInBusiness(playerid, vehmodel, 5, VehGos[v], false);
+	}
+	mysql_tquery(pearsq, "COMMIT;");
+
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все транспортные средства", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rvehprice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
 

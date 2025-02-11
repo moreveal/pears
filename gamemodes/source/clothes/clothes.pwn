@@ -826,7 +826,7 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
      		OrgLog(7, "minfin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, string);
 
 			// Сбрасываем ценники в Магазинах с Одеждой
-     		for(new b = 173; b < 182; b++) ResetBizzPriceItem(playerid, b, list, 3, input);
+			ResetPriceSkinInBusiness(playerid, list, 3, input, true);
 		}
 		else SettingGosPriceSkin(playerid, OnlineInfo[playerid][oDialogMenu][3]);
 	}
@@ -1385,7 +1385,7 @@ CMD:rskinall(playerid, const params[])
 	if(params[0] == 0)
 	{
 		mysql_tquery(pearsq, "START TRANSACTION;");
-		for(new s = 0; s < MAX_MODELS_SKIN; s++) ReloadSettingSkin(s);
+		for(new s = 0; s < MAX_MODELS_SKIN; s++) ReloadSettingSkin(playerid, s, false);
 		mysql_tquery(pearsq, "COMMIT;");
 
 		new string[144];
@@ -1395,7 +1395,7 @@ CMD:rskinall(playerid, const params[])
 	}
 	else 
 	{
-		ReloadSettingSkin(params[0]);
+		ReloadSettingSkin(playerid, params[0], true);
 
 		new string[144];
 		format(string, sizeof(string), " [ ADM ]: %s сбросил настройки скина ID %d", params[0]);
@@ -1406,12 +1406,15 @@ CMD:rskinall(playerid, const params[])
 }
 
 // Сбрасываем настройки скина (из enum в сохранения)
-stock ReloadSettingSkin(s)
+stock ReloadSettingSkin(playerid, s, bool:notifyOwner = true)
 {
 	if(s < 0 || s >= MAX_MODELS_SKIN) return false;
 
 	SkinGos[s] = SkinPearsInfo[s][eSkinPrice];
 	SaveSkinEconomy(s);
+
+	// Сбрасываем ценники в Магазинах с Одеждой
+	ResetPriceSkinInBusiness(playerid, s, 3, SkinGos[s], notifyOwner);
 
 	SkinGold[s] = SkinPearsInfo[s][eSkinGold];
 	SaveSkinGold(s);
@@ -1425,3 +1428,4 @@ stock ReloadSettingSkin(s)
 	SaveSkinSale(s);
 	return true;
 }
+

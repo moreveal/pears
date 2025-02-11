@@ -449,48 +449,48 @@ CMD:pricevehdown(playerid, const params[])
 	AdminLog("pricevehdown", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Понизил Цены");
 	return 1;
 }
-CMD:reloadpricefrisk(playerid)
-{
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	for(new s = 0; s < sizeof(friskName); s++)
-	{
-		friskPrice[s] = friskDefault[s];
-		SavePriceFrisk(s);
-	}
-	new string[120];
-	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все предметы", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
-	AdminLog("reloadpricefrisk", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
-	return 1;
-}
-CMD:reloadpricegun(playerid)
-{
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	for(new g = 1; g < 48; g++)
-	{
-		gunPrice[g] = gunDefault[g];
-		SavePriceGun(g);
-	}
-	new string[120];
-	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на всё оружие", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
-	AdminLog("reloadpricegun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
-	return 1;
-}
-CMD:reloadpriceveh(playerid)
+
+alias:rfriskprice("rfprice")
+CMD:rfriskprice(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new s = 0; s < sizeof(friskName); s++)
 	{
-		if(v <= 211) VehGos[v] = vehSumma[v];
-		else VehGos[v] = vehSummaCustom[v - 212];
-		SaveVehiclePrice(v);
+		friskPrice[s] = friskDefault[s];
+		SavePriceFrisk(s);
+
+		// Сбрасываем ценники в Магазинах: Заправки, Супермаркеты, Оружейный Магазин, Аптеки, Техника
+		ResetPriceThingInBusiness(playerid, s, 0, friskPrice[s], false);
 	}
 	mysql_tquery(pearsq, "COMMIT;");
 
 	new string[120];
-	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все транспортные средства", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
-	AdminLog("reloadveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все предметы", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rfriskprice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
+	return 1;
+}
+
+alias:rgunprice("rgprice")
+CMD:rgunprice(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	mysql_tquery(pearsq, "START TRANSACTION;");
+	for(new g = 1; g < 48; g++)
+	{
+		gunPrice[g] = gunDefault[g];
+		SavePriceGun(g);
+
+		// Сбрасываем ценники в Магазинах: Заправки, Супермаркеты, Оружейный Магазин, Аптеки, Техника
+		ResetPriceThingInBusiness(playerid, g, 1, gunPrice[g], false);
+	}
+	mysql_tquery(pearsq, "COMMIT;");
+
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на всё оружие", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rgunprice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
 
@@ -1746,7 +1746,7 @@ stock AHelpList(playerid)
 	if(PlayerInfo[playerid][pSoska] >= 20)
 	{
 		format(string,sizeof(string),"\n\n{FF0000}Специальный Администратор:"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/pricevehup /pricevehdown /takegold /reloadpriceveh /fuelcars /unfuelcars /reloadbiz /reloadbizpos /herfam /setbiz /setdom /setroom"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/takegold /fuelcars /unfuelcars /reloadbiz /reloadbizpos /herfam /setbiz /setdom /setroom"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/setfam /agiverankfam /block /delmail /delgoogle /rslot /asellbiz /abizlvl /bizcity /abizdep /aselldom /dompos /rdomobject /domclass"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/domup /domdown /domupgold /domdowngold /dp /dg /domgoldall /vehgoldall /domfam /famdom /asellroom /delfam /setpas /setmail /setstat /setability /takemoneybank"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/takemoney /givecase /restart /dellave /reloadlog /givedrugs /idinahyi /delaccs /readsit /takechips /rkasino /clearorder /cleargraffity"), strcat(str,string);
@@ -1757,7 +1757,7 @@ stock AHelpList(playerid)
 		format(string,sizeof(string),"\n\n{444444}Основатель:"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/reloadchs /relpla /test5 /slapper /veloc /checkas /giveinvest /animer /sm /speech /givemoneybiz /relsliv /ds /protect"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/servtime /ptime /checkgun /givepayday /givegold /unfill /weather /plweather /givemoneybank /givemoney /givechips /antieblo - сдвиг транспорта (античит)"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/players /famrefundcar /deletethingall"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/players /famrefundcar /deletethingall /rskinall /rvehgold /rvehprice /pricevehup /pricevehdown /rfriskprice /rgunprice"), strcat(str,string);
 	}
 	ShowDialog(playerid, 176, DIALOG_STYLE_MSGBOX,"{FFFFFF}Команды {FF9000}Администрации {FFFFFF}2 страница", str, "Назад", "Выход");
 	return 1;
