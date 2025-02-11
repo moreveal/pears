@@ -1,7 +1,6 @@
 
 #include "../gamemodes/source/custom/skin_custom.pwn" // pwn для добавления новых скинов в мод
 
-#define MAX_MODELS_SKIN 312 + MAX_SKIN_CUSTOM // Количество моделей скинов на сервере
 #define MAX_SKIN_NAME 34 // Длина названия никнейма
 
 new SkinGos[MAX_MODELS_SKIN]; // Стоимости скинов
@@ -573,7 +572,7 @@ stock skinprice(playerid, page) // Настройки гос. цен одежд�
 	new line[214],lines[4096];
 
 	// Настраиваем отображение фильтров и страниц
-	LoadPageSorting(playerid, 1075, 311 + MAX_SKIN_CUSTOM, minlist, page, thisPage);
+	LoadPageSorting(playerid, 1075, MAX_MODELS_SKIN, minlist, page, thisPage);
 
 	format(line,sizeof(line),"{cccccc}Одежда [ID]\t{cccccc}Цена\t{cccccc}Gold\t{cccccc}Куплено за Вирты / Gold"), strcat(lines,line);
 	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t\t\t"), strcat(lines,line);
@@ -594,7 +593,7 @@ stock skinprice(playerid, page) // Настройки гос. цен одежд�
             break;
         }
 
-		if(s >= 311 + MAX_SKIN_CUSTOM && page > 0)
+		if(s >= MAX_MODELS_SKIN && page > 0)
 		{
 			yesNext = 1; // Последний list, отображаем Next Page
 			OnlineInfo[playerid][oDialogMenu][5] = 1; // Записываем, что эта страница была последней
@@ -681,7 +680,7 @@ stock showDialogFittingRoomSkin(playerid, page)
 	new line[214],lines[4096];
 
 	// Настраиваем отображение фильтров и страниц
-	LoadPageSorting(playerid, 1089, 311 + MAX_SKIN_CUSTOM, minlist, page, thisPage);
+	LoadPageSorting(playerid, 1089, MAX_MODELS_SKIN, minlist, page, thisPage);
 
 	format(line,sizeof(line),"{cccccc}Одежда [ID]\t{cccccc}Цена"), strcat(lines,line);
 	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t"), strcat(lines,line);
@@ -702,7 +701,7 @@ stock showDialogFittingRoomSkin(playerid, page)
             break;
         }
 
-		if(s >= 311 + MAX_SKIN_CUSTOM && page > 0)
+		if(s >= MAX_MODELS_SKIN && page > 0)
 		{
 			yesNext = 1; // Последний list, отображаем Next Page
 			OnlineInfo[playerid][oDialogMenu][5] = 1; // Записываем, что эта страница была последней
@@ -940,6 +939,8 @@ stock TryOnClothes(playerid, skin, status)
 	else if(status == 1) format(string, sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Skin ID: ~y~%d~n~~r~>>", skin);
 	else if(status == 2) format(string, sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Skin ID: ~y~%d~n~~r~<<", skin);
 	GameTextForPlayer(playerid, string, 8000, 3);
+
+	TogglePlayerControllable(playerid, true); // Размораживаем, чтобы персонаж не вис
 	return 1;
 }
 
@@ -952,7 +953,7 @@ stock NextOnClothes(playerid)
 
 	new findSkin;
 	OnlineInfo[playerid][oFittingRoom] ++;
-	if(OnlineInfo[playerid][oFittingRoom] >= 311 + MAX_SKIN_CUSTOM) OnlineInfo[playerid][oFittingRoom] = 1; // Открыт максимальный, значит перелистываем на начало 1
+	if(OnlineInfo[playerid][oFittingRoom] >= MAX_MODELS_SKIN) OnlineInfo[playerid][oFittingRoom] = 1; // Открыт максимальный, значит перелистываем на начало 1
 
 	for(new s = OnlineInfo[playerid][oFittingRoom]; s < MAX_MODELS_SKIN; s++)
 	{
@@ -992,7 +993,7 @@ stock BackOnClothes(playerid)
 	new findSkin;
 	OnlineInfo[playerid][oFittingRoom] --;
 
-	if(OnlineInfo[playerid][oFittingRoom] <= 0) OnlineInfo[playerid][oFittingRoom] = 311 + MAX_SKIN_CUSTOM; // Открыт первый, значит перелистываем в конец
+	if(OnlineInfo[playerid][oFittingRoom] <= 0) OnlineInfo[playerid][oFittingRoom] = MAX_MODELS_SKIN - 1; // Открыт первый, значит перелистываем в конец
 
 	for(new s = OnlineInfo[playerid][oFittingRoom]; s > 0; s--)
 	{
@@ -1259,6 +1260,20 @@ function LoadPriceSkin()
 			cache_get_value_name_int(s, "SkinBuyGold", SkinBuyGold[skinList]);
 			cache_get_value_name(s, "SkinName", SkinName[skinList], MAX_SKIN_NAME);
 			cache_get_value_name_bool(s, "SkinTop", SkinTop[skinList]);
+
+			new bool:ResetSkin;
+			if(SkinGos[skinList] == 0) SkinGos[skinList] = SkinPearsInfo[skinList][eSkinPrice], ResetSkin = true; // Если цена не настроена, загружаем из Enum
+			if(SkinGold[skinList] == 0) SkinGold[skinList] = SkinPearsInfo[skinList][eSkinGold], ResetSkin = true; // Если gold цена не настроена, загружаем из Enum
+			if(IsEmptyString(SkinName[skinList])) format(SkinName[skinList], MAX_SKIN_NAME, "%s", SkinPearsInfo[skinList][eSkinName]), ResetSkin = true; // Если нет названия, грузим название
+
+			// Это означает что скин новый или не был добавлен в настройки сервера (Перезагружаем)
+			// Старая система определения, доступен ли скин в продажу
+			if(ResetSkin == true)
+			{
+				if(SkinPearsInfo[skinList][eSkinClass] == 1 
+					|| SkinPearsInfo[skinList][eSkinClass] == 2) SkinSale[skinList] = 1;
+				else SkinSale[skinList] = 0;
+			}
 		}
 		printf("[MODE]: Настройки Скинов [%d ms]", GetTickCount() - time);
 
@@ -1360,40 +1375,53 @@ CMD:rskinquan(playerid, const params[])
 	return 1;
 }
 
-CMD:readskingold(playerid, const params[])
+alias:rskinall("rsall")
+CMD:rskinall(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сбросить настройки скинов [ /rskinall ID ][ 0: Все Скины ]");
+	if(!IsASkinExisting(params[0]) && params[0] != 0) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");
 
-	printf("new skinGoldCustom[] = ");
-	printf("{");
-	for(new s = 0; s < MAX_MODELS_SKIN; s++)
+	if(params[0] == 0)
 	{
-		printf("%d, // %d", SkinGold[s]);
-	}
-	printf("};");
+		mysql_tquery(pearsq, "START TRANSACTION;");
+		for(new s = 0; s < MAX_MODELS_SKIN; s++) ReloadSettingSkin(s);
+		mysql_tquery(pearsq, "COMMIT;");
 
-	new string[144];
-	format(string, sizeof(string), " [ ADM ]: %s записал gold стоимость скинов в log.txt", PlayerInfo[playerid][pName]);
- 	ABroadCast(COLOR_ADM,string,1);
+		new string[144];
+		format(string, sizeof(string), " [ ADM ]: %s сбросил настройки всех скинов", PlayerInfo[playerid][pName]);
+		ABroadCast(COLOR_ADM,string,1);
+		AdminLog("rskinall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Default настройки скинов");
+	}
+	else 
+	{
+		ReloadSettingSkin(params[0]);
+
+		new string[144];
+		format(string, sizeof(string), " [ ADM ]: %s сбросил настройки скина ID %d", params[0]);
+		ABroadCast(COLOR_ADM,string,1);
+		AdminLog("rskinall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Default настройки скина");
+	}
 	return 1;
 }
 
-CMD:rsgold(playerid, const params[]) return pc_cmd_rskingold(playerid, params);
-CMD:rskingold(playerid, const params[])
+// Сбрасываем настройки скина (из enum в сохранения)
+stock ReloadSettingSkin(s)
 {
-	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(s < 0 || s >= MAX_MODELS_SKIN) return false;
 
-	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new s = 0; s < MAX_MODELS_SKIN; s++)
-	{
-		SkinGold[s] = skinGoldCustom[s];
-		SaveSkinGold(s);
-	}
-	mysql_tquery(pearsq, "COMMIT;");
+	SkinGos[s] = SkinPearsInfo[s][eSkinPrice];
+	SaveSkinEconomy(s);
 
-	new string[144];
-	format(string, sizeof(string), " [ ADM ]: %s сбросил gold стоимость всех скинов", PlayerInfo[playerid][pName]);
- 	ABroadCast(COLOR_ADM,string,1);
-	AdminLog("rskingold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Default gold цены на скины");
-	return 1;
+	SkinGold[s] = SkinPearsInfo[s][eSkinGold];
+	SaveSkinGold(s);
+
+	format(SkinName[s], MAX_SKIN_NAME, "%s", SkinPearsInfo[s][eSkinName]);
+	SaveSkinName(s);
+
+	if(SkinPearsInfo[s][eSkinClass] == 1 
+		|| SkinPearsInfo[s][eSkinClass] == 2) SkinSale[s] = 1;
+	else SkinSale[s] = 0;
+	SaveSkinSale(s);
+	return true;
 }

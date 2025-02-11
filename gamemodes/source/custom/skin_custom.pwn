@@ -1,1049 +1,725 @@
 
 /*
 Как добавить новый кастомный скин на сервер?
-1. Увеличить define MAX_SKIN_CUSTOM (в базе строки до 600 id скина)
-2. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
-3. Если скин мужской - добавить новый ID в stock GetSkinSex
-4. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
+1. Добавить новую строку в new SkinPearsInfo (инструкция для переменной внизу)
+2. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
 
 Как добавить скин в магазины?
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 352
+/*
+Инструкция для переменной SkinPearsInfo
 
+bool:eCustomSkin false обычный скин, true кастомный скин
+eSampSkinID ID скина заменка на дефолтную (если скин true кастомный), если обычный, тогда 0
+eSkinPrice цена в виртах
+eSkinGold цена в голде
+eSkinName название скина
+eSkinClass класс скина (0 - 4)
+eSkinSex (0 нет пола, 1 мужской, 2 женский)
+
+name класса пишется: при просмотре подробной инфы о скине в инвентаре, при выпадении из кейса (желательно)
+
+0 класс - любая продажа в магазах одежды оффнута, не сливаемый скупщику, не дропается с кейсов
+name: Системный, цвет #444444
+
+1 класс - доступен в магазах одежды, выпадает только с кейса одежды, голд ценник: $ / 2500
+name: Обычный, цвет #a2a0a0
+
+2 класс - доступен в магазах одежды, выпадает с кейса одежды и голд кейса, голд ценник: $ / 2000
+name: Необычный, цвет #66ca55
+
+3 класс - недоступен в магазах одежды за вирты, выпадает только с голд кейса, голд ценник: $ / 1500
+name: Редкий, цвет #6d48e2
+
+4 класс - недоступен в магазах одежды, выпадает только с голд кейса, голд ценник: $ / 1000 или кастом
+name: Легендарный, цвет #d90763
+*/
+
+enum SKINENUM { bool:eCustomSkin, eSampSkinID, eSkinPrice, eSkinGold, eSkinName[64], eSkinClass, eSkinSex }
+new SkinPearsInfo[][SKINENUM] =
+{
+    { false, 0, 30000, 0, "CJ", 0, 1 }, // 0
+    { false, 0, 15000, 0, "The Truth", 0, 1 }, // 1
+    { false, 0, 150000, 50, "Maccer", 1, 1 }, // 2
+    { false, 0, 100000, 50, "Andre", 1, 1 }, // 3
+    { false, 0, 150000, 75, "Mini Bear", 1, 1 }, // 4
+    { false, 0, 0, 0, "Big Bear", 0, 1 }, // 5
+    { false, 0, 150000, 75, "Emmet", 1, 1 }, // 6
+    { false, 0, 200000, 100, "Taxi Driver", 1, 1 }, // 7
+    { false, 0, 400000, 150, "Janitor", 2, 1 }, // 8
+    { false, 0, 75000, 50, "Normal Ped", 1, 2 }, // 9
+    { false, 0, 0, 0, "Old Woman", 0, 2 }, // 10
+    { false, 0, 0, 0, "Casino croupier", 0, 2 }, // 11
+    { false, 0, 0, 0, "Rich Woman", 0, 2 }, // 12
+    { false, 0, 0, 0, "Street Girl", 0, 2 }, // 13
+    { false, 0, 150000, 75, "Normal Ped", 0, 1 }, // 14
+    { false, 0, 150000, 75, "Mr.Whittaker", 0, 1 }, // 15
+    { false, 0, 400000, 200, "Airport Worker", 0, 1 }, // 16
+    { false, 0, 20000, 0, "Businessman", 0, 1 }, // 17
+    { false, 0, 15000, 0, "Beach Visitor", 0, 1 }, // 18
+    { false, 0, 0, 0, "DJ", 0, 1 }, // 19
+    { false, 0, 500000, 250, "Rich Guy", 2, 1 }, // 20
+    { false, 0, 100000, 60, "Normal Ped", 1, 1 }, // 21
+    { false, 0, 650000, 325, "Normal Ped", 2, 1 }, // 22
+    { false, 0, 650000, 325, "BMXer", 2, 1 }, // 23
+    { false, 0, 500000, 0, "M.D. Bodyguard", 0, 1 }, // 24
+    { false, 0, 1000000, 0, "M.D. Bodyguard", 0, 1 }, // 25
+    { false, 0, 0, 0, "Backpacker", 0, 1 }, // 26
+    { false, 0, 45000, 0, "Construction Worker", 0, 1 }, // 27
+    { false, 0, 45000, 0, "Drug Dealer", 0, 1 }, // 28
+    { false, 0, 2000000, 2000, "Drug Dealer", 4, 1 }, // 29
+    { false, 0, 0, 0, "Drug Dealer", 0, 1 }, // 30
+    { false, 0, 0, 0, "Farm Inhabitant", 0, 2 }, // 31
+    { false, 0, 300000, 150, "Farm Inhabitant", 2, 1 }, // 32
+    { false, 0, 600000, 450, "Farm Inhabitant", 3, 1 }, // 33
+    { false, 0, 300000, 150, "Farm Inhabitant", 2, 1 }, // 34
+    { false, 0, 0, 0, "Gardener", 0, 1 }, // 35
+    { false, 0, 200000, 100, "Golfer", 1, 1 }, // 36
+    { false, 0, 200000, 100, "Golfer", 1, 1 }, // 37
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 38
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 39
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 40
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 41
+    { false, 0, 0, 0, "Jethro", 0, 1 }, // 42
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 43
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 44
+    { false, 0, 0, 0, "Beach Visitor", 0, 1 }, // 45
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 46
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 47
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 48
+    { false, 0, 0, 0, "Da Nang", 0, 1 }, // 49
+    { false, 0, 0, 0, "Mechanic", 0, 1 }, // 50
+    { false, 0, 0, 0, "Mountain Biker", 0, 1 }, // 51
+    { false, 0, 0, 0, "Mountain Biker", 0, 1 }, // 52
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 53
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 54
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 55
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 56
+    { false, 0, 0, 0, "Oriental Ped", 0, 1 }, // 57
+    { false, 0, 0, 0, "Oriental Ped", 0, 1 }, // 58
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 59
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 60
+    { false, 0, 0, 0, "Pilot", 0, 1 }, // 61
+    { false, 0, 0, 0, "Colonel Fuhrberger", 0, 1 }, // 62
+    { false, 0, 0, 0, "Prostitute", 0, 2 }, // 63
+    { false, 0, 0, 0, "Prostitute", 0, 2 }, // 64
+    { false, 0, 0, 0, "Kendl Johnson", 0, 2 }, // 65
+    { false, 0, 0, 0, "Pool Player", 0, 1 }, // 66
+    { false, 0, 0, 0, "Pool Player", 0, 1 }, // 67
+    { false, 0, 0, 0, "Preacher", 0, 1 }, // 68
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 69
+    { false, 0, 0, 0, "Scientist", 0, 1 }, // 70
+    { false, 0, 0, 0, "Security Guard", 0, 1 }, // 71
+    { false, 0, 0, 0, "Hippy", 0, 1 }, // 72
+    { false, 0, 0, 0, "Hippy", 0, 1 }, // 73
+    { false, 0, 0, 0, "Unknown", 0, 1 }, // 74
+    { false, 0, 0, 0, "Prostitute", 0, 2 }, // 75
+    { false, 0, 0, 0, "Stewardess", 0, 2 }, // 76
+    { false, 0, 0, 0, "Homeless", 0, 2 }, // 77
+    { false, 0, 0, 0, "Homeless", 0, 1 }, // 78
+    { false, 0, 0, 0, "Homeless", 0, 1 }, // 79
+    { false, 0, 0, 0, "Boxer", 0, 1 }, // 80
+    { false, 0, 0, 0, "Boxer", 0, 1 }, // 81
+    { false, 0, 0, 0, "Black Elvis", 0, 1 }, // 82
+    { false, 0, 0, 0, "White Elvis", 0, 1 }, // 83
+    { false, 0, 0, 0, "Blue Elvis", 0, 1 }, // 84
+    { false, 0, 0, 0, "Prostitute", 0, 2 }, // 85
+    { false, 0, 0, 0, "Ryder Mask", 0, 1 }, // 86
+    { false, 0, 0, 0, "Stripper", 0, 2 }, // 87
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 88
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 89
+    { false, 0, 0, 0, "Jogger", 0, 2 }, // 90
+    { false, 0, 700000, 450, "Rich Woman", 3, 2 }, // 91
+    { false, 0, 0, 0, "Rollerskater", 0, 2 }, // 92
+    { false, 0, 400000, 200, "Normal Ped", 2, 2 }, // 93
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 94
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 95
+    { false, 0, 0, 0, "Jogger", 0, 1 }, // 96
+    { false, 0, 0, 0, "Lifeguard", 0, 1 }, // 97
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 98
+    { false, 0, 0, 0, "Rollerskater", 0, 1 }, // 99
+    { false, 0, 0, 0, "Biker", 0, 1 }, // 100
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 101
+    { false, 0, 0, 0, "Balla", 0, 1 }, // 102
+    { false, 0, 0, 0, "Balla", 0, 1 }, // 103
+    { false, 0, 0, 0, "Balla", 0, 1 }, // 104
+    { false, 0, 0, 0, "Grove", 0, 1 }, // 105
+    { false, 0, 0, 0, "Grove", 0, 1 }, // 106
+    { false, 0, 0, 0, "Grove", 0, 1 }, // 107
+    { false, 0, 0, 0, "Vagos", 0, 1 }, // 108
+    { false, 0, 0, 0, "Vagos", 0, 1 }, // 109
+    { false, 0, 0, 0, "Vagos", 0, 1 }, // 110
+    { false, 0, 0, 0, "Russian Mafia", 0, 1 }, // 111
+    { false, 0, 0, 0, "Russian Mafia", 0, 1 }, // 112
+    { false, 0, 0, 0, "Russian Mafia", 0, 1 }, // 113
+    { false, 0, 0, 0, "Aztecas", 0, 1 }, // 114
+    { false, 0, 0, 0, "Aztecas", 0, 1 }, // 115
+    { false, 0, 0, 0, "Aztecas", 0, 1 }, // 116
+    { false, 0, 0, 0, "Triad", 0, 1 }, // 117
+    { false, 0, 0, 0, "Triad", 0, 1 }, // 118
+    { false, 0, 0, 0, "Johhny Sindacco", 0, 1 }, // 119
+    { false, 0, 0, 0, "Triad Boss", 0, 1 }, // 120
+    { false, 0, 0, 0, "Da Nang Boy", 0, 1 }, // 121
+    { false, 0, 0, 0, "Da Nang Boy", 0, 1 }, // 122
+    { false, 0, 0, 0, "Da Nang Boy", 0, 1 }, // 123
+    { false, 0, 0, 0, "The Mafia", 0, 1 }, // 124
+    { false, 0, 0, 0, "The Mafia", 0, 1 }, // 125
+    { false, 0, 0, 0, "The Mafia", 0, 1 }, // 126
+    { false, 0, 0, 0, "The Mafia", 0, 1 }, // 127
+    { false, 0, 300000, 150, "Farm Inhabitant", 2, 1 }, // 128
+    { false, 0, 0, 0, "Farm Inhabitant", 0, 2 }, // 129
+    { false, 0, 0, 0, "Farm Inhabitant", 0, 2 }, // 130
+    { false, 0, 0, 0, "Farm Inhabitant", 0, 2 }, // 131
+    { false, 0, 300000, 150, "Farm Inhabitant", 2, 1 }, // 132
+    { false, 0, 0, 0, "Farm Inhabitant", 0, 1 }, // 133
+    { false, 0, 0, 0, "Farm Inhabitant", 0, 1 }, // 134
+    { false, 0, 0, 0, "Farm Inhabitant", 0, 1 }, // 135
+    { false, 0, 0, 0, "Farm Inhabitant", 0, 1 }, // 136
+    { false, 0, 0, 0, "Homeless", 0, 1 }, // 137
+    { false, 0, 0, 0, "Homeless", 0, 2 }, // 138
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 139
+    { false, 0, 0, 0, "Homeless", 0, 2 }, // 140
+    { false, 0, 0, 0, "Beach Visitor", 0, 2 }, // 141
+    { false, 0, 0, 0, "Beach Visitor", 0, 1 }, // 142
+    { false, 0, 0, 0, "Beach Visitor", 0, 1 }, // 143
+    { false, 0, 0, 0, "Businesswoman", 0, 1 }, // 144
+    { false, 0, 0, 0, "Taxi Driver", 0, 2 }, // 145
+    { false, 0, 0, 0, "Crack Maker", 0, 1 }, // 146
+    { false, 0, 0, 0, "Crack Maker", 0, 1 }, // 147
+    { false, 0, 0, 0, "Crack Maker", 0, 2 }, // 148
+    { false, 0, 0, 0, "Crack Maker", 0, 1 }, // 149
+    { false, 0, 0, 0, "Businessman", 0, 2 }, // 150
+    { false, 0, 0, 0, "Businesswoman", 0, 2 }, // 151
+    { false, 0, 0, 0, "Big Smoke Armored", 0, 2 }, // 152
+    { false, 0, 0, 0, "Businesswoman", 0, 1 }, // 153
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 154
+    { false, 0, 0, 0, "Prostitute", 0, 1 }, // 155
+    { false, 0, 250000, 125, "Construction Worker", 2, 1 }, // 156
+    { false, 0, 0, 0, "Beach Visitor", 0, 2 }, // 157
+    { false, 0, 300000, 150, "Pizza Worker", 2, 1 }, // 158
+    { false, 0, 0, 0, "Barber", 0, 1 }, // 159
+    { false, 0, 0, 0, "Hillbilly", 0, 1 }, // 160
+    { false, 0, 300000, 150, "Farmer", 2, 1 }, // 161
+    { false, 0, 300000, 150, "Hillbilly", 2, 1 }, // 162
+    { false, 0, 0, 0, "Hillbilly", 0, 1 }, // 163
+    { false, 0, 0, 0, "Farmer", 0, 1 }, // 164
+    { false, 0, 0, 0, "Hillbilly", 0, 1 }, // 165
+    { false, 0, 0, 0, "Black Bouncer", 0, 1 }, // 166
+    { false, 0, 0, 0, "White Bouncer", 0, 1 }, // 167
+    { false, 0, 0, 0, "White MIB agent", 0, 1 }, // 168
+    { false, 0, 0, 0, "Black MIB agent", 0, 2 }, // 169
+    { false, 0, 0, 0, "Cluckin' Bell Worker", 0, 1 }, // 170
+    { false, 0, 800000, 500, "Chilli Dog Vendor", 3, 1 }, // 171
+    { false, 0, 800000, 500, "Normal Ped", 3, 2 }, // 172
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 173
+    { false, 0, 0, 0, "Blackjack Dealer", 0, 1 }, // 174
+    { false, 0, 0, 0, "Casino croupier", 0, 1 }, // 175
+    { false, 0, 500000, 250, "Rifa", 2, 1 }, // 176
+    { false, 0, 900000, 600, "Rifa", 3, 1 }, // 177
+    { false, 0, 0, 0, "Rifa", 0, 2 }, // 178
+    { false, 0, 0, 0, "Barber", 0, 1 }, // 179
+    { false, 0, 500000, 250, "Barber", 2, 1 }, // 180
+    { false, 0, 0, 0, "Whore", 0, 1 }, // 181
+    { false, 0, 0, 0, "Ammunation", 0, 1 }, // 182
+    { false, 0, 0, 0, "Tattoo Artist", 0, 1 }, // 183
+    { false, 0, 0, 0, "Punk", 0, 1 }, // 184
+    { false, 0, 0, 0, "Cab Driver", 0, 1 }, // 185
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 186
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 187
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 188
+    { false, 0, 700000, 550, "Normal Ped", 3, 1 }, // 189
+    { false, 0, 0, 0, "Businessman", 0, 2 }, // 190
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 191
+    { false, 0, 0, 0, "Valet", 0, 2 }, // 192
+    { false, 0, 0, 0, "Barbara Schternvart", 0, 2 }, // 193
+    { false, 0, 900000, 700, "Helena Wankstein", 3, 2 }, // 194
+    { false, 0, 0, 0, "Michelle Cannes", 0, 2 }, // 195
+    { false, 0, 0, 0, "Katie Zhan", 0, 2 }, // 196
+    { false, 0, 0, 0, "Millie Perkins", 0, 2 }, // 197
+    { false, 0, 0, 0, "Denise Robinson", 0, 2 }, // 198
+    { false, 0, 0, 0, "Farm Inhabitan", 0, 2 }, // 199
+    { false, 0, 0, 0, "Hillbill", 0, 1 }, // 200
+    { false, 0, 0, 0, "Farm Inhabitan", 0, 2 }, // 201
+    { false, 0, 0, 0, "Farm Inhabitan", 0, 1 }, // 202
+    { false, 0, 0, 0, "Hillbilly", 0, 1 }, // 203
+    { false, 0, 0, 0, "Farmer", 0, 1 }, // 204
+    { false, 0, 0, 0, "Farmer", 0, 2 }, // 205
+    { false, 0, 0, 0, "Karate Teacher", 0, 1 }, // 206
+    { false, 0, 0, 0, "Karate Teacher", 0, 2 }, // 207
+    { false, 0, 0, 0, "Burger Shot Cashier", 0, 1 }, // 208
+    { false, 0, 0, 0, "Cab Driver", 0, 1 }, // 209
+    { false, 0, 0, 0, "Prostitute", 0, 1 }, // 210
+    { false, 0, 450000, 225, "Su Xi Mu", 2, 2 }, // 211
+    { false, 0, 0, 0, "Noodle Vendor", 0, 1 }, // 212
+    { false, 0, 0, 0, "School Instructor", 0, 1 }, // 213
+    { false, 0, 0, 0, "Shop Staff", 0, 2 }, // 214
+    { false, 0, 0, 0, "Homeless", 0, 2 }, // 215
+    { false, 0, 0, 0, "Weird old man", 0, 2 }, // 216
+    { false, 0, 0, 0, "Maria Latore", 0, 1 }, // 217
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 218
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 219
+    { false, 0, 0, 0, "Shop Staff", 0, 1 }, // 220
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 221
+    { false, 0, 0, 0, "Rich Woman", 0, 1 }, // 222
+    { false, 0, 0, 0, "Cab Driver", 0, 1 }, // 223
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 224
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 225
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 226
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 227
+    { false, 0, 0, 0, "Oriental Businessman", 0, 1 }, // 228
+    { false, 0, 0, 0, "Oriental Ped", 0, 1 }, // 229
+    { false, 0, 0, 0, "Oriental Ped", 0, 1 }, // 230
+    { false, 0, 0, 0, "Homeless", 0, 2 }, // 231
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 232
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 233
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 234
+    { false, 0, 0, 0, "Cab Driver", 0, 1 }, // 235
+    { false, 0, 500000, 400, "Normal Ped", 3, 1 }, // 236
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 237
+    { false, 0, 0, 0, "Prostitute", 0, 2 }, // 238
+    { false, 0, 0, 0, "Prostitute", 0, 1 }, // 239
+    { false, 0, 0, 0, "Homeless", 0, 1 }, // 240
+    { false, 0, 0, 0, "The D.A", 0, 1 }, // 241
+    { false, 0, 0, 0, "Afro-American", 0, 1 }, // 242
+    { false, 0, 0, 0, "Mexican", 0, 2 }, // 243
+    { false, 0, 0, 0, "Prostitute", 0, 2 }, // 244
+    { false, 0, 0, 0, "Stripper", 0, 2 }, // 245
+    { false, 0, 0, 0, "Prostitute", 0, 2 }, // 246
+    { false, 0, 0, 0, "Stripper", 0, 1 }, // 247
+    { false, 0, 0, 0, "Biker", 0, 1 }, // 248
+    { false, 0, 1000000, 750, "Biker", 3, 1 }, // 249
+    { false, 0, 0, 0, "Pimp", 0, 1 }, // 250
+    { false, 0, 0, 0, "Normal Ped", 0, 2 }, // 251
+    { false, 0, 0, 0, "Lifeguard", 0, 1 }, // 252
+    { false, 0, 0, 0, "Naked Valet", 0, 1 }, // 253
+    { false, 0, 0, 0, "Bus Driver", 0, 1 }, // 254
+    { false, 0, 0, 0, "Biker Drug Dealer", 0, 1 }, // 255
+    { false, 0, 0, 0, "Chauffeu", 0, 2 }, // 256
+    { false, 0, 0, 0, "Stripper", 0, 2 }, // 257
+    { false, 0, 500000, 250, "Stripper", 2, 1 }, // 258
+    { false, 0, 500000, 250, "Heckler", 2, 1 }, // 259
+    { false, 0, 0, 0, "Heckler", 0, 1 }, // 260
+    { false, 0, 0, 0, "Construction Worker", 0, 1 }, // 261
+    { false, 0, 0, 0, "Cab driver", 0, 1 }, // 262
+    { false, 0, 0, 0, "Cab driver", 0, 2 }, // 263
+    { false, 0, 0, 0, "Normal Ped", 0, 1 }, // 264
+    { false, 0, 0, 0, "Dwayne", 0, 1 }, // 265
+    { false, 0, 0, 0, "Big Smoke", 0, 1 }, // 266
+    { false, 0, 0, 0, "Sweet", 0, 1 }, // 267
+    { false, 0, 0, 0, "Ryder", 0, 1 }, // 268
+    { false, 0, 0, 0, "Mafia Boss", 0, 1 }, // 269
+    { false, 0, 0, 0, "T-Bone Mendez", 0, 1 }, // 270
+    { false, 0, 0, 0, "Paramedic", 0, 1 }, // 271
+    { false, 0, 0, 0, "Paramedic", 0, 1 }, // 272
+    { false, 0, 0, 0, "Paramedic", 0, 1 }, // 273
+    { false, 0, 0, 0, "Firefighter", 0, 1 }, // 274
+    { false, 0, 0, 0, "Firefighter", 0, 1 }, // 275
+    { false, 0, 0, 0, "Firefighter", 0, 1 }, // 276
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 277
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 278
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 279
+    { false, 0, 0, 0, "County Sheriff", 0, 1 }, // 280
+    { false, 0, 0, 0, "Motorbike Cop", 0, 1 }, // 281
+    { false, 0, 0, 0, "Special Forces", 0, 1 }, // 282
+    { false, 0, 0, 0, "Federal Agent", 0, 1 }, // 283
+    { false, 0, 0, 0, "Army", 0, 1 }, // 284
+    { false, 0, 0, 0, "Desert Sheriff", 0, 0 }, // 285
+    { false, 0, 0, 0, "Zero", 0, 1 }, // 286
+    { false, 0, 0, 0, "Ken Rosenberg", 0, 1 }, // 287
+    { false, 0, 0, 0, "Kent Paul", 0, 1 }, // 288
+    { false, 0, 0, 0, "Cesar Vialpando", 0, 1 }, // 289
+    { false, 0, 800000, 550, "OG Loc", 3, 1 }, // 290
+    { false, 0, 600000, 450, "Wu Zi Mu", 0, 1 }, // 291
+    { false, 0, 0, 0, "Michael Toreno", 0, 1 }, // 292
+    { false, 0, 0, 0, "Jizzy", 0, 1 }, // 293
+    { false, 0, 0, 0, "Madd Dogg", 0, 1 }, // 294
+    { false, 0, 0, 0, "Catalina", 0, 1 }, // 295
+    { false, 0, 0, 0, "Claude", 0, 1 }, // 296
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 297
+    { false, 0, 0, 0, "Police Officer", 0, 2 }, // 298
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 299
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 300
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 301
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 302
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 303
+    { false, 0, 0, 0, "Police Officer", 0, 1 }, // 304
+    { false, 0, 0, 0, "Paramedic", 0, 1 }, // 305
+    { false, 0, 0, 0, "Police Officer", 0, 2 }, // 306
+    { false, 0, 0, 0, "Country Sheriff", 0, 2 }, // 307
+    { false, 0, 0, 0, "Desert Sheriff", 0, 2 }, // 308
+    { false, 0, 0, 0, "Desert Sheriff", 0, 2 }, // 309
+    { false, 0, 0, 0, "Desert Sheriff", 0, 1 }, // 310
+    { false, 0, 0, 0, "Desert Sheriff", 0, 1 }, // 311
+    { true, 294, 300000, 120, "Парень в черном", 1, 1 }, // 312 15500, pearspedcu (Значит не 312, а 15500) male
+    { true, 60, 1000000, 660, "Стильный мужик", 3, 1 }, // 313 pearspeda (Значит не 313, а 15501) male
+    { true, 233, 350000, 140, "Девушка в белом платье", 1, 2 }, // 314 pearspedb (Значит не 314, а 15502)
+    { true, 19, 500000, 250, "Парень с тату", 2, 1 }, // 315  15503 pearspedc male
+    { true, 59, 700000, 280, "Парень в кофте с черепами", 1, 1 }, // 316  15504 pearspedd male
+    { true, 93, 700000, 280, "Девушка в костюме Adidas", 1, 2 }, // 317  15505, pearspede
+    { true, 19, 500000, 200, "Парень с тату в кепке", 1, 1 }, // 318  15506, pearspedf male
+    { true, 59, 1000000, 500, "Мужчина в подтяжках", 2, 1 }, // 319  15507, pearspedg male
+    { true, 125, 2900000, 2000, "МакГрегор", 3, 1 }, // 320   15508, pearspedh male
+    { true, 23, 1, 1, "Парень в красных вансах", 0, 1 }, // 321  15509, pearspedi male
+    { true, 21, 1, 1, "Мужчина в Одежде Луи Витон", 0, 1 }, // 322  15510, pearspedj male
+    { true, 216, 500000, 250, "Женщина в зеленом платье", 2, 2 }, // 323   15511, pearspedk
+    { true, 55, 400000, 200, "Женщина в платье скелете", 2, 2 }, // 324  15512, pearspedl
+    { true, 93, 1000000, 650, "Женщина в костюме Nike", 3, 2 }, // 325  15513, pearspedm
+    { true, 7, 1, 1, "Мужчина в простой одежде", 0, 1 }, // 326 15514, pearspedn male
+    { true, 125, 500000, 250, "Мужчина с тату", 2, 1 }, // 327 15515, pearspedo male
+    { true, 1, 500000, 250, "Мужчина в майке с тату", 2, 1 }, // 328 15516, pearspedp male
+    { true, 248, 0, 0, "Мужчина в джинсовой одежде", 0, 1 }, // 329  15517, pearspedq male
+    { true, 29, 0, 0, "Мужчина в капюшоне и джинсовке", 0, 1 }, // 330 15518, pearspedr male
+    { true, 121, 0, 0, "Мужчина в джинсовых вещах", 0, 1 }, // 331  15519, pearspeds male
+    { true, 125, 0, 0, "Мужчина в джинсовых вещах", 0, 1 }, // 332  15520, pearspedt male
+    { true, 240, 100000, 50, "Мужчина в черной куртке", 1, 1 }, // 333  15521, pearspedu male
+    { true, 223, 3000000, 2000, "Мужчина в фирменой одежде", 3, 1 }, // 334  15522, pearspedv male
+    { true, 28, 1, 1, "Мужчина в белом худи", 0, 1 }, // 335 15523, pearspedw male
+    { true, 25, 2500000, 1650, "Мужчина в куртке", 3, 1 }, // 336 15524, pearspedx male
+    { true, 150, 600000, 240, "Женщина в черном пальто", 2, 2 }, // 337  15525, pearspedy
+    { true, 237, 500000, 250, "Женщина в черно-белой одежде", 2, 2 }, // 338  15526, pearspedz
+    { true, 131, 1, 1, "Женщина в черной одежде", 0, 2 }, // 339  15527, pearspedaa
+    { true, 12, 300000, 120, "Девушка в топе с вишенкой", 1, 2 }, // 340 15528, pearspedab
+    { true, 40, 300000, 120, "Девушка в топе", 1, 2 }, // 341 15529, pearspedac
+    { true, 178, 0, 0, "Сексуальная девушка", 0, 2 }, // 342  15530, pearspedad
+    { true, 233, 500000, 250, "Девушка в Gucci", 2, 2 }, // 343  15531, pearspedae
+    { true, 93, 1, 1, "Девушка в черной одежде", 0, 2 }, // 344 15532, pearspedaf
+    { true, 157, 1, 1, "Девушка в зеленом", 0, 2 }, // 345  15533, pearspedag 
+    { true, 223, 500000, 200, "Девушка в белой одежде", 1, 2 }, // 346  15534, pearspedah
+    { true, 233, 600000, 240, "Девушка в клетчатой рубашке", 1, 2 }, // 347  15535, pearspedai
+    { true, 233, 500000, 250, "Девушка в розовой одежде", 2, 2 }, // 348  15536, pearspedaj
+    { true, 233, 400000, 160, "Девушка в светлой одежде", 1, 2 }, // 349  15537, pearspedak
+    { true, 93, 2500000, 1650, "Девушка гот", 3, 2 }, // 350 15538, pearspedal
+    { true, 233, 250000, 100, "Девушка в топе с бабочкой", 1, 2 }, // 351  15539, pearspedam
+    { true, 223, 1, 1, "Мужчина в коричневом худи", 0, 1 }, // 352  15540, pearspedan male
+    { true, 240, 1500000, 1000, "Мужчина в сером бомбере", 3, 1 }, // 353  15541, pearspedao male
+    { true, 126, 1000000, 700, "Мужчина в свитшоте", 3, 1 }, // 354  15542, pearspedap male
+    { true, 93, 900000, 600, "Девушка в бомбере", 3, 2 }, // 355 15543, pearspedaq
+    { true, 240, 400000, 200, "Мужчина в черной футболке", 2, 1 }, // 356  15544, pearspedar male
+    { true, 93, 2500000, 1700, "Девушка в черной одежде", 3, 2 }, // 357 15545, pearspedas
+    { true, 93, 500000, 200, "Девушка в черной одежде", 1, 2 }, // 358 15546, pearspedat
+    { true, 91, 3000000, 3000, "Девушка в свадебном платье", 4, 2 }, // 359 15547, pearspedau
+    { true, 233, 1500000, 1000, "Беловолосая девушка в полушубе", 3, 2 }, // 360  15548, pearspedav
+    { true, 216, 600000, 300, "Девушка в зеленом", 2, 2 }, // 361  15549, pearspedaw
+    { true, 216, 0, 0, "Девушка в полотенце", 0, 2 }, // 362  15550, pearspedax
+    { true, 93, 2300000, 1500, "Девушка в белой куртке", 3, 2 }, // 363 15551, pearspeday
+    { true, 240, 0, 0, "Парень в рубахе", 0, 1 }, // 364  15552, pearspedaz male
+    { true, 180, 200000, 80, "Парень в свитшоте с сердцем", 1, 1 }, // 365  15553, pearspedba male
+    { true, 226, 1, 1, "Девушка в футболке", 0, 2 }, // 366  15554, pearspedbb
+    { true, 60, 1, 1, "Парень в черном", 0, 1 }, // 367 15555, pearspedbc male
+    { true, 257, 700000, 350, "Девушка в топе в сеточку", 2, 2 }, // 368  15556, pearspedbd
+    { true, 257, 0, 0, "Проститутка", 0, 2 }, // 369  15557, pearspedbe
+    { true, 41, 1, 1, "Девушка в белой куртке", 0, 2 }, // 370 15558, pearspedbf
+    { true, 40, 1, 1, "Девушка в черном платье", 0, 2 }, // 371 15559, pearspedbg
+    { true, 233, 0, 0, "Девушка в купальнике", 0, 2 }, // 372  15560, pearspedbh
+    { true, 233, 0, 0, "Девушка в купальнике", 0, 2 }, // 373  15561, pearspedbi
+    { true, 93, 800000, 400, "Девушка в черном платье", 2, 2 }, // 374 15562, pearspedbj
+    { true, 233, 1000000, 500, "Девушка в розовой кофте", 2, 2 }, // 375  15563, pearspedbk
+    { true, 98, 900000, 450, "Мужчина в пиджаке", 2, 1 }, // 376 15564, pearspedbl male
+    { true, 98, 900000, 450, "Мужчина в синем костюме", 2, 1 }, // 377 15565, pearspedbm male
+    { true, 98, 1500000, 1000, "Мужчина в черной куртке", 3, 1 }, // 378 15566, pearspedbn male
+    { true, 98, 1200000, 800, "Мужчина в черном костюме", 3, 1 }, // 379 15567, pearspedbo male
+    { true, 112, 800000, 400, "Лысый хрен в красных спортах", 2, 1 }, // 380 15568, pearspedbp male
+    { true, 127, 600000, 300, "Мужчина в белом костюме", 2, 1 }, // 381 15569, pearspedbq male
+    { true, 127, 500000, 250, "Мужчина в черном костюме", 2, 1 }, // 382 15570, pearspedbr male
+    { true, 240, 300000, 120, "Парень в кофте", 1, 1 }, // 383 15571, pearspedbs male
+    { true, 240, 300000, 120, "Парень в куртке", 1, 1 }, // 384 15572, pearspedbt male
+    { true, 240, 400000, 200, "Парень в кофте", 2, 1 }, // 385 15573, pearspedbu male
+    { true, 45, 250000, 100, "Парень с голым торсом", 1, 1 }, // 386 15574, pearspedbv male
+    { true, 91, 400000, 200, "Девушка в топе и юбке", 2, 2 }, // 387 15575, pearspedbw
+    { true, 98, 1000000, 500, "Мужчина в костюме", 2, 1 }, // 388 15576, pearspedbx male
+    { true, 216, 1500000, 1000, "Девушка в розовой кофте", 3, 2 }, // 389 15577, pearspedby
+    { true, 25, 1100000, 720, "Мужчина в белой одежде", 3, 1 }, // 390 15578, pearspedbz male
+    { true, 120, 1000000, 750, "Мужчина в черной одежде", 3, 1 }, // 391 15579, pearspedca male
+    { true, 179, 0, 0, "Мужчина в камуфляжной форме", 0, 1 }, // 392 15580, pearspedcb male
+    { true, 233, 1, 1, "Девушка в спортивном стиле", 0, 2 }, // 393 15581, pearspedcc
+    { true, 12, 700000, 350, "Девушка в голубой блузке", 2, 2 }, // 394 15582, pearspedcd
+    { true, 40, 800000, 400, "Девушка в красном топе", 2, 2 }, // 395 15583, pearspedce
+    { true, 85, 2000000, 1300, "Девушка в шубе", 3, 2 }, // 396 15584, pearspedcf
+    { true, 233, 700000, 350, "Девушка в белом топе", 2, 2 }, // 397 15585, pearspedcg
+    { true, 233, 800000, 400, "Девушка в розовой одежде", 2, 2 }, // 398 15586, pearspedct
+    { true, 233, 700000, 350, "Девушка в белом топе", 2, 2 }, // 399 15587, pearspedch
+    { true, 12, 900000, 450, "Девушка в черном пальто", 2, 2 }, // 400 15588, pearspedci
+    { true, 217, 800000, 400, "Мужчина в черно-белой одежде", 2, 1 }, // 401 15589, pearspedcj male
+    { true, 12, 2200000, 2200, "Ким Кардашьян", 4, 2 }, // 402 15590, pearspedck
+    { true, 59, 1, 1, "Парень в простой одежде", 0, 1 }, // 403 15591, pearspedcl male
+    { true, 93, 1500000, 1000, "Девушка в черных легинсах", 3, 2 }, // 404 15592, pearspedcm
+    { true, 98, 2100000, 1400, "Парень в жилетке", 3, 1 }, // 405 15593, pearspedcn male
+    { true, 143, 800000, 400, "Мужчина в куртке", 2, 1 }, // 406 15594, pearspedco male
+    { true, 93, 1000000, 500, "Девушка в белых штанах", 2, 2 }, // 407 15595, pearspedcp
+    { true, 91, 1100000, 550, "Девушка в красной куртке", 2, 2 }, // 408 15596, pearspedcq
+    { true, 40, 1600000, 1050, "Девушка в Nike", 3, 2 }, // 409 15597, pearspedcr
+    { true, 46, 2000000, 2000, "Мужчина в костюме", 4, 1 }, // 410 15598, pearspedcs
+    { true, 40, 0, 0, "Девушка в парандже", 0, 2 }, // 411 15599, pedaraba
+    { true, 221, 0, 0, "Мужчина в парандже", 0, 1 }, // 412 15600, pedarabb male
+    { true, 142, 0, 0, "Мужчина в маске", 0, 1 }, // 413 15601, pedarabc male
+    { true, 42, 0, 0, "Мужчина бандит", 0, 1 }, // 414 15602, prisonmex male
+    { true, 311, 0, 0, "Полицейский", 0, 1 }, // 415 15603, pearscop male
+    { true, 287, 0, 0, "Военный", 0, 1 }, // 416 15604, pearsarmy1 male
+    { true, 287, 0, 0, "Военный", 0, 1 }, // 417 15605, pearsarmy2 male
+    { true, 5, 0, 0, "Мужчина толстый", 0, 1 }, // 418 15606, pearsswat1 male (жирный араб)
+    { true, 285, 0, 0, "Полицейский в броне", 0, 1 }, // 419 15607, pearsswat2 male
+    { true, 300, 0, 0, "Полицейский", 0, 1 }, // 420 15608, pearscop2 male
+    { true, 301, 0, 0, "Полицейский в броне", 0, 1 }, // 421 15609, pearsswat4 male
+    { true, 300, 0, 0, "Полицейский в броне", 0, 1 }, // 422 15610, pearsswat5 male
+    { true, 300, 0, 0, "Полицейский с кепкой", 0, 1 }, // 423 15611, pearscop3 male
+    { true, 305, 1200000, 600, "Мужчина в красной рубашке", 2, 1 }, // 424 15612, pearscop4 male
+    { true, 303, 0, 0, "Полицейский", 0, 1 }, // 425 15613, pearscop5 male
+    { true, 142, 2000000, 12000, "Неизвестный в маске", 4, 0 }, // 426 15614, pearspedcv male
+    { true, 221, 0, 0, "Неизвестный в белом", 0, 0 }, // 427 15615, pearspedcw male
+    { true, 277, 0, 0, "Космонавт", 0, 0 }, // 428 15616, astronaut all
+    { true, 6, 0, 0, "Маньяк Джейсон", 0, 1 }, // 429 15617, jason male
+    { true, 21, 0, 0, "Парень в оранжевом комбинизоне", 0, 1 }, // 430 15618, prisonblack male
+    { true, 141, 1800000, 1800, "Монахиня", 4, 2 }, // 431 15619, pearspedcx female
+    { true, 144, 1500000, 1000, "Спортик", 3, 1 }, // 432 15620, pearspedcy male
+    { true, 287, 0, 0, "Военный", 0, 1 }, // 433 15621, pearspedcz male
+    { true, 146, 1600000, 1050, "Качок в майке", 3, 1 }, // 434 15622, pearspedda male
+    { true, 42, 600000, 300, "Мужчина в спортивном костюме", 2, 1 }, // 435 15623, pearspeddb male
+    { true, 287, 0, 0, "Полицейский", 0, 1 }, // 436 15624, pearspeddc male
+    { true, 307, 0, 0, "Полицейский (жен.)", 0, 2 }, // 437 15625, pearspeddd female
+    { true, 310, 0, 0, "Полицейский", 0, 1 }, // 438 15626, pearspedde male
+    { true, 306, 0, 0, "Полицейский (жен.)", 0, 2 }, // 439 15627, pearscop6 female
+    { true, 281, 0, 0, "Полицейский", 0, 1 }, // 440 15628, pearspeddf male
+    { true, 280, 0, 0, "Полицейский", 0, 1 }, // 441 15629, pearspeddg male
+    { true, 265, 0, 0, "Полицейский", 0, 1 }, // 442 15630, pearspeddh male
+    { true, 310, 0, 0, "Полицейский", 0, 1 }, // 443 15631, pearspeddi male
+    { true, 306, 0, 0, "Полицейский (жен.)", 0, 2 }, // 444 15632, pearspeddj female
+    { true, 306, 0, 0, "Полицейский в шлеме (жен.)", 0, 2 }, // 445 15633, pearspeddk female
+    { true, 282, 0, 0, "Полицейский", 0, 1 }, // 446 15634, pearspeddl male
+    { true, 282, 0, 0, "Полицейский в очках", 0, 1 }, // 447 15635, pearspeddm male
+    { true, 282, 0, 0, "Полицейский (галстук)", 0, 1 }, // 448 15636, pearspeddn male
+    { true, 282, 0, 0, "Полицейский", 0, 1 }, // 449 15637, pearspeddo male
+    { true, 282, 0, 0, "Полицейский", 0, 1 }, // 450 15638, pearspeddp male
+    { true, 282, 0, 0, "Полицейский", 0, 1 }, // 451 15639, pearspeddq male
+    { true, 306, 0, 0, "Полицейский (жен.)", 0, 2 }, // 452 15640, pearspeddr female
+    { true, 121, 0, 0, "Доминик", 0, 1 }, // 453 15641, pearspedds male
+    { true, 165, 0, 0, "Агент ФБР в бронежилете", 0, 1 }, // 454 15642, pearspeddt male
+    { true, 286, 0, 0, "Агент ФБР", 0, 1 }, // 455 15643, pearspeddu male
+    { true, 286, 0, 0, "Агент ФБР", 0, 1 }, // 456 15644, pearspeddv male
+    { true, 295, 0, 0, "Агент ФБР", 0, 1 }, // 457 15645, pearspeddw male
+    { true, 286, 0, 0, "Агент ФБР", 0, 1 }, // 458 15646, pearspeddx male
+    { true, 286, 0, 0, "Агент ФБР", 0, 1 }, // 459 15647, pearspeddy male
+    { true, 285, 0, 0, "Спецназ ФБР", 0, 0 }, // 460 15648, pearspeddz all
+    { true, 285, 0, 0, "Спецназ ФБР", 0, 0 }, // 461 15649, pearspedea all
+    { true, 165, 0, 0, "Спец.агент ФБР", 0, 1 }, // 462 15650, pearspedeb male
+    { true, 286, 0, 0, "Агент ФБР", 0, 1 }, // 463 15651, pearspedec male
+    { true, 286, 0, 0, "Агент ФБР", 0, 1 }, // 464 15652, pearspeded male
+    { true, 150, 0, 0, "Агент ФБР (жен.)", 0, 2 }, // 465 15653, pearspedee female
+    { true, 286, 0, 0, "Агент ФБР", 0, 1 }, // 466 15654, pearspedef male
+    { true, 29, 1300000, 850, "Мужчина в белом худи", 3, 1 }, // 467 15655, zverworks male
+    { true, 121, 0, 0, "Азиат с татуировками", 0, 1 }, // 468 15656, pearspedeg male Yakuza
+    { true, 118, 0, 0, "Азиат в пиджаке", 0, 1 }, // 469 15657, pearspedeh male Yakuza
+    { true, 123, 0, 0, "Мужчина в спортивках", 0, 1 }, // 470 15658, pearspedei male Yakuza
+    { true, 118, 0, 0, "Мужчина в японском костюме", 0, 1 }, // 471 15659, pearspedej male Yakuza
+    { true, 119, 0, 0, "Русский в куртке", 0, 1 }, // 472 15660, pearspedek male RM
+    { true, 66, 800000, 400, "Мужчина в открытой рубашке", 2, 1 }, // 473 15661, pearspedel male
+    { true, 60, 0, 0, "Русский с фингалом", 0, 1 }, // 474 15662, pearspedem male RM
+    { true, 113, 0, 0, "Русский с крестом", 0, 1 }, // 475 15663, pearspeden male RM
+    { true, 68, 1500000, 1000, "Дед в куртке", 3, 1 }, // 476 15664, pearspedeo male
+    { true, 68, 2000000, 2000, "Дед в смокинге", 4, 1 }, // 477 15665, pearspedep male
+    { true, 113, 1400000, 950, "Мужчина в тёмном", 3, 1 }, // 478 15666, pearspedeq male
+    { true, 66, 800000, 400, "Парень в веселой футболке", 2, 1 }, // 479 15667, pearspeder male
+    { true, 111, 0, 0, "Русский в темной куртке", 0, 1 }, // 480 15668, pearspedes male RM
+    { true, 247, 1600000, 1050, "Мужчина с бородой", 3, 1 }, // 481 15669, pearspedet male
+    { true, 46, 0, 0, "Русский в открытой рубашке", 0, 1 }, // 482 15670, pearspedeu male RM
+    { true, 223, 2000000, 1300, "Мужчина в розовом пиджаке", 3, 1 }, // 483 15671, pearspedev male
+    { true, 111, 0, 0, "Русский в кожаной куртке", 0, 1 }, // 484 15672, pearspedew male RM
+    { true, 46, 0, 0, "Русский с татуировками", 0, 1 }, // 485 15673, pearspedex male RM
+    { true, 60, 900000, 450, "Парень в балаклаве и очках", 2, 1 }, // 486 15674, pearspedey male
+    { true, 29, 800000, 400, "Парень в майке", 2, 1 }, // 487 15675, pearspedfz male
+    { true, 117, 0, 0, "Азиат в костюме", 0, 1 }, // 488  15676, pearspedfa male Yakuza
+    { true, 121, 2200000, 1450, "Грозный мужчина", 3, 1 }, // 489  15677, pearspedfb male
+    { true, 272, 0, 0, "Серьёзный русский", 0, 1 }, // 490  15678, pearspedfc male RM
+    { true, 126, 0, 0, "Русский в костюме", 0, 1 }, // 491  15679, pearspedfd male RM
+    { true, 125, 3000000, 2000, "Мужчина в белом костюме", 3, 1 }, // 492  15680, pearspedfe male
+    { true, 294, 4000000, 4000, "Золотой Вузи", 4, 1 }, // 493  15681, pearspedff male
+    { true, 285, 0, 0, "Армейский лётчик", 0, 1 }, // 494  15682, pearsvvs male
+    { true, 70, 0, 0, "Доктор в очках", 0, 1 }, // 495 15683, pearsdoctor male
+    { true, 308, 0, 0, "Сотрудник больницы (жен.)", 0, 2 }, // 496  15684, pearsmedg1 famale
+    { true, 308, 0, 0, "Сотрудник больницы (жен.)", 0, 2 }, // 497  15685, pearsmedg2 famale
+    { true, 308, 0, 0, "Сотрудник больницы (жен.)", 0, 2 }, // 498  15686, pearsmedg3 famale
+    { true, 308, 0, 0, "Сотрудник больницы (жен.)", 0, 2 }, // 499  15687, pearsmedg4 famale
+    { true, 275, 0, 0, "Сотрудник больницы", 0, 1 }, // 500  15688, pearsmedm1 male
+    { true, 276, 0, 0, "Сотрудник больницы", 0, 1 }, // 501  15689, pearsmedm2 male
+    { true, 275, 0, 0, "Сотрудник больницы", 0, 1 }, // 502  15690, pearsmedm3 male
+    { true, 276, 0, 0, "Сотрудник больницы", 0, 1 }, // 503  15691, pearsmedm4 male
+    { true, 274, 0, 0, "Сотрудник больницы", 0, 1 }, // 504  15692, pearsmedm5 male
+    { true, 146, 0, 0, "Скромник", 0, 1 }, // 505  15693, pearsebalai male
+    { true, 264, 0, 0, "Воплощенный вампир", 0, 1 }, // 506  15694, pearsvampir male
+    { true, 168, 0, 0, "Маньяк", 0, 1 }, // 507  15695, pearsbenzop male
+    { true, 130, 0, 0, "Овца", 0, 0 }, // 508  15696, pearsovechka -
+    { true, 31, 0, 0, "Корова", 0, 0 }, // 509  15697, pearskorova -
+    { true, 153, 0, 0, "Крик", 0, 0 }, // 510   15698, pearsscream -
+    { true, 264, 0, 0, "Пенисвайз", 0, 0 }, // 511   15699, pearsclown -
+    { true, 82, 0, 0, "Зомби", 0, 1 }, // 512  15700, pearszombie1 male
+    { true, 83, 0, 0, "Зомби", 0, 1 }, // 513  15701, pearszombie2 male
+    { true, 84, 0, 0, "Зомби", 0, 1 }, // 514  15702, pearszombie3 male
+    { true, 82, 0, 0, "Зомби", 0, 1 }, // 515  15703, pearszombie4 male
+    { true, 83, 0, 0, "Зомби", 0, 1 }, // 516  15704, pearszombie5 male
+    { true, 75, 0, 0, "Зомби (жен.)", 0, 2 }, // 517  15705, pearszombie6 famale
+    { true, 77, 0, 0, "Зомби (жен.)", 0, 2 }, // 518  15706, pearszombie7 famale
+    { true, 82, 0, 0, "Зомби", 0, 1 }, // 519  15707, pearszombie8 male
+    { true, 83, 0, 0, "Зомби", 0, 1 }, // 520  15708, pearszombie9 male
+    { true, 59, 400000, 160, "Парень с челкой", 1, 1 }, // 521 pearskortu
+    { true, 60, 600000, 240, "Парень в темной одежде", 1, 1 }, // 522 pearsmajodin
+    { true, 98, 650000, 260, "Парень в белой футболке", 1, 1 }, // 523 pearsmajodva
+    { true, 23, 700000, 280, "Парень в белом с цепью", 1, 1 }, // 524 pearsmajotri
+    { true, 248, 1800000, 1200, "Мужчина в веселой жилетке", 3, 1 }, // 525 pearsjil
+    { true, 247, 0, 0, "Парень в веселой жилетке", 0, 1 }, // 526 pearsjildva
+    { true, 187, 1400000, 950, "Мужчина в пижаме", 3, 1 }, // 527 pearskosb
+    { true, 91, 1200000, 800, "Девушка в платье", 3, 2 }, // 528 pearsmegno woman
+    { true, 19, 1000000, 650, "Парень с полотенцем", 3, 1 }, // 529 pearsgheze
+    { true, 93, 750000, 375, "Девушка в джинсах", 2, 2 }, // 530 pearswjns woman
+    { true, 184, 700000, 350, "Пожилой в спортивном", 2, 1 }, // 531 pearsdedsp
+    { true, 223, 1200000, 800, "Пожилой в костюме", 3, 1 }, // 532 pearssuitold
+    { true, 186, 1350000, 900, "Пожилой в темном наряде", 3, 1 }, // 533 pearssuoldv
+    { true, 208, 1000000, 500, "Мужчина в темном", 2, 1 }, // 534 pearsdetsu
+    { true, 66, 600000, 300, "Парень в куртке", 2, 1 }, // 535 pearskurng
+    { true, 80, 1400000, 950, "Боец UFC", 3, 1 }, // 536 pearsufcng
+    { true, 109, 0, 0, "Бандит Vagos в темном", 0, 1 }, // 537 pearsvago vagos 
+    { true, 110, 0, 0, "Бандит Vagos в кепке", 0, 1 }, // 538 pearsvagtr vagos
+    { true, 106, 0, 0, "Бандит Grove в кепке", 0, 1 }, // 539 pearsgroveo Grove
+    { true, 107, 0, 0, "Бандит Grove в куртке", 0, 1 }, // 540 pearsgrovet Grove
+    { true, 195, 0, 0, "Бандит Grove (жен.)", 0, 2 }, // 541 pearsgroveg grove woman
+    { true, 102, 0, 0, "Бандит Ballas", 0, 1 }, // 542 pearsballo ballas
+    { true, 102, 0, 0, "Бандит Ballas в жилетке", 0, 1 }, // 543 pearsballt ballas
+    { true, 13, 0, 0, "Бандит Ballas (жен.)", 0, 2 }, // 544 pearsballg ballas woman
+    { true, 104, 0, 0, "Бандит Ballas в темном", 0, 1 }, // 545 pearsballtr ballas 
+    { true, 91, 900000, 600, "Девушка в белом поло", 3, 2 }, // 546 pearsbecky woman
+    { true, 42, 0, 0, "Неизв. в желтом комбинизоне", 0, 1 }, // 547 pearsorm 
+    { true, 42, 0, 0, "Неизв. в противогазе", 0, 1 }, // 548 pearsorgm
+    { true, 258, 1250000, 830, "Мужчина со шрамом", 3, 1 }, // 549 pearsamkr
+    { true, 30, 900000, 450, "Парень в футболке с цепью", 2, 1 }, // 550 pearsrcep
+    { true, 56, 500000, 200, "Женщина в зеленой блузке", 1, 2 }, // 551 pearsgigre woman
+    { true, 259, 700000, 300, "Пожилой с весом в футболке", 1, 1 }, // 552 pearsolbat
+    { true, 258, 800000, 320, "Пожилой в синей куртке", 1, 1 }, // 553 pearssimsui
+    { true, 259, 800000, 400, "Пожилой в темно-синей рубашке", 2, 1 }, // 554 pearssimpol
+    { true, 252, 850000, 425, "Пожилой в трусах", 2, 1 }, // 555 pearssimnud
+    { true, 217, 1200000, 600, "Мужчина в темном", 2, 1 }, // 556 pearsardbl
+    { true, 171, 1500000, 1000, "Мужчина в синем костюме", 3, 1 }, // 557 pearsardsui
+    { true, 208, 1800000, 1200, "Мужчина в темно-полосатом костюме", 3, 1 }, // 558 pearsardsuib
+    { true, 240, 1600000, 1050, "Мужчина в темно-полосатой жилетке", 3, 1 }, // 559 pearsardjil
+    { true, 46, 3000000, 2000, "Мужчина в белом костюме с розой", 3, 1 }, // 560 pearsardjen
+    { true, 223, 1100000, 750, "Мужчина в джинсовке", 3, 1 }, // 561 pearsardjens
+    { true, 211, 1200000, 800, "Девушка в темно-короткой кофте", 3, 2 }, // 562 pearsgibl woman
+    { true, 216, 1000000, 650, "Девушка в топе и шортах сердечки", 3, 2 }, // 563 pearsgipink woman 
+    { true, 247, 1200000, 800, "Байкер в огненной футболке и жилетке", 3, 1 }, // 564 pearsgjo
+    { true, 248, 1500000, 1000, "Байкер в поло и шортах-трико", 3, 1 }, // 565 pearsgjt
+    { true, 254, 900000, 450, "Байкер в жилетке и белой футболке", 2, 1 }, // 566 pearsgjtr
+    { true, 100, 1500000, 1000, "Байкер в жилетке и джинсах", 3, 1 }, // 567 pearsgjf
+    { true, 113, 1800000, 1200, "Пожилой в темном костюме и цепью-крест", 3, 1 }, // 568 pearsvicbs
+    { true, 111, 800000, 400, "Мужчина в болотной кофте", 2, 1 }, // 569 pearsvicsrg
+    { true, 125, 1000000, 500, "Мужчина в куртке и спортивках", 2, 1 }, // 570 pearsvicrm
+    { true, 144, 0, 0, "Террорист с камуфляжной шляпой", 0, 1 }, // 571 pearsterro
+    { true, 143, 0, 0, "Террорист в бандане со шлемом", 0, 1 }, // 572 pearsterrt
+    { true, 176, 0, 0, "Террорист в тюрбане и бронежилете", 0, 1 }, // 573 pearsterrtr
+    { true, 177, 0, 0, "Террорист в камуфляжном бронежилете", 0, 1 }, // 574 pearsterrf
+    { true, 177, 0, 0, "Террорист в тюрбане и камуфляжном бронежилете", 0, 1 }, // 575 pearsterrfm
+    { true, 183, 0, 0, "Террорист в балаклаве и бронежилете", 0, 1 }, // 576 pearsterrfi
+    { true, 241, 0, 0, "Террорист с зарядами РПГ", 0, 1 }, // 577 pearsterrs
+    { true, 273, 1500000, 750, "Мужчина с голым торсом в татуировках", 2, 1 }, // 578 pearsmono
+    { true, 184, 1600000, 800, "Мужчина в футболке череп с татуировками", 2, 1 }, // 579 pearsmont 
+    { true, 119, 1200000, 600, "Байкер в темном с жилеткой", 2, 1 }, // 580 pearsmontr
+    { true, 47, 1300000, 650, "Парень в белой футболке с цепью", 2, 1 }, // 581 pearsmonf
+    { true, 45, 1400000, 900, "Татуированный мужчина с усами и голым торсом", 3, 1 }, // 582 pearsnudta
+    { true, 300, 0, 0, "Полицейский", 0, 1 }, // 583 pearsguo
+    { true, 300, 0, 0, "Полицейский", 0, 1 }, // 584 pearsgut
+    { true, 301, 0, 0, "Полицейский", 0, 1 }, // 585 pearsgutr
+    { true, 178, 2500000, 2500, "Кибер-женщина", 4, 2 }, // 586 fpearshall1
+    { true, 178, 2500000, 2500, "Женщина в кошачьей маске с кнутом", 4, 2 }, // 587 fpearshall2
+    { true, 152, 1500000, 1000, "Девушка в хэллоуинском костюме", 3, 2 }, // 588 fpearshall3
+    { true, 90, 800000, 400, "Девушка в боди хэллоуин", 2, 2 }, // 589 fpearshall4
+    { true, 195, 1300000, 850, "Девушка в футболке котик", 3, 2 }, // 590 fpearshall5
+    { true, 90, 700000, 350, "Девушка в топе с летучими мышами", 2, 2 }, // 591 fpearshall6
+    { true, 137, 1000000, 1000, "Бомж-убийца", 4, 1 }, // 592 mpearshall1
+    { true, 252, 1200000, 800, "Садамаза мужик", 3, 1 }, // 593 mpearshall2
+    { true, 264, 5000000, 900, "Карлик", 0, 1 }, // 594 mpearshall3
+    { true, 258, 1200000, 120, "Франкенштейн", 0, 1 }, // 595 mpearshall4
+    { true, 222, 7000000, 1000, "Мумия", 0, 1 }, // 596 mpearshall5
+    { true, 212, 1000000, 650, "Бешенный деревенский", 3, 1 }, // 597 mpearshall6
+    { true, 211, 750000, 350, "Девушка в черном", 2, 2 }, // 598 pearsranfem1
+    { true, 214, 1100000, 750, "Девушка в белом", 3, 2 }, // 599 pearsranfem2
+    { true, 101, 0, 0, "Мужчина в серой куртке", 0, 1 }, // 600 pearsranma1
+    { true, 171, 0, 0, "Мужчина в черном с перчатками", 0, 1 }, // 601 pearsranma2
+    { true, 167, 0, 0, "Анубис", 0, 1 }, // 602 pearsanubis
+    { true, 1, 0, 0, "Скелет", 0, 0 }, // 603 pearsbfost
+    { true, 7, 0, 0, "Призрак", 0, 0 }, // 604 pearsbmori
+    { true, 162, 0, 0, "Медведь", 0, 0 }, // 605 pearsbear
+    { true, 157, 0, 0, "Олень", 0, 0 }, // 606 pearsdeer
+    { true, 157, 0, 0, "Лиса", 0, 0 }, // 607 pearsfox
+    { true, 157, 0, 0, "Заяц", 0, 0 }, // 608 pearsrabbit
+    { true, 162, 0, 0, "Волк", 0, 0 }, // 609 pearswolf
+    { true, 145, 1500000, 7000, "Женщина в жёлтом комбинизоне", 4, 2 }, // 610 pearsfhaz
+    { true, 146, 1500000, 7000, "Мужчина в жёлтом комбинизоне", 4, 1 }, // 611 pearsmhaz1
+    { true, 144, 0, 0, "Мужчина в белом комбинизоне", 0, 1 }, // 612 pearsmhaz2
+    { true, 146, 0, 0, "Парень в сером комбинизоне", 0, 1 }, // 613 pearsmhaz3
+    { true, 30, 0, 0, "Уолтер Уайт", 0, 1 }, // 614 pearshaizenberg
+    { true, 60, 0, 0, "Азиат в белой рубашке", 0, 1 }, // 615 pearskitaec
+    { true, 111, 0, 0, "Мужчина в темном костюме", 0, 1 }, // 616 pearsruski1
+    { true, 25, 0, 0, "Мужчина в пуховике с белой футболкой", 0, 1 }, // 617 pearswinneg
+    { true, 191, 0, 0, "Девушка в зеленом комбинизоне", 0, 2 }, // 618 pearswarm1
+    { true, 287, 0, 0, "Военный зимняя", 0, 1 }, // 619 pearswinarm1
+    { true, 287, 0, 0, "Военный зимняя", 0, 1 }, // 620 pearswinarm2
+    { true, 191, 0, 0, "Военный зимняя (жен.)", 0, 2 }, // 621 pearswinarw1
+    { true, 216, 0, 0, "Девушка в оранжевой полушубе", 0, 2 }, // 622 pearswinw1
+    { true, 150, 0, 0, "Женщина-врач", 0, 2 }, // 623 pearsdocw1
+    { true, 193, 0, 0, "Девушка в новогоднем", 0, 2 }, // 624 pearswinw2
+    { true, 179, 2000000, 10000, "Маскхалат", 4, 1 }, // 625 pearswinarm3
+    { true, 152, 0, 0, "Белая кошка", 0, 0 }, // 626 pearscat1,
+    { true, 152, 0, 0, "Рыжая кошка", 0, 0 }, // 627 pearscat2,
+    { true, 152, 0, 0, "Серая кошка", 0, 0 }, // 628 pearscat3,
+    { true, 152, 0, 0, "Сиамская кошка", 0, 0 }, // 629 pearscat4,
+    { true, 152, 0, 0, "Пятнистая кошка", 0, 0 }, // 630 pearscat5,
+    { true, 152, 0, 0, "Черная кошка", 0, 0 }, // 631 pearscat6,
+    { true, 153, 0, 0, "Полосатый ротвейлер", 0, 0 }, // 632 pearsdog1,
+    { true, 153, 0, 0, "Рыжий ротвейлер", 0, 0 }, // 633 pearsdog2,
+    { true, 153, 0, 0, "Черный ротвейлер", 0, 0 }, // 634 pearsdog3,
+    { true, 153, 0, 0, "Белый бостон терьер", 0, 0 }, // 635 pearsdog4,
+    { true, 153, 0, 0, "Ротвейлер с зеленым ошейником", 0, 0 }, // 636 pearsdog5,
+    { true, 153, 0, 0, "Черный бостон терьер", 0, 0 }, // 637 pearsdog6,
+    { true, 153, 0, 0, "Рыжий стаффорд терьер", 0, 0 }, // 638 pearsdog7,
+    { true, 153, 0, 0, "Черный доберман", 0, 0 }, // 639 pearsdog8,
+    { true, 153, 0, 0, "Коричнево-белый бультерьер", 0, 0 }, // 640 pearsdog9,
+    { true, 153, 0, 0, "Серо-белый бультерьер ", 0, 0 }, // 641 pearsdog10
+    { true, 153, 0, 0, "Светло-коричневый шиба ину", 0, 0 }, // 642 pearsdog11
+    { true, 153, 0, 0, "Серая немецкая овчарка", 0, 0 }, // 643 pearsdog12
+    { true, 153, 0, 0, "Белый бультерьер", 0, 0 }, // 644 pearsdog13
+    { true, 153, 0, 0, "Сибирский хаски", 0, 0 }, // 645 pearsdog14
+    { true, 153, 0, 0, "Золотистый ретривер", 0, 0 }, // 646 pearsdog15
+    { true, 153, 0, 0, "Коричнево-белый пойнтер", 0, 0 }, // 647 pearsdog16
+    { true, 153, 0, 0, "Далматин", 0, 1 }, // 648 pearsdog17
+    { true, 1, 0, 0, "Санта Клаус", 0, 2 }, // 649 pearssanta
+    { true, 40, 2000000, 2000, "Женщина в розовом с шляпой", 4, 2 }, // 650 pearsfwint1
+    { true, 55, 1300000, 850, "Женщина-байкер", 3, 2 }, // 651 pearsfwint2
+    { true, 56, 700000, 350, "Женщина в пуховике", 2, 2 }, // 652 pearsfwint3
+    { true, 55, 600000, 300, "Девушка в красной толстовке", 2, 2 }, // 653 pearsfwint4
+    { true, 60, 800000, 400, "Парень в синей зимней куртке", 2, 1 }, // 654 pearsmwint1
+    { true, 25, 600000, 300, "Парень в темном пуховике", 2, 1 }, // 655 pearsmwint2
+    { true, 46, 1400000, 950, "Мужчина в шубе", 3, 1 }, // 656 pearsmwint3
+    { true, 78, 0, 0, "Бомж Клаус", 0, 1 }, // 657 pearsmwint4
+    { true, 93, 0, 0, "Женщина в спец. костюме", 0, 2 }, // 658 pearsfwp1  
+    { true, 265, 0, 0, "Полицейский зимняя", 0, 1 }, // 659 pearsmwp1
+    { true, 280, 0, 0, "Полицейский зимняя", 0, 1 }, // 660 pearsmwp2
+    { true, 281, 0, 0, "Полицейский в кепке зимняя", 0, 1 }, // 661 pearsmwp3
+    { true, 280, 0, 0, "Полицейский в шапке зимняя", 0, 1 }, // 662 pearsmwp4
+    { true, 266, 0, 0, "Полицейский зимняя", 0, 1 } // 663 pearsmwp5
+};
+
+#define MAX_MODELS_SKIN sizeof(SkinPearsInfo)
+
+// Добавляем скины в мод при запуске сервера
 stock AddCustomSkins()
 {
-	// AddCharSyncModel(Оригинальный, Новый) ID в сборке с 15500 до 15999
-	// Plus 15188
-
-	// В целом добавить ещё скинов
-	AddCharSyncModel(294, 312); // 15500, pearspedcu (Значит не 312, а 15500) male
-	AddCharSyncModel(60, 313); // pearspeda (Значит не 313, а 15501) male
-	AddCharSyncModel(233, 314); // pearspedb (Значит не 314, а 15502)
-	AddCharSyncModel(19, 315); // 15503 pearspedc male
-	AddCharSyncModel(59, 316); // 15504 pearspedd male
-	AddCharSyncModel(93, 317); // 15505, pearspede
-	AddCharSyncModel(19, 318); // 15506, pearspedf male
-	AddCharSyncModel(59, 319); // 15507, pearspedg male
-	AddCharSyncModel(125, 320); // 15508, pearspedh male
-	AddCharSyncModel(23, 321); // 15509, pearspedi male
-	AddCharSyncModel(21, 322); // 15510, pearspedj male
-	AddCharSyncModel(216, 323); // 15511, pearspedk
-	AddCharSyncModel(55, 324); // 15512, pearspedl
-	AddCharSyncModel(93, 325); // 15513, pearspedm
-	AddCharSyncModel(7, 326); // 15514, pearspedn male
-	AddCharSyncModel(125, 327); // 15515, pearspedo male
-	AddCharSyncModel(1, 328); // 15516, pearspedp male
-	AddCharSyncModel(248, 329); // 15517, pearspedq male
-	AddCharSyncModel(29, 330); // 15518, pearspedr male
-	AddCharSyncModel(121, 331); // 15519, pearspeds male
-	AddCharSyncModel(125, 332); // 15520, pearspedt male
-	AddCharSyncModel(240, 333); // 15521, pearspedu male
-	AddCharSyncModel(223, 334); // 15522, pearspedv male
-	AddCharSyncModel(28, 335); // 15523, pearspedw male
-	AddCharSyncModel(25, 336); // 15524, pearspedx male
-	AddCharSyncModel(150, 337); // 15525, pearspedy
-	AddCharSyncModel(237, 338); // 15526, pearspedz
-	AddCharSyncModel(131, 339); // 15527, pearspedaa
-	AddCharSyncModel(12, 340); // 15528, pearspedab
-	AddCharSyncModel(40, 341); // 15529, pearspedac
-	AddCharSyncModel(178, 342); // 15530, pearspedad
-	AddCharSyncModel(233, 343); // 15531, pearspedae
-	AddCharSyncModel(93, 344); // 15532, pearspedaf
-	AddCharSyncModel(157, 345); // 15533, pearspedag 
-	AddCharSyncModel(223, 346); // 15534, pearspedah
-	AddCharSyncModel(233, 347); // 15535, pearspedai
-	AddCharSyncModel(233, 348); // 15536, pearspedaj
-	AddCharSyncModel(233, 349); // 15537, pearspedak
-	AddCharSyncModel(93, 350); // 15538, pearspedal
-	AddCharSyncModel(233, 351); // 15539, pearspedam
-	AddCharSyncModel(223, 352); // 15540, pearspedan male
-	AddCharSyncModel(240, 353); // 15541, pearspedao male
-	AddCharSyncModel(126, 354); // 15542, pearspedap male
-	AddCharSyncModel(93, 355); // 15543, pearspedaq
-	AddCharSyncModel(240, 356); // 15544, pearspedar male
-	AddCharSyncModel(93, 357); // 15545, pearspedas
-	AddCharSyncModel(93, 358); // 15546, pearspedat
-	AddCharSyncModel(91, 359); // 15547, pearspedau
-	AddCharSyncModel(233, 360); // 15548, pearspedav
-	AddCharSyncModel(216, 361); // 15549, pearspedaw
-	AddCharSyncModel(216, 362); // 15550, pearspedax
-	AddCharSyncModel(93, 363); // 15551, pearspeday
-	AddCharSyncModel(240, 364); // 15552, pearspedaz male
-	AddCharSyncModel(180, 365); // 15553, pearspedba male
-	AddCharSyncModel(226, 366); // 15554, pearspedbb
-	AddCharSyncModel(60, 367); // 15555, pearspedbc male
-	AddCharSyncModel(257, 368); // 15556, pearspedbd
-	AddCharSyncModel(257, 369); // 15557, pearspedbe
-	AddCharSyncModel(41, 370); // 15558, pearspedbf
-	AddCharSyncModel(40, 371); // 15559, pearspedbg
-	AddCharSyncModel(233, 372); // 15560, pearspedbh
-	AddCharSyncModel(233, 373); // 15561, pearspedbi
-	AddCharSyncModel(93, 374); // 15562, pearspedbj
-	AddCharSyncModel(233, 375); // 15563, pearspedbk
-	AddCharSyncModel(98, 376); // 15564, pearspedbl male
-	AddCharSyncModel(98, 377); // 15565, pearspedbm male
-	AddCharSyncModel(98, 378); // 15566, pearspedbn male
-	AddCharSyncModel(98, 379); // 15567, pearspedbo male
-	AddCharSyncModel(112, 380); // 15568, pearspedbp male
-	AddCharSyncModel(127, 381); // 15569, pearspedbq male
-	AddCharSyncModel(127, 382); // 15570, pearspedbr male
-	AddCharSyncModel(240, 383); // 15571, pearspedbs male
-	AddCharSyncModel(240, 384); // 15572, pearspedbt male
-	AddCharSyncModel(240, 385); // 15573, pearspedbu male
-	AddCharSyncModel(45, 386); // 15574, pearspedbv male
-	AddCharSyncModel(91, 387); // 15575, pearspedbw
-	AddCharSyncModel(98, 388); // 15576, pearspedbx male
-	AddCharSyncModel(216, 389); // 15577, pearspedby
-	AddCharSyncModel(25, 390); // 15578, pearspedbz male
-	AddCharSyncModel(120, 391); // 15579, pearspedca male
-	AddCharSyncModel(179, 392); // 15580, pearspedcb male
-	AddCharSyncModel(233, 393); // 15581, pearspedcc
-	AddCharSyncModel(12, 394); // 15582, pearspedcd
-	AddCharSyncModel(40, 395); // 15583, pearspedce
-	AddCharSyncModel(85, 396); // 15584, pearspedcf
-	AddCharSyncModel(233, 397); // 15585, pearspedcg
-	AddCharSyncModel(233, 398); // 15586, pearspedct
-	AddCharSyncModel(233, 399); // 15587, pearspedch
-	AddCharSyncModel(12, 400); // 15588, pearspedci
-	AddCharSyncModel(217, 401); // 15589, pearspedcj male
-	AddCharSyncModel(12, 402); // 15590, pearspedck
-	AddCharSyncModel(59, 403); // 15591, pearspedcl male
-	AddCharSyncModel(93, 404); // 15592, pearspedcm
-	AddCharSyncModel(98, 405); // 15593, pearspedcn male
-	AddCharSyncModel(143, 406); // 15594, pearspedco male
-	AddCharSyncModel(93, 407); // 15595, pearspedcp
-	AddCharSyncModel(91, 408); // 15596, pearspedcq
-	AddCharSyncModel(40, 409); // 15597, pearspedcr
-	AddCharSyncModel(46, 410); // 15598, pearspedcs male
-	AddCharSyncModel(40, 411); // 15599, pedaraba
-	AddCharSyncModel(221, 412); // 15600, pedarabb male
-	AddCharSyncModel(142, 413); // 15601, pedarabc male
-	AddCharSyncModel(42, 414); // 15602, prisonmex male
-	AddCharSyncModel(311, 415); // 15603, pearscop male
-	AddCharSyncModel(287, 416); // 15604, pearsarmy1 male
-	AddCharSyncModel(287, 417); // 15605, pearsarmy2 male
-	AddCharSyncModel(5, 418); // 15606, pearsswat1 male (жирный араб)
-	AddCharSyncModel(285, 419); // 15607, pearsswat2 male
-	AddCharSyncModel(300, 420); // 15608, pearscop2 male
-	AddCharSyncModel(301, 421); // 15609, pearsswat4 male
-	AddCharSyncModel(300, 422); // 15610, pearsswat5 male
-	AddCharSyncModel(300, 423); // 15611, pearscop3 male
-	AddCharSyncModel(305, 424); // 15612, pearscop4 male
-	AddCharSyncModel(303, 425); // 15613, pearscop5 male
-	AddCharSyncModel(142, 426); // 15614, pearspedcv male
-	AddCharSyncModel(221, 427); // 15615, pearspedcw male
-	AddCharSyncModel(277, 428); // 15616, astronaut all
-	AddCharSyncModel(6, 429); // 15617, jason male
-	AddCharSyncModel(21, 430); // 15618, prisonblack male
-	AddCharSyncModel(141, 431); // 15619, pearspedcx female
-	AddCharSyncModel(144, 432); // 15620, pearspedcy male
-	AddCharSyncModel(287, 433); // 15621, pearspedcz male
-	AddCharSyncModel(146, 434); // 15622, pearspedda male
-	AddCharSyncModel(42, 435); // 15623, pearspeddb male
-	AddCharSyncModel(287, 436); // 15624, pearspeddc male
-	AddCharSyncModel(307, 437); // 15625, pearspeddd female
-	AddCharSyncModel(310, 438); // 15626, pearspedde male
-	AddCharSyncModel(306, 439); // 15627, pearscop6 female
-	AddCharSyncModel(281, 440); // 15628, pearspeddf male
-	AddCharSyncModel(280, 441); // 15629, pearspeddg male
-	AddCharSyncModel(265, 442); // 15630, pearspeddh male
-	AddCharSyncModel(310, 443); // 15631, pearspeddi male
-	AddCharSyncModel(306, 444); // 15632, pearspeddj female
-	AddCharSyncModel(306, 445); // 15633, pearspeddk female
-	AddCharSyncModel(282, 446); // 15634, pearspeddl male
-	AddCharSyncModel(282, 447); // 15635, pearspeddm male
-	AddCharSyncModel(282, 448); // 15636, pearspeddn male
-	AddCharSyncModel(282, 449); // 15637, pearspeddo male
-	AddCharSyncModel(282, 450); // 15638, pearspeddp male
-	AddCharSyncModel(282, 451); // 15639, pearspeddq male
-	AddCharSyncModel(306, 452); // 15640, pearspeddr female
-	AddCharSyncModel(121, 453); // 15641, pearspedds male
-    AddCharSyncModel(165, 454); // 15642, pearspeddt male
-    AddCharSyncModel(286, 455); // 15643, pearspeddu male
-    AddCharSyncModel(286, 456); // 15644, pearspeddv male
-    AddCharSyncModel(295, 457); // 15645, pearspeddw male
-    AddCharSyncModel(286, 458); // 15646, pearspeddx male
-    AddCharSyncModel(286, 459); // 15647, pearspeddy male
-    AddCharSyncModel(285, 460); // 15648, pearspeddz all
-    AddCharSyncModel(285, 461); // 15649, pearspedea all
-    AddCharSyncModel(165, 462); // 15650, pearspedeb male
-    AddCharSyncModel(286, 463); // 15651, pearspedec male
-    AddCharSyncModel(286, 464); // 15652, pearspeded male
-    AddCharSyncModel(150, 465); // 15653, pearspedee female
-    AddCharSyncModel(286, 466); // 15654, pearspedef male
-	AddCharSyncModel(29, 467); // 15655, zverworks male
-	AddCharSyncModel(121, 468); // 15656, pearspedeg male Yakuza
-	AddCharSyncModel(118, 469); // 15657, pearspedeh male Yakuza
-	AddCharSyncModel(123, 470); // 15658, pearspedei male Yakuza
-	AddCharSyncModel(118, 471); // 15659, pearspedej male Yakuza
-	AddCharSyncModel(119, 472); // 15660, pearspedek male RM
-	AddCharSyncModel(66, 473); // 15661, pearspedel male
-	AddCharSyncModel(60, 474); // 15662, pearspedem male RM
-	AddCharSyncModel(113, 475); // 15663, pearspeden male RM
-	AddCharSyncModel(68, 476); // 15664, pearspedeo male
-	AddCharSyncModel(68, 477); // 15665, pearspedep male
-	AddCharSyncModel(113, 478); // 15666, pearspedeq male
-	AddCharSyncModel(66, 479); // 15667, pearspeder male
-	AddCharSyncModel(111, 480); // 15668, pearspedes male RM
-	AddCharSyncModel(247, 481); // 15669, pearspedet male
-	AddCharSyncModel(46, 482); // 15670, pearspedeu male RM
-	AddCharSyncModel(223, 483); // 15671, pearspedev male
-	AddCharSyncModel(111, 484); // 15672, pearspedew male RM
-	AddCharSyncModel(46, 485); // 15673, pearspedex male RM
-	AddCharSyncModel(60, 486); // 15674, pearspedey male
-	AddCharSyncModel(29, 487); // 15675, pearspedfz male
-	AddCharSyncModel(117, 488); // 15676, pearspedfa male Yakuza
-	AddCharSyncModel(121, 489); // 15677, pearspedfb male
-	AddCharSyncModel(272, 490); // 15678, pearspedfc male RM
-	AddCharSyncModel(126, 491); // 15679, pearspedfd male RM
-	AddCharSyncModel(125, 492); // 15680, pearspedfe male
-	AddCharSyncModel(294, 493); // 15681, pearspedff male
-	AddCharSyncModel(285, 494); // 15682, pearsvvs male
-	AddCharSyncModel(70, 495); // 15683, pearsdoctor male
-	AddCharSyncModel(308, 496); // 15684, pearsmedg1 famale
-	AddCharSyncModel(308, 497); // 15685, pearsmedg2 famale
-	AddCharSyncModel(308, 498); // 15686, pearsmedg3 famale
-	AddCharSyncModel(308, 499); // 15687, pearsmedg4 famale
-	AddCharSyncModel(275, 500); // 15688, pearsmedm1 male
-	AddCharSyncModel(276, 501); // 15689, pearsmedm2 male
-	AddCharSyncModel(275, 502); // 15690, pearsmedm3 male
-	AddCharSyncModel(276, 503); // 15691, pearsmedm4 male
-	AddCharSyncModel(274, 504); // 15692, pearsmedm5 male
-	AddCharSyncModel(146, 505); // 15693, pearsebalai male
-	AddCharSyncModel(264, 506); // 15694, pearsvampir male
-	AddCharSyncModel(168, 507); // 15695, pearsbenzop male
-	AddCharSyncModel(130, 508); // 15696, pearsovechka -
-	AddCharSyncModel(31, 509); //  15697, pearskorova -
-	AddCharSyncModel(153, 510); //  15698, pearsscream -
-	AddCharSyncModel(264, 511); //  15699, pearsclown -
-	AddCharSyncModel(82, 512); //  15700, pearszombie1 male
-	AddCharSyncModel(83, 513); //  15701, pearszombie2 male
-	AddCharSyncModel(84, 514); //  15702, pearszombie3 male
-	AddCharSyncModel(82, 515); //  15703, pearszombie4 male
-	AddCharSyncModel(83, 516); //  15704, pearszombie5 male
-	AddCharSyncModel(75, 517); //  15705, pearszombie6 famale
-	AddCharSyncModel(77, 518); //  15706, pearszombie7 famale
-	AddCharSyncModel(82, 519); //  15707, pearszombie8 male
-	AddCharSyncModel(83, 520); //  15708, pearszombie9 male
-	AddCharSyncModel(59, 521); // pearskortu
-	AddCharSyncModel(60, 522); // pearsmajodin
-	AddCharSyncModel(98, 523); // pearsmajodva
-	AddCharSyncModel(23, 524); // pearsmajotri
-	AddCharSyncModel(248, 525); // pearsjil
-	AddCharSyncModel(247, 526); // pearsjildva
-	AddCharSyncModel(187, 527); // pearskosb
-	AddCharSyncModel(91, 528); // pearsmegno woman
-	AddCharSyncModel(19, 529); // pearsgheze
-	AddCharSyncModel(93, 530); // pearswjns woman
-	AddCharSyncModel(184, 531); // pearsdedsp
-	AddCharSyncModel(223, 532); // pearssuitold
-	AddCharSyncModel(186, 533); // pearssuoldv
-	AddCharSyncModel(208, 534); // pearsdetsu
-	AddCharSyncModel(66, 535); // pearskurng
-	AddCharSyncModel(80, 536); // pearsufcng
-	AddCharSyncModel(109, 537); // pearsvago vagos 
-	AddCharSyncModel(110, 538); // pearsvagtr vagos
-	AddCharSyncModel(106, 539); // pearsgroveo Grove
-	AddCharSyncModel(107, 540); // pearsgrovet Grove
-	AddCharSyncModel(195, 541); // pearsgroveg grove woman
-	AddCharSyncModel(102, 542); // pearsballo ballas
-	AddCharSyncModel(102, 543); // pearsballt ballas
-	AddCharSyncModel(13, 544); // pearsballg ballas woman
-	AddCharSyncModel(104, 545); // pearsballtr ballas 
-	AddCharSyncModel(91, 546); // pearsbecky woman
-	AddCharSyncModel(42, 547); // pearsorm 
-	AddCharSyncModel(42, 548); // pearsorgm
-	AddCharSyncModel(258, 549); // pearsamkr
-	AddCharSyncModel(30, 550); // pearsrcep
-	AddCharSyncModel(56, 551); // pearsgigre woman
-	AddCharSyncModel(259, 552); // pearsolbat
-	AddCharSyncModel(258, 553); // pearssimsui
-	AddCharSyncModel(259, 554); // pearssimpol
-	AddCharSyncModel(252, 555); // pearssimnud
-	AddCharSyncModel(217, 556); // pearsardbl
-	AddCharSyncModel(171, 557); // pearsardsui
-	AddCharSyncModel(208, 558); // pearsardsuib
-	AddCharSyncModel(240, 559); // pearsardjil
-	AddCharSyncModel(46, 560); // pearsardjen
-	AddCharSyncModel(223, 561); // pearsardjens
-	AddCharSyncModel(211, 562); // pearsgibl woman
-	AddCharSyncModel(216, 563); // pearsgipink woman 
-	AddCharSyncModel(247, 564); // pearsgjo
-	AddCharSyncModel(248, 565); // pearsgjt
-	AddCharSyncModel(254, 566); // pearsgjtr
-	AddCharSyncModel(100, 567); // pearsgjf
-	AddCharSyncModel(113, 568); // pearsvicbs
-	AddCharSyncModel(111, 569); // pearsvicsrg
-	AddCharSyncModel(125, 570); // pearsvicrm
-	AddCharSyncModel(144, 571); // pearsterro
-	AddCharSyncModel(143, 572); // pearsterrt
-	AddCharSyncModel(176, 573); // pearsterrtr
-	AddCharSyncModel(177, 574); // pearsterrf
-	AddCharSyncModel(177, 575); // pearsterrfm
-	AddCharSyncModel(183, 576); // pearsterrfi
-	AddCharSyncModel(241, 577); // pearsterrs
-	AddCharSyncModel(273, 578); // pearsmono
-	AddCharSyncModel(184, 579); // pearsmont 
-	AddCharSyncModel(119, 580); // pearsmontr
-	AddCharSyncModel(47, 581); // pearsmonf
-	AddCharSyncModel(45, 582); // pearsnudta
-	AddCharSyncModel(300, 583); // pearsguo
-	AddCharSyncModel(300, 584); // pearsgut
-	AddCharSyncModel(301, 585); // pearsgutr
-	AddCharSyncModel(178, 586); // fpearshall1
-	AddCharSyncModel(178, 587); // fpearshall2
-	AddCharSyncModel(152, 588); // fpearshall3
-	AddCharSyncModel(90, 589); // fpearshall4
-	AddCharSyncModel(195, 590); // fpearshall5
-	AddCharSyncModel(90, 591); // fpearshall6
-	AddCharSyncModel(137, 592); // mpearshall1
-	AddCharSyncModel(252, 593); // mpearshall2
-	AddCharSyncModel(264, 594); // mpearshall3
-	AddCharSyncModel(258, 595); // mpearshall4
-	AddCharSyncModel(222, 596); // mpearshall5
-	AddCharSyncModel(212, 597); // mpearshall6
-	AddCharSyncModel(211, 598); // pearsranfem1
-	AddCharSyncModel(214, 599); // pearsranfem2
-	AddCharSyncModel(101, 600); // pearsranma1
-	AddCharSyncModel(171, 601); // pearsranma2
-	AddCharSyncModel(167, 602); // pearsanubis
-	AddCharSyncModel(1, 603); // pearsbfost
-	AddCharSyncModel(7, 604); // pearsbmori
-	AddCharSyncModel(162, 605); // pearsbear
-	AddCharSyncModel(157, 606); // pearsdeer
-	AddCharSyncModel(157, 607); // pearsfox
-	AddCharSyncModel(157, 608); // pearsrabbit
-	AddCharSyncModel(162, 609); // pearswolf
-	AddCharSyncModel(145, 610); // pearsfhaz
-	AddCharSyncModel(146, 611); // pearsmhaz1
-	AddCharSyncModel(144, 612); // pearsmhaz2
-	AddCharSyncModel(146, 613); // pearsmhaz3
-	//
-	AddCharSyncModel(30, 614); // pearshaizenberg
-	AddCharSyncModel(60, 615); // pearskitaec
-	AddCharSyncModel(111, 616); // pearsruski1
-	AddCharSyncModel(25, 617); // pearswinneg
-	AddCharSyncModel(191, 618); // pearswarm1
-	AddCharSyncModel(287, 619); // pearswinarm1
-	AddCharSyncModel(287, 620); // pearswinarm2
-	AddCharSyncModel(191, 621); // pearswinarw1
-	AddCharSyncModel(216, 622); // pearswinw1
-	AddCharSyncModel(150, 623); // pearsdocw1
-	AddCharSyncModel(193, 624); // pearswinw2
-	AddCharSyncModel(179, 625); // pearswinarm3
-	// КОШКИ
-	AddCharSyncModel(152, 626); //  pearscat1,
-	AddCharSyncModel(152, 627); //  pearscat2,
-	AddCharSyncModel(152, 628); //  pearscat3,
-	AddCharSyncModel(152, 629); //  pearscat4,
-	AddCharSyncModel(152, 630); //  pearscat5,
-	AddCharSyncModel(152, 631); //  pearscat6,
-	// СОБАКИ
-	AddCharSyncModel(153, 632); // pearsdog1,
-	AddCharSyncModel(153, 633); // pearsdog2,
-	AddCharSyncModel(153, 634); // pearsdog3,
-	AddCharSyncModel(153, 635); // pearsdog4,
-	AddCharSyncModel(153, 636); // pearsdog5,
-	AddCharSyncModel(153, 637); // pearsdog6,
-	AddCharSyncModel(153, 638); // pearsdog7,
-	AddCharSyncModel(153, 639); // pearsdog8,
-	AddCharSyncModel(153, 640); // pearsdog9,
-	AddCharSyncModel(153, 641); // pearsdog10
-	AddCharSyncModel(153, 642); // pearsdog11
-	AddCharSyncModel(153, 643); // pearsdog12
-	AddCharSyncModel(153, 644); // pearsdog13
-	AddCharSyncModel(153, 645); // pearsdog14
-	AddCharSyncModel(153, 646); // pearsdog15
-	AddCharSyncModel(153, 647); // pearsdog16
-	AddCharSyncModel(153, 648); // pearsdog17
-	//Зимние скины
-	AddCharSyncModel(1, 649); // pearssanta
-	AddCharSyncModel(40, 650); // pearsfwint1 
-	AddCharSyncModel(55, 651); // pearsfwint2 
-	AddCharSyncModel(56, 652); // pearsfwint3 
-	AddCharSyncModel(55, 653); // pearsfwint4 
-	AddCharSyncModel(60, 654); // pearsmwint1 
-	AddCharSyncModel(25, 655); // pearsmwint2 
-	AddCharSyncModel(46, 656); // pearsmwint3 
-	AddCharSyncModel(78, 657); // pearsmwint4 
-	AddCharSyncModel(93, 658); // pearsfwp1   
-	AddCharSyncModel(265, 659); // pearsmwp1   
-	AddCharSyncModel(280, 660); // pearsmwp2   
-	AddCharSyncModel(281, 661); // pearsmwp3   
-	AddCharSyncModel(280, 662); // pearsmwp4   
-	AddCharSyncModel(266, 663); // pearsmwp5   
+	for(new s = 311; s < sizeof(SkinPearsInfo); s++)
+	{
+		if(SkinPearsInfo[s][eCustomSkin] == true)
+		{
+			AddCharSyncModel(SkinPearsInfo[s][eSampSkinID], s);
+		}
+	}
     return 1;
 }
-
-new skinGoldCustom[] = 
-{
-    0, // 0
-    0, // 1
-    0, // 2
-    0, // 3
-    0, // 4
-    0, // 5
-    0, // 6
-    0, // 7
-    0, // 8
-    0, // 9
-    0, // 10
-    0, // 11
-    0, // 12
-    0, // 13
-    0, // 14
-    0, // 15
-    0, // 16
-    0, // 17
-    0, // 18
-    0, // 19
-    0, // 20
-    0, // 21
-    0, // 22
-    0, // 23
-    0, // 24
-    0, // 25
-    0, // 26
-    0, // 27
-    0, // 28
-    0, // 29
-    0, // 30
-    0, // 31
-    0, // 32
-    0, // 33
-    0, // 34
-    0, // 35
-    0, // 36
-    0, // 37
-    0, // 38
-    0, // 39
-    0, // 40
-    0, // 41
-    0, // 42
-    0, // 43
-    0, // 44
-    0, // 45
-    0, // 46
-    0, // 47
-    0, // 48
-    0, // 49
-    0, // 50
-    0, // 51
-    0, // 52
-    0, // 53
-    0, // 54
-    0, // 55
-    0, // 56
-    0, // 57
-    0, // 58
-    0, // 59
-    0, // 60
-    0, // 61
-    0, // 62
-    0, // 63
-    0, // 64
-    0, // 65
-    0, // 66
-    0, // 67
-    0, // 68
-    0, // 69
-    0, // 70
-    0, // 71
-    0, // 72
-    0, // 73
-    0, // 74
-    0, // 75
-    0, // 76
-    0, // 77
-    0, // 78
-    0, // 79
-    0, // 80
-    0, // 81
-    0, // 82
-    0, // 83
-    0, // 84
-    0, // 85
-    0, // 86
-    0, // 87
-    0, // 88
-    0, // 89
-    0, // 90
-    0, // 91
-    0, // 92
-    0, // 93
-    0, // 94
-    0, // 95
-    0, // 96
-    0, // 97
-    0, // 98
-    0, // 99
-    0, // 100
-    0, // 101
-    0, // 102
-    0, // 103
-    0, // 104
-    0, // 105
-    0, // 106
-    0, // 107
-    0, // 108
-    0, // 109
-    0, // 110
-    0, // 111
-    0, // 112
-    0, // 113
-    0, // 114
-    0, // 115
-    0, // 116
-    0, // 117
-    0, // 118
-    0, // 119
-    0, // 120
-    0, // 121
-    0, // 122
-    0, // 123
-    0, // 124
-    0, // 125
-    0, // 126
-    0, // 127
-    0, // 128
-    0, // 129
-    0, // 130
-    0, // 131
-    0, // 132
-    0, // 133
-    0, // 134
-    0, // 135
-    0, // 136
-    0, // 137
-    0, // 138
-    0, // 139
-    0, // 140
-    0, // 141
-    0, // 142
-    0, // 143
-    0, // 144
-    0, // 145
-    0, // 146
-    0, // 147
-    0, // 148
-    0, // 149
-    0, // 150
-    0, // 151
-    0, // 152
-    0, // 153
-    0, // 154
-    0, // 155
-    0, // 156
-    0, // 157
-    0, // 158
-    0, // 159
-    0, // 160
-    0, // 161
-    0, // 162
-    0, // 163
-    0, // 164
-    0, // 165
-    0, // 166
-    0, // 167
-    0, // 168
-    0, // 169
-    0, // 170
-    0, // 171
-    0, // 172
-    0, // 173
-    0, // 174
-    0, // 175
-    0, // 176
-    0, // 177
-    0, // 178
-    0, // 179
-    0, // 180
-    0, // 181
-    0, // 182
-    0, // 183
-    0, // 184
-    0, // 185
-    0, // 186
-    0, // 187
-    0, // 188
-    0, // 189
-    0, // 190
-    0, // 191
-    0, // 192
-	0, // 193
-	0, // 194
-	0, // 195
-	0, // 196
-	0, // 197
-	0, // 198
-	0, // 199
-	0, // 200
-    0, // 201
-    0, // 202
-    0, // 203
-    0, // 204
-    0, // 205
-    0, // 206
-    0, // 207
-    0, // 208
-    0, // 209
-    0, // 210
-    0, // 211
-    0, // 212
-    0, // 213
-    0, // 214
-    0, // 215
-    0, // 216
-    0, // 217
-    0, // 218
-    0, // 219
-    0, // 220
-    0, // 221
-    0, // 222
-    0, // 223
-    0, // 224
-    0, // 225
-    0, // 226
-    0, // 227
-    0, // 228
-    0, // 229
-    0, // 230
-    0, // 231
-    0, // 232
-    0, // 233
-    0, // 234
-    0, // 235
-    0, // 236
-    0, // 237
-    0, // 238
-    0, // 239
-    0, // 240
-    0, // 241
-    0, // 242
-    0, // 243
-    0, // 244
-    0, // 245
-    0, // 246
-    0, // 247
-    0, // 248
-    0, // 249
-    0, // 250
-    0, // 251
-    0, // 252
-    0, // 253
-    0, // 254
-    0, // 255
-    0, // 256
-    0, // 257
-    0, // 258
-    0, // 259
-    0, // 260
-    0, // 261
-    0, // 262
-    0, // 263
-    0, // 264
-    0, // 265
-    0, // 266
-    0, // 267
-    0, // 268
-    0, // 269
-    0, // 270
-    0, // 271
-    0, // 272
-    0, // 273
-    0, // 274
-    0, // 275
-    0, // 276
-    0, // 277
-    0, // 278
-    0, // 279
-    0, // 280
-    0, // 281
-    0, // 282
-    0, // 283
-    0, // 284
-    0, // 285
-    0, // 286
-    0, // 287
-    0, // 288
-    0, // 289
-    0, // 290
-    0, // 291
-    0, // 292
-    0, // 293
-    0, // 294
-    0, // 295
-    0, // 296
-    0, // 297
-    0, // 298
-    0, // 299
-    0, // 300
-    0, // 301
-    0, // 302
-    0, // 303
-    0, // 304
-    0, // 305
-    0, // 306
-    0, // 307
-    0, // 308
-    0, // 309
-    0, // 310
-    0, // 311
-    0, // 312
-    0, // 313
-    0, // 314
-    0, // 315
-    0, // 316
-    0, // 317
-    0, // 318
-    0, // 319
-    0, // 320
-    0, // 321
-    0, // 322
-    0, // 323
-    0, // 324
-    0, // 325
-    0, // 326
-    0, // 327
-    0, // 328
-    0, // 329
-    0, // 330
-    0, // 331
-    0, // 332
-    0, // 333
-    0, // 334
-    0, // 335
-    0, // 336
-    0, // 337
-    0, // 338
-    0, // 339
-    0, // 340
-    0, // 341
-    0, // 342
-    0, // 343
-    0, // 344
-    0, // 345
-    0, // 346
-    0, // 347
-    0, // 348
-    0, // 349
-    0, // 350
-    0, // 351
-    0, // 352
-    0, // 353
-    0, // 354
-    0, // 355
-    0, // 356
-    0, // 357
-    0, // 358
-    0, // 359
-    0, // 360
-    0, // 361
-    0, // 362
-    0, // 363
-    0, // 364
-    0, // 365
-    0, // 366
-    0, // 367
-    0, // 368
-    0, // 369
-    0, // 370
-    0, // 371
-    0, // 372
-    0, // 373
-    0, // 374
-    0, // 375
-    0, // 376
-    0, // 377
-    0, // 378
-    0, // 379
-    0, // 380
-    0, // 381
-    0, // 382
-    0, // 383
-    0, // 384
-    0, // 385
-    0, // 386
-    0, // 387
-    0, // 388
-    0, // 389
-    0, // 390
-    0, // 391
-    0, // 392
-	0, // 393
-	0, // 394
-	0, // 395
-	0, // 396
-	0, // 397
-	0, // 398
-	0, // 399
-	0, // 400
-    0, // 401
-    0, // 402
-    0, // 403
-    0, // 404
-    0, // 405
-    0, // 406
-    0, // 407
-    0, // 408
-    0, // 409
-    0, // 410
-    0, // 411
-    0, // 412
-    0, // 413
-    0, // 414
-    0, // 415
-    0, // 416
-    0, // 417
-    0, // 418
-    0, // 419
-    0, // 420
-    0, // 421
-    0, // 422
-    0, // 423
-    0, // 424
-    0, // 425
-    0, // 426
-    0, // 427
-    0, // 428
-    0, // 429
-    0, // 430
-    0, // 431
-    0, // 432
-    0, // 433
-    0, // 434
-    0, // 435
-    0, // 436
-    0, // 437
-    0, // 438
-    0, // 439
-    0, // 440
-    0, // 441
-    0, // 442
-    0, // 443
-    0, // 444
-    0, // 445
-    0, // 446
-    0, // 447
-    0, // 448
-    0, // 449
-    0, // 450
-    0, // 451
-    0, // 452
-    0, // 453
-    0, // 454
-    0, // 455
-    0, // 456
-    0, // 457
-    0, // 458
-    0, // 459
-    0, // 460
-    0, // 461
-    0, // 462
-    0, // 463
-    0, // 464
-    0, // 465
-    0, // 466
-    0, // 467
-    0, // 468
-    0, // 469
-    0, // 470
-    0, // 471
-    0, // 472
-    0, // 473
-    0, // 474
-    0, // 475
-    0, // 476
-    0, // 477
-    0, // 478
-    0, // 479
-    0, // 480
-    0, // 481
-    0, // 482
-    0, // 483
-    0, // 484
-    0, // 485
-    0, // 486
-    0, // 487
-    0, // 488
-    0, // 489
-    0, // 490
-    0, // 491
-    0, // 492
-	0, // 493
-	0, // 494
-	0, // 495
-	0, // 496
-	0, // 497
-	0, // 498
-	0, // 499
-	0, // 500
-    0, // 501
-    0, // 502
-    0, // 503
-    0, // 504
-    0, // 505
-    0, // 506
-    0, // 507
-    0, // 508
-    0, // 509
-    0, // 510
-    0, // 511
-    0, // 512
-    0, // 513
-    0, // 514
-    0, // 515
-    0, // 516
-    0, // 517
-    0, // 518
-    0, // 519
-    0, // 520
-    0, // 521
-    0, // 522
-    0, // 523
-    0, // 524
-    0, // 525
-    0, // 526
-    0, // 527
-    0, // 528
-    0, // 529
-    0, // 530
-    0, // 531
-    0, // 532
-    0, // 533
-    0, // 534
-    0, // 535
-    0, // 536
-    0, // 537
-    0, // 538
-    0, // 539
-    0, // 540
-    0, // 541
-    0, // 542
-    0, // 543
-    0, // 544
-    0, // 545
-    0, // 546
-    0, // 547
-    0, // 548
-    0, // 549
-    0, // 550
-    0, // 551
-    0, // 552
-    0, // 553
-    0, // 554
-    0, // 555
-    0, // 556
-    0, // 557
-    0, // 558
-    0, // 559
-    0, // 560
-    0, // 561
-    0, // 562
-    0, // 563
-    0, // 564
-    0, // 565
-    0, // 566
-    0, // 567
-    0, // 568
-    0, // 569
-    0, // 570
-    0, // 571
-    0, // 572
-    0, // 573
-    0, // 574
-    0, // 575
-    0, // 576
-    0, // 577
-    0, // 578
-    0, // 579
-    0, // 580
-    0, // 581
-    0, // 582
-    0, // 583
-    0, // 584
-    0, // 585
-    0, // 586
-    0, // 587
-    0, // 588
-    0, // 589
-    0, // 590
-    0, // 591
-    0, // 592
-    0, // 593
-    0, // 594
-    0, // 595
-    0, // 596
-    0, // 597
-    0, // 598
-    0, // 599
-    0, // 600
-    0, // 601
-    0, // 602
-    0, // 603
-    0, // 604
-    0, // 605
-    0, // 606
-    0, // 607
-    0, // 608
-    0, // 609
-    0, // 610
-    0, // 611
-    0, // 612
-    0, // 613
-    0, // 614
-    0, // 615
-    0, // 616
-    0, // 617
-    0, // 618
-    0, // 619
-    0, // 620
-    0, // 621
-    0, // 622
-    0, // 623
-    0, // 624
-    0, // 625
-    0, // 626
-    0, // 627
-    0, // 628
-    0, // 629
-    0, // 630
-    0, // 631
-    0, // 632
-    0, // 633
-    0, // 634
-    0, // 635
-    0, // 636
-    0, // 637
-    0, // 638
-    0, // 639
-    0, // 640
-    0, // 641
-    0, // 642
-    0, // 643
-    0, // 644
-    0, // 645
-    0, // 646
-    0, // 647
-    0, // 648
-    0, // 649
-    0, // 650
-    0, // 651
-    0, // 652
-    0, // 653
-    0, // 654
-    0, // 655
-    0, // 656
-    0, // 657
-    0, // 658
-    0, // 659
-    0, // 660
-    0, // 661
-    0, // 662
-    0 // 663
-};
 
 stock IsSpecialSystemSkin(skinid)
 {
@@ -1087,31 +763,9 @@ stock DeleteSpecialSystemSkins(playerid)
 // Получаем пол по скину
 stock GetSkinSex(s)
 {
-	if(s >= 0 && s <= 8 || s >= 14 && s <= 30 || s >= 32 && s <= 37
-	|| s >= 42 && s <= 52 || s >= 57 && s <= 62 || s >= 66 && s <= 68 || s >= 42 && s <= 52 || s >= 70 && s <= 74
-	|| s >= 78 && s <= 84 || s == 86 || s >= 94 && s <= 128 || s >= 132 && s <= 137 || s >= 142 && s <= 144 || s == 146 || s == 147 || s == 149
-	|| s >= 153 && s <= 156 || s >= 158 && s <= 168 || s == 170 || s == 171 || s >= 173 && s <= 177 || s >= 179 && s <= 189 || s == 200
-	|| s >= 202 && s <= 204 || s == 206 || s >= 208 && s <= 210 || s == 212 || s == 213 || s == 217 || s >= 220 && s <= 223 || s >= 227 && s <= 230
- 	|| s >= 234 && s <= 236 || s >= 239 && s <= 242 || s >= 247 && s <= 250 || s >= 252 && s <= 255 || s >= 258 && s <= 262 || s >= 264 && s <= 297
- 	|| s >= 299 && s <= 305 || s >= 310 && s <= 311
-
-	// Кастомные -15188
-	|| s == 312
-	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 336
-	|| s == 352 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
-	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
-	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425 || s == 429
-	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451
-	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 495 || s >= 500 && s <= 507
-	|| s >= 512 && s <= 516 || s >= 519 && s <= 527 || s == 529 || s >= 531 && s <= 540 || s >= 542 && s <= 543
-	|| s == 545 || s >= 547 && s <= 550 || s >= 552 && s <= 561 || s >= 564 && s <= 585 || s >= 592 && s <= 597
-	|| s >= 600 && s <= 602 || s >= 611 && s <= 617 || s >= 619 && s <= 620 || s == 625 || s == 648
-	|| s >= 654 && s <= 657 || s >= 659 && s <= 663) return 1; // 1 - мужской скин
-
-	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461 || s == 508 || s == 509 ||
-	s == 510 || s == 511 || s >= 603 && s <= 609 || s >= 626 && s <= 648) return 0; // Не имеет пола (подходит для мужчин и женщин)
-
- 	else return 2; // Все остальные 2, значит женские
+	if(SkinPearsInfo[s][eSkinSex] == 1) return 1; // 1 - мужской скин
+	else if(SkinPearsInfo[s][eSkinSex] == 2) return 2; // 2 - женский скин
+	else return 0; // Не имеет пола (подходит для мужчин и женщин)
 }
 
 // Сюда добавляются скины для организаций (Максимально 50 слотов, значит 49 ПОСЛЕДНИЙ)
