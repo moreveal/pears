@@ -158,6 +158,14 @@ enum petsnpc
 }
 new PetInfo[MAX_PETS][petsnpc];
 
+stock ClearPetVariable(pet)
+{
+    // Очищаем все переменные PlayerInfo
+	for(new petsnpc:i; i < petsnpc; ++i) PetInfo[pet][i] = 0;
+    for(new pet_Skills:i; i < pet_Skills; ++i) PetInfo[pet][petSkills][i] = 0;
+    for(new i; i < MAX_PETS_FEATURES; ++i) PetInfo[pet][petFeatures][i] = 0;
+    return true;
+}
 stock FindPet(thingid)
 {
     new result = -1;
@@ -236,7 +244,7 @@ stock DestroyPet(playerid, slotpet)
     SavePet(playerid,pet);
     OnlineInfo[playerid][oPet][slotpet] = -1;
     OnlineInfo[playerid][oPetID][slotpet] = -1;
-
+    ClearPetVariable(pet);
     if(IsValidNpc(PetInfo[pet][petID])) DestroyNpc(PetInfo[pet][petID]);
 
     return true;
@@ -476,7 +484,7 @@ stock LoadPlayerPet(playerid,slotpet, petId, inva)
         new string_mysql[100];
         if(petId == 0)
         {
-            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pets` SET `petHunger` = '50'");
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pets` SET `petHunger` = '50',`petHealth` = '100'");
 			mysql_tquery(pearsq, string_mysql, "Call_getidPet", "ddd", playerid, slotpet, inva);
         }
         else{
@@ -1774,6 +1782,7 @@ stock OnPlayerLoadPet(playerid,slot, pet, inva)
     cache_get_value_name_int(0,"petID",PetInfo[pet][petNewID]);
     OnlineInfo[playerid][oPetID][slot] = PetInfo[pet][petNewID];
     PlayerInfo[playerid][pInvenPara][inva] = PetInfo[pet][petNewID];
+    PetInfo[pet][petType] = PlayerInfo[playerid][pInven][inva];
     SaveInvent(playerid, inva);
 
 	cache_get_value_name(0,"petName",PetInfo[pet][petName]);
@@ -1790,7 +1799,6 @@ stock OnPlayerLoadPet(playerid,slot, pet, inva)
 
     cache_get_value_name_int(0,"petPlayingUnix",PetInfo[pet][petPlayingUnix]);
     cache_get_value_name_int(0,"petUnixLastEating",PetInfo[pet][petUnixLastEating]);
-    cache_get_value_name_int(0,"petType",PetInfo[pet][petType]);
     cache_get_value_name_float(0,"petHealth",PetInfo[pet][petHealth]);
 
     new bool:is_null = false;
@@ -1835,6 +1843,7 @@ stock OnPlayerLoadPet(playerid,slot, pet, inva)
             JSON_GetInt(node, "PET_SKILL_SITCAR", PetInfo[pet][petFeatures][PET_SKILL_SITCAR]);
         }
     }
+    if(PetInfo[pet][petFeatures][PET_SKILL_FOLLOWME] == 0) PetInfo[pet][petFeatures][PET_SKILL_FOLLOWME] = 10;
     CreatePet(playerid,pet);
 	return 1;
 }
