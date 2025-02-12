@@ -852,7 +852,7 @@ stock DeleteSpecialSystemSkins(playerid)
 		if (quan < 1) continue;
 		new skinid = PlayerInfo[playerid][pInven][i];
 		if (IsSpecialSystemSkin(skinid)) {
-			TakeInvent(playerid, skinid, 3, i);
+			TakeInvent(playerid, skinid, quan, 3, i);
 		}
 	}
 	return 1;
