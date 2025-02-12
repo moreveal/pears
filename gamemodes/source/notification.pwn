@@ -110,6 +110,17 @@ stock CreateGlobalTextDrawHintButton()
 	return 1;
 }
 
+
+stock SuccessMessage(playerid, const string[])
+{
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{99ff66}*",string,"*",""), PlayerPlaySound(playerid,6401,0,0,0);
+	return 1;
+}
+stock ErrorMessage(playerid, const string[])
+{
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff0000}*",string,"*",""), PlayerPlaySound(playerid,4203,0,0,0);
+	return 1;
+}
 stock ErrorText(playerid, const string[])
 {
 	SendClientMessage(playerid, COLOR_GREY, string), PlayerPlaySound(playerid,4203,0,0,0);
