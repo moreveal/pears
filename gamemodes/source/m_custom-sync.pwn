@@ -89,6 +89,7 @@
 #endif
 
 const CS_RPC_CreateObject = 44;
+const CS_RPC_CreatePickup = 95;
 
 /*
 	Vars
@@ -134,11 +135,17 @@ stock IsPlayerSyncModels(playerid)
 	return _:c_player_sync_models{playerid};
 }
 
-stock IsCustomObject(objectid)
+stock IsCustomObject(modelid)
 {
-    if(objectid >= 12093 && objectid <= 12719
-        || objectid >= 12722 && objectid <= 12799) return true;
+    if(modelid >= 12093 && modelid <= 12719
+        || modelid >= 12722 && modelid <= 12799) return true;
     return false;
+}
+
+stock IsCustomPickup(modelid)
+{
+	if (modelid == 12722 || modelid == 12723) return true;
+	return false;
 }
 
 #if M_CUSTOM_CustomForPlayers || M_CUSTOM_CustomForActors
@@ -311,6 +318,16 @@ stock IsCustomObject(objectid)
 		return actorid;
 	}
 
+	stock m_custom_sync_CreateDActorEx(modelid, Float:x, Float:y, Float:z, Float:r, invulnerable = 1, Float:health = 100.0, Float:streamdistance = STREAMER_ACTOR_SD, const worlds[] = { 0 }, const interiors[] = { -1 }, const players[] = { -1 }, const STREAMER_TAG_AREA:areas[] = { STREAMER_TAG_AREA:-1 }, priority = 0, maxworlds = sizeof worlds, maxinteriors = sizeof interiors, maxplayers = sizeof players, maxareas = sizeof areas)
+	{
+		//c_actor_model_id[actorid] = newid;
+
+		if(modelid >= 312) modelid += 15188;
+		new actorid = CreateDynamicActorEx(modelid, x, y, z, r, invulnerable, health, streamdistance, worlds, interiors, players, areas, priority, maxworlds, maxinteriors, maxplayers, maxareas);
+
+		return actorid;
+	}
+
 /*
 	stock m_custom_sync_SetPlayerSkin(playerid, skinid)
 	{
@@ -341,7 +358,14 @@ stock IsCustomObject(objectid)
 		#define _ALS_CreateDynamicActor
 	#endif
 
+	#if defined _ALS_CreateDynamicActorEx
+		#undef CreateDynamicActorEx
+	#else
+		#define _ALS_CreateDynamicActorEx
+	#endif
+
 	#define CreateDynamicActor( m_custom_sync_CreateDActor(
+	#define CreateDynamicActorEx( m_custom_sync_CreateDActorEx(
 #endif
 
 #if M_CUSTOM_CustomForVehicles
@@ -750,6 +774,31 @@ ORPC:CS_RPC_CreateObject(playerid, BitStream:bs)
 		BS_GetWriteOffset(bs, offset);
 		BS_SetWriteOffset(bs, 16);
 		BS_WriteInt32(bs, NO_OBJECT_MODEL_FILE);
+		BS_SetWriteOffset(bs, offset);
+	}
+	return true;
+}
+
+ORPC:CS_RPC_CreatePickup(playerid, BitStream:bs)
+{
+	if(!IsPlayerConnected(playerid)) return true;
+	if (c_player_sync_models{playerid} == true) return true;
+
+	static ModelID;
+	BS_SetReadOffset(bs, 32);
+	BS_ReadInt32(bs, ModelID);
+
+	if(IsCustomPickup(ModelID))
+	{
+		static offset;
+
+		BS_GetWriteOffset(bs, offset);
+		static ReplaceModelID;
+		if (ModelID == 12722 || ModelID == 12723) {
+			ReplaceModelID = 19132;
+		} else ReplaceModelID = NO_OBJECT_MODEL_FILE;
+		BS_SetWriteOffset(bs, 32);
+		BS_WriteInt32(bs, ReplaceModelID);
 		BS_SetWriteOffset(bs, offset);
 	}
 	return true;

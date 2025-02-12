@@ -541,6 +541,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		if(BizzInfo[b][bProduct][18] == 0) BizzInfo[b][bProduct][18] = 230, BizzInfo[b][bTypeProduct][18] = 0, yes[18] = true; // Солнцезащитный крем
 		if(BizzInfo[b][bProduct][19] == 0) BizzInfo[b][bProduct][19] = 249, BizzInfo[b][bTypeProduct][19] = 0, yes[19] = true; // Прокладки
 		if(BizzInfo[b][bProduct][20] == 0) BizzInfo[b][bProduct][20] = 8, BizzInfo[b][bTypeProduct][20] = 0, yes[20] = true; // Аптечка
+		if(BizzInfo[b][bProduct][21] == 0) BizzInfo[b][bProduct][21] = 12205, BizzInfo[b][bTypeProduct][21] = 2, yes[21] = true; // Маска
 	}
 	else if(b >= 133 && b <= 142) // Магазины с Техникой
 	{

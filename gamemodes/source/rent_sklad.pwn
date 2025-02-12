@@ -15,7 +15,7 @@ CMD:rentsklad(playerid)
 				if(fpick > 0 && thingPack == 2) //  Кладём Ящик
 				{
 					if(fpick == 34 && thingType == 1 && !IsOrderDepartWeapon(WhInfo[r][wStat], 34)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку");
-					if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0 || IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1)
+					if((Drugs_IsPackage(fpick) || fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0 || IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1)
 					{
 					    new put_inva = putrentwh(r, fpick, fquan, thingType); // Кладём предмет
 						if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе, для этого предмета, нет места [ Лимит ]");

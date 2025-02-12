@@ -99,6 +99,72 @@ stock GetThingForCraft(thingId,thingType, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2
         i3 = 245, q3 = 1, t3 = 0; // мех лисы
         i4 = 256, q4 = 50, t4 = 0; // Нитки
     }
+    else if (thingId == 12376) // Респиратор
+    {
+        i0 = 266, q0 = 1, t0 = 0; // Фильтр респиратора
+        i1 = 267, q1 = 1, t1 = 0; // Оболочка респиратора
+        i2 = 268, q2 = 10, t2 = 0; // Резина
+        i3 = 238, q3 = 15, t3 = 0; // Алюминий
+    }
+    else if (thingId == 266) // Фильтр респиратора
+    {
+        i0 = 268, q0 = 15, t0 = 0; // Резина
+        i1 = 259, q1 = 10, t1 = 0; // Ткань
+        i2 = 238, q2 = 5, t2 = 0; // Алюминий
+    }
+    else if (thingId == 267) // Оболочка респиратора
+    {
+        i0 = 268, q0 = 10, t0 = 0; // Резина
+        i1 = 259, q1 = 5, t1 = 0; // Ткань
+        i2 = 238, q2 = 20, t2 = 0; // Алюминий
+    }
+    else if (thingId == 12139) // Противогаз
+    {
+        i0 = 12376, q0 = 1, t0 = 2; // Респиратор
+        i1 = 269, q1 = 1, t1 = 0; // Оболочка противогаза
+        i2 = 270, q2 = 1, t2 = 0; // Фильтр противогаза
+        i3 = 268, q3 = 20, t3 = 0; // Резина
+        i4 = 238, q4 = 20, t4 = 0; // Алюминий
+    }
+    else if (thingId == 12377) // Улучшенный противогаз
+    {
+        i0 = 12377, q0 = 1, t0 = 2; // Противогаз
+        i1 = 270, q1 = 1, t1 = 0; // Фильтр противогаза
+        i2 = 268, q2 = 25, t2 = 0; // Резина
+        i3 = 259, q3 = 10, t3 = 0; // Ткань
+        i4 = 238, q4 = 25, t4 = 0; // Алюминий
+    }
+    else if (thingId == 269) // Оболочка противогаза
+    {
+        i0 = 268, q0 = 35, t0 = 0; // Резина
+        i1 = 259, q1 = 10, t1 = 0; // Ткань
+        i2 = 238, q2 = 30, t2 = 0; // Алюминий
+    }
+    else if (thingId == 270) // Фильтр противогаза
+    {
+        i0 = 268, q0 = 20, t0 = 0; // Резина
+        i1 = 259, q1 = 20, t1 = 0; // Ткань
+        i2 = 238, q2 = 10, t2 = 0; // Алюминий
+    }
+    else if (thingId == 612 && thingType == 3) // Белый защитный костюм
+    {
+        i0 = 268, q0 = 35, t0 = 0; // Резина
+        i1 = 259, q1 = 10, t1 = 0; // Ткань
+    }
+    else if ((thingId == 610 || thingId == 611 || thingId == 547) && thingType == 3) // Оранжевый защитный костюм
+    {
+        i0 = 613, q0 = 1, t0 = 3; // Черный защитный костюм
+        i1 = 268, q1 = 20, t1 = 0; // Резина
+        i2 = 259, q2 = 15, t2 = 0; // Ткань
+        i3 = 60, q3 = 30, t3 = 0; // Палладий
+    }
+    else if (thingId == 613 && thingType == 3) // Черный защитный костюм
+    {
+        i0 = 612, q0 = 1, t0 = 3; // Белый защитный костюм
+        i1 = 268, q1 = 15, t1 = 0; // Резина
+        i2 = 259, q2 = 5, t2 = 0; // Ткань
+        i3 = 60, q3 = 10, t3 = 0; // Палладий
+    }
     else if (thingId == 260) // Иголки
     {
         i0 = 238, q0 = 10, t0 = 0; // Аллюминий
@@ -613,7 +679,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
             }
             else
             {
-                new line[100],lines[800];
+                new line[100],lines[1000];
                 if(Tabs_Load[playerid] == 11) // Верстак
                 {
                     if(OnlineInfo[playerid][oInventSelectLeft] == 9999) // Ничего не выбрано для улучшений, значит открываем меню создания
@@ -628,6 +694,13 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                         format(line,sizeof(line),"\n{ff9000}Отмычка"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Бомба Липучка"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Термитная смесь"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Оболочка Респиратора"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Фильтр Респиратора"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Респиратор"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Оболочка Противогаза"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Фильтр Противогаза"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Противогаз"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Улучшенный противогаз"), strcat(lines,line);
                         ShowDialog(playerid,1132,DIALOG_STYLE_LIST,"{ff9000}Верстак",lines,"Выбор","Отмена");
                     }
                     else
@@ -651,7 +724,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     format(line,sizeof(line),"{ff9000}Термитная смесь"), strcat(lines,line);
                     ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Химический Стол",lines,"Выбор","Отмена");
                 }
-                else if(Tabs_Load[playerid] == 17)
+                else if(Tabs_Load[playerid] == 17) // Станок
                 {
                     dialogCraftList(playerid);
                 }
@@ -726,7 +799,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     \n{ffcc66}на кнопку с галочкой, чтобы начать процесс");
                     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Химический Стол",lines,"*","");
                 }
-                else if(Tabs_Load[playerid] == 17) // Химический Стол
+                else if(Tabs_Load[playerid] == 17) // Ткацкий станок
                 {
                     format(lines,sizeof(lines),
                     "\n{ff9000}Создание Предметов\
@@ -789,8 +862,8 @@ stock ClickCraftProcess(playerid, tabs_load)
     }
     else
     {
-        ClearCraftProcess(playerid);
         HideDrawCraftProcess(playerid);
+        ClearCraftProcess(playerid);
         ErrorMessage(playerid, "{FF6347}Вы не попали в зелёную зону и провалили процесс");
 
         if(tabs_load == 10) ErrorMessageQuestProcess(playerid); // Ремонт Двигателя

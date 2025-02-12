@@ -20,11 +20,39 @@ stock FormatNumberWithCommas(number)
 	return str;
 }
 
+enum e_PointDirection: {
+    POINT_DIRECTION_FRONT,
+    POINT_DIRECTION_BACK,
+    POINT_DIRECTION_LEFT,
+    POINT_DIRECTION_RIGHT
+}
+
 // Переносит координаты на указанную дистанцию и направление от указанной точки (2D)
-stock GetXYInFrontOfPoint(&Float:x, &Float:y, Float:angle, Float:dist) {
-	x += (dist * floatsin(-angle, degrees));
-	y += (dist * floatcos(-angle, degrees));
-	return 1;
+stock TranslatePoint2D(&Float: x, &Float: y, Float: angle, Float: distance, e_PointDirection: direction = POINT_DIRECTION_FRONT) {
+    switch(direction) {
+        case POINT_DIRECTION_FRONT:
+        {
+            x += (distance * floatsin(-angle, degrees));
+            y += (distance * floatcos(-angle, degrees));
+        }
+        case POINT_DIRECTION_BACK:
+        {
+            x += (-distance * floatsin(-angle, degrees));
+            y += (-distance * floatcos(-angle, degrees));
+        }
+        case POINT_DIRECTION_LEFT:
+        {
+            x += (distance * floatsin(-angle+270.0, degrees));
+            y += (distance * floatcos(-angle+270.0, degrees));
+        }
+        case POINT_DIRECTION_RIGHT:
+        {
+            x += (-distance * floatsin(-angle+270.0, degrees));
+            y += (-distance * floatcos(-angle+270.0, degrees));
+        }
+    }
+
+    return 1;
 }
 
 // Получает координаты, применяя смещение по вертикали и горизонтали (2D)
@@ -113,30 +141,3 @@ stock IsPointInCube(Float: x, Float: y, Float: z, Float: minx, Float: miny, Floa
 {
     return (x >= minx && x <= maxx && y >= miny && y <= maxy && z >= minz && z <= maxz);
 }
-
-// Чистка Enum
-/*stock memset(array[], val, size = sizeof array)
-{
-    #pragma unused array, val
-    static
-        fill_inst_offset;
-    if (fill_inst_offset == 0) {
-        #emit lctrl 6
-        #emit move.alt                  // 4
-        #emit lctrl 0                   // 8
-        #emit add                       // 4
-        #emit move.alt                  // 4
-        #emit lctrl 1                   // 8
-        #emit sub.alt                   // 4
-        #emit add.c 92                  // 8
-        #emit stor.pri fill_inst_offset // 8
-    } {}                                // 
-    #emit load.s.pri size               // 8
-    #emit shl.c.pri 2                   // 8
-    #emit sref.pri fill_inst_offset     // 8
-    #emit load.s.alt 12                 // 8
-    #emit load.s.pri 16                 // 8
-    #emit fill 1                        // 4
-    #emit zero.pri
-    #emit retn
-}*/

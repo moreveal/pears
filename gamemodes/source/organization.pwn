@@ -5,7 +5,11 @@
 
 enum gInfo
 {
-	BigInt:glave,
+	BigInt:glave, // Деньги
+	gcontinental[7], // Количество монет (по дням: 0 - понедельник / 6 - воскресенье)
+	gcontinental_last_update, // Последнее обновление монет
+	gcontinentalrewards[_:ContinentalCoinPlayerActions], // Награды за действия игроков
+	goffshore, // Офшорные деньги
 	gbenz,
 	gmats,
 	gdepozit,
@@ -143,6 +147,38 @@ function LoadOrgan()
 		new glave_str[MAX_BIGINT_LEN];
 		cache_get_value_name(f, "lave", glave_str);
 		OrganInfo[idx][glave] = bigint_create_str(glave_str);
+		cache_get_value_name_int(f, "offshore", OrganInfo[idx][goffshore]);
+
+		for (new i = 0; i < _:ContinentalCoinPlayerActions; i++)
+		{
+			FORMAT:column("continental_reward_%d", i);
+			cache_get_value_name_int(f, column, OrganInfo[idx][gcontinentalrewards][i]);
+		}
+
+		cache_get_value_name_int(f, "continental_last_update", OrganInfo[idx][gcontinental_last_update]);
+
+		if (IsAMafiaID(idx))
+		{
+			new week_day = get_week_day(3);
+			for (new i = 0; i < 7; i++) {
+				format(string, sizeof(string), "continental_%d", i);
+				cache_get_value_name_int(f, string, OrganInfo[idx][gcontinental][i]);
+
+				if (i == week_day) {
+					if (gettime() < get_next_monday(OrganInfo[idx][gcontinental_last_update])) continue;
+
+					new offshore = OrganInfo[idx][gcontinental][i] * ContinentalCoinInfo[cciExchangeRate];
+					if (offshore == 0) continue;
+
+					OrganInfo[idx][goffshore] += offshore;
+					OrganInfo[idx][gcontinental][i] = 0;
+
+					OrgLog(idx, "giveoffshore", 0, "", "", 0, "", "", offshore, "Конвертация монет Континенталь");
+					continue;
+				}
+			}
+		}
+		
 		cache_get_value_name_int(f, "benz", OrganInfo[idx][gbenz]);
 		cache_get_value_name_int(f, "mats", OrganInfo[idx][gmats]);
 		cache_get_value_name_int(f, "depozit", OrganInfo[idx][gdepozit]);
@@ -430,13 +466,18 @@ stock SaveOneSkinOrganization(g, i)
 
 stock SaveOrgan(idx)
 {
-	new string_mysql[1400],glave_str[MAX_BIGINT_LEN];
+	mysql_tquery(pearsq, "START TRANSACTION;");
+
+	new string_mysql[1800],glave_str[MAX_BIGINT_LEN];
 	bigint_get_str(OrganInfo[idx][glave], glave_str);
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `lave`='%s',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
-		`caracc3`='%d',`caracc4`='%d',`caracc5`='%d',`caracc6`='%d',`caracc7`='%d',`caracc8`='%d',`caracc9`='%d',",glave_str,OrganInfo[idx][gbenz],
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `lave`='%s',`offshore`='%d',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
+		`caracc3`='%d',`caracc4`='%d',`caracc5`='%d',`caracc6`='%d',`caracc7`='%d',`caracc8`='%d',`caracc9`='%d',",glave_str,OrganInfo[idx][goffshore],OrganInfo[idx][gbenz],
 		OrganInfo[idx][gmats], OrganInfo[idx][gdepozit],OrganInfo[idx][gCarAcc][0],OrganInfo[idx][gCarAcc][1],OrganInfo[idx][gCarAcc][2],
 		OrganInfo[idx][gCarAcc][3],OrganInfo[idx][gCarAcc][4],OrganInfo[idx][gCarAcc][5],OrganInfo[idx][gCarAcc][6],OrganInfo[idx][gCarAcc][7],
 		OrganInfo[idx][gCarAcc][8],OrganInfo[idx][gCarAcc][9]); // 235 + 154
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`continental_0`='%d',`continental_1`='%d',`continental_2`='%d',`continental_3`='%d',`continental_4`='%d',\
+		`continental_5`='%d',`continental_6`='%d',`continental_last_update`='%d',", string_mysql, OrganInfo[idx][gcontinental][0], OrganInfo[idx][gcontinental][1], OrganInfo[idx][gcontinental][2], OrganInfo[idx][gcontinental][3], 
+		OrganInfo[idx][gcontinental][4], OrganInfo[idx][gcontinental][5], OrganInfo[idx][gcontinental][6], OrganInfo[idx][gcontinental_last_update]); // 235 + 154
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`war1`='%d',`war2`='%d',`war3`='%d',`war4`='%d',`war5`='%d',`union1`='%d',`union2`='%d',`union3`='%d',`union4`='%d',`union5`='%d',",  string_mysql,
 		orgwar[idx][0],orgwar[idx][1],orgwar[idx][2],orgwar[idx][3],orgwar[idx][4],orguni[idx][0],orguni[idx][1],orguni[idx][2],orguni[idx][3],orguni[idx][4]); // 133 + 110
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`drugs1`='%d',`drugs2`='%d',`drugs3`='%d',`drugs4`='%d',`apt`='%d',`food`='%d',`cvetcar`='%d',`interval`='%d',\
@@ -444,6 +485,20 @@ stock SaveOrgan(idx)
 		OrganInfo[idx][gdrugs1],OrganInfo[idx][gdrugs2],OrganInfo[idx][gdrugs3],OrganInfo[idx][gdrugs4],OrganInfo[idx][gapt],OrganInfo[idx][gstat2],OrganInfo[idx][gstat],OrganInfo[idx][gInterval],
 		OrganInfo[idx][gSCbug], OrganInfo[idx][gSanCbug], OrganInfo[idx][gRejim2], OrganInfo[idx][gCash], OrganInfo[idx][gMap], OrganInfo[idx][gWarehouse],idx);
 	query_empty(pearsq, string_mysql); // 987
+
+	// Награды в монетах континенталь для игроков
+	string_mysql[0] = EOS;
+	strcat(string_mysql, "UPDATE `pp_organization` SET ");
+	for (new i = 0; i < _:ContinentalCoinPlayerActions; i++)
+	{
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`continental_reward_%d`='%d',", string_mysql, i, OrganInfo[idx][gcontinentalrewards][i]);
+	}
+	string_mysql[strlen(string_mysql) - 1] = '\0';
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s WHERE `frakid`='%d'", string_mysql, idx);
+	query_empty(pearsq, string_mysql);
+
+	mysql_tquery(pearsq, "COMMIT;");
+
 	return 1;
 }
 
@@ -459,13 +514,14 @@ stock gunsklad(playerid)
 		if(fpick > 0 && thingPack == 4) return ErrorMessage(playerid, "{FF6347}Запечатанный ящик невозможно распаковать на складе\n\n{cccccc}Этот ящик защищён и используется для доставки боеприпасов NGSA");
 		if(fpick > 0 && thingPack == 2) //  Кладём Ящик
 		{
-		    if(fpick >= 4 && fpick <= 7 && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить вещества");
+		    if((Drugs_IsPackage(fpick) || (fpick >= 4 && fpick <= 7)) && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить вещества");
 
 			if(fpick == 34 && thingType == 1 && !IsOrderDepartWeapon(skladstat, 34)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку");
 			
 			if((fpick >= 4 && fpick <= 7 || fpick == 8 || fpick >= 27 && fpick <= 30 || fpick == 70) && thingType == 0 
 				|| IsHelmet(fpick) && thingType == 2 
-				|| IsArmor(fpick) && thingType == 2 || thingType == 1)
+				|| IsArmor(fpick) && thingType == 2 || thingType == 1
+				|| Drugs_IsPackage(fpick) && thingType == 0)
 			{
 			    if(thingType == 1) fpara = 100000;
 			    if(IsHelmet(fpick) && thingType == 2) fpara = 3;
@@ -572,6 +628,10 @@ stock showDialogOrganizationMenu(playerid)
 	    format(line,sizeof(line), detail_lmenu(playerid, 6)), strcat(lines,line); // Дипломатия
 	    format(line,sizeof(line), detail_lmenu(playerid, 9)), strcat(lines,line); // Управление гаражем
 	}
+	if(IsMafiaMember(playerid))
+	{
+		format(line,sizeof(line), detail_lmenu(playerid, 21)), strcat(lines,line); // Настройки наград в монетах Континенталь
+	}
 	if (g != 9) format(line,sizeof(line), detail_lmenu(playerid, 12)), strcat(lines,line); // Настройки склада
 	if(PlayerInfo[playerid][pLeader] >= 1)
 	{
@@ -621,6 +681,7 @@ stock detail_lmenu(playerid, detail)
 	else if(detail == 18) format(text, sizeof(text), "\n{ff9000}Стоимость лечения\t{99ff66}%d$", ServerInfo[9]);
 	else if(detail == 19) format(text, sizeof(text), "\n{ff9000}Дуэль с Годжо\t{99ff66}%d$", ServerInfo[35]);
 	else if(detail == 20) format(text, sizeof(text), "\n{ff9000}Цена публикации объявлений\t{99ff66}%d$ {cccccc}/ {FF6C00}%d$", ServerInfo[65], ServerInfo[66]);
+	else if(detail == 21) format(text, sizeof(text), "\n{ff9000}Настройки наград в монетах\t");
 	return text;
 }
 stock open_detail_lmenu(playerid, detail)
@@ -664,7 +725,88 @@ stock open_detail_lmenu(playerid, detail)
 	else if(detail == 18) ShowDialogSettingHealPrice(playerid);
 	else if(detail == 19) ShowDialogSettingKatanaDuel(playerid);
 	else if(detail == 20) CNN_EditPriceDialog(playerid,  0);
+	else if(detail == 21) ShowAdvancedDialogGen<lmenu_set_continental>(playerid);
 	return 1;
+}
+
+DIALOG:lmenu_set_continental_reward(playerid, response, listitem, const inputtext[])
+{
+	if (!response) return ShowAdvancedDialog(playerid, "lmenu_set_continental");
+
+	new g = fraction(playerid);
+	if (!IsMafiaMember(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не участник мафии");
+	new rewardid = GetDialogContextInt(playerid, "reward");
+	if (rewardid < 0 || rewardid >= _:ContinentalCoinPlayerActions) return 0;
+
+	new amount;
+	if (sscanf(inputtext, "d", amount)) return ShowAdvancedDialog(playerid, "lmenu_set_continental_reward");
+	if (amount < 0 || amount > 100) return ErrorText(playerid, "{FF6347}Количество монет от 1 до 100"), ShowAdvancedDialog(playerid, "lmenu_set_continental_reward");
+
+	OrganInfo[g][gcontinentalrewards][rewardid] = amount;
+	OrganInfo[g][gUpdate] = 1;
+
+	FORMAT:log("Изменение награды игроков за %s на %d монет", ContinentalCoinPlayerActionNames[rewardid], amount);
+	OrgLog(g, "setcontinentalreward", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", amount, log);
+
+	return ShowAdvancedDialogGen<lmenu_set_continental>(playerid);
+}
+
+DIALOG:lmenu_set_continental(playerid, response, listitem, const inputtext[])
+{
+	if (!response) return showDialogOrganizationMenu(playerid);
+
+	new rewardid = listitem;
+	if (rewardid < 0 || rewardid >= _:ContinentalCoinPlayerActions) return 0;
+
+	new g = fraction(playerid);
+	if (!IsMafiaMember(playerid)) return 0;
+	if (!GetAccessRankOrg(playerid, g, 82, NO_FBI)) return 1;
+
+	SetDialogContextInt(playerid, "reward", rewardid);
+
+	new dialog_text[1500];
+	format(dialog_text, sizeof(dialog_text),
+		"{cccccc}Выбранное действие: {ff9000}%s {ff4500}[ %d монет ]\n\n" \
+		\
+		"{ff9000}О монетах:\n" \
+		"{cccccc}Монеты являются внутриигровой валютой, начисляемой за активность как организациям, так и их участникам.\n\n" \
+		\
+		"{ff4500}Организация{cccccc} получает (или теряет) монеты в зависимости от выполненных активностей: участие в порту, стреле и прочие действия.\n" \
+		"{ff4500}Отдельные участники{cccccc} могут зарабатывать монеты за личные достижения, такие как победы на стреле или выполнение особых заданий.\n\n" \
+		\
+		"{ff9000}Использование монет:\n" \
+		"{cccccc}При трате монет списание происходит одновременно как с личного счёта игрока, так и со счёта организации.\n" \
+		"Таким образом, они выступают в роли общего резерва валюты, доступного для различных нужд.\n\n" \
+		\
+		"{ff9000}Конвертация монет:\n" \
+		"{cccccc}Каждые 7 дней {ff4500}монеты организации{cccccc} автоматически сгорают, конвертируясь в реальные деньги на офшорном счёте.\n" \
+		"{ff4500}Монеты игроков{cccccc} также сгорают раз в неделю, превращаясь в юниты согласно текущему курсу.\n\n" \
+		\
+		"{ff9000}Курс обмена:\n" \
+		"{cccccc}Стоимость одной монеты Континенталь: {99ff66}%d$\n\n" \
+		\
+		"{cccccc}Укажите новую оплату за выбранное действие:",
+		
+		ContinentalCoinPlayerActionNames[rewardid],
+		OrganInfo[g][gcontinentalrewards][rewardid],
+		ContinentalCoinInfo[cciExchangeRate]
+	);
+
+	return ShowAdvancedDialog(playerid, "lmenu_set_continental_reward", DIALOG_STYLE_INPUT, "{cccccc}Настройки наград", dialog_text, "Принять", "Назад");
+}
+
+DIALOG_GENERATOR:lmenu_set_continental(playerid)
+{
+	new g = fraction(playerid);
+	if (!IsMafiaMember(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не участник мафии");
+
+	new dialog_text[1024];
+	for (new i = 0; i < sizeof(ContinentalCoinPlayerActionNames); i++)
+	{
+		format(dialog_text, sizeof(dialog_text), "%s{cccccc}%s\t{99ff66}[ %d монет ]\n", dialog_text, ContinentalCoinPlayerActionNames[i], OrganInfo[g][gcontinentalrewards][i]);
+	}
+
+	return ShowAdvancedDialog(playerid, "lmenu_set_continental", DIALOG_STYLE_TABLIST, "{cccccc}Настройки наград", dialog_text, "Выбор", "Назад");
 }
 
 stock ShowDialogSettingHealPrice(playerid)
