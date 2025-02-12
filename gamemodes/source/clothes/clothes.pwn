@@ -1,8 +1,6 @@
 
 #include "../gamemodes/source/custom/skin_custom.pwn" // pwn для добавления новых скинов в мод
 
-#define MAX_SKIN_NAME 34 // Длина названия никнейма
-
 new SkinGos[MAX_MODELS_SKIN]; // Стоимости скинов
 new SkinGold[MAX_MODELS_SKIN]; // Gold стоимости скинов
 new SkinBuy[MAX_MODELS_SKIN]; // Подсчет покупок скинов за вирты
@@ -11,61 +9,10 @@ new SkinSale[MAX_MODELS_SKIN]; // Доступен ли скин для прод
 new SkinName[MAX_MODELS_SKIN][MAX_SKIN_NAME]; // Название скина
 new bool:SkinTop[MAX_MODELS_SKIN]; // Топовый скин или нет (для системы шкатулок)
 
-new skinNameAll[][] =
-{
-    "Сиджей", "The Truth", "Maccer", "Andre", "Mini Bear", "Big Bear", "Emmet", "Taxi Driver", "Janitor", // 0 - 8
-    "Normal Ped", "Old Woman", "Casino croupier", "Rich Woman", "Street Girl", "Normal Ped", "Mr.Whittaker", "Airport Worker", "Businessman", "Beach Visitor", // 9 - 18
-    "DJ", "Rich Guy", "Normal Ped", "Normal Ped", "BMXer", "M.D. Bodyguard", "M.D. Bodyguard", "Backpacker", "Construction Worker", "Drug Dealer", // 19 - 28
-    "Drug Dealer", "Drug Dealer", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Gardener", "Golfer", "Golfer", "Normal Ped", // 29 - 38
-    "Normal Ped", "Normal Ped", "Normal Ped", "Jethro", "Normal Ped", "Normal Ped", "Beach Visitor", "Normal Ped", "Normal Ped", "Normal Ped", // 39 - 48
-    "Da Nang", "Mechanic", "Mountain Biker", "Mountain Biker", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Oriental Ped", "Oriental Ped", "Normal Ped", // 49 - 59
-    "Normal Ped", "Pilot", "Colonel Fuhrberger", "Prostitute", "Prostitute", "Kendl Johnson", "Pool Player", "Pool Player", "Preacher", // 60 - 68
-    "Normal Ped", "Scientist", "Security Guard", "Hippy", "Hippy", "Unknown", "Prostitute", "Stewardess", "Homeless", "Homeless", "Homeless", // 69 - 79
-    "Boxer", "Boxer", "Black Elvis", "White Elvis", "Blue Elvis", "Prostitute", "Ryder Mask", "Stripper", "Normal Ped", "Normal Ped", "Jogger", // 80 - 90
-    "Rich Woman", "Rollerskater", "Normal Ped", "Normal Ped", "Normal Ped", "Jogger", "Lifeguard", "Normal Ped", // 91 - 98
-    "Rollerskater", "Biker", "Normal Ped", "Balla", "Balla", "Balla", "Grove", "Grove", // 99 - 106
-    "Grove", "Vagos", "Vagos", "Vagos", "Russian Mafia", "Russian Mafia", "Russian Mafia", "Aztecas", "Aztecas", "Aztecas", // 107 - 116
-    "Triad", "Triad", "Johhny Sindacco", "Triad Boss", "Da Nang Boy", "Da Nang Boy", "Da Nang Boy", "The Mafia", "The Mafia", "The Mafia", // 117 - 126
-    "The Mafia", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Homeless", "Homeless", "Normal Ped", // 127 - 136
-    "Homeless", "Beach Visitor", "Beach Visitor", "Beach Visitor", "Businesswoman", "Taxi Driver", "Crack Maker", "Crack Maker", "Crack Maker", "Crack Maker", "Businessman", // 137 - 147
-    "Businesswoman", "Big Smoke Armored", "Businesswoman", "Normal Ped", "Prostitute", "Construction Worker", "Beach Visitor", "Pizza Worker", "Barber", "Hillbilly", "Farmer", // 148 - 158
-    "Hillbilly", "Hillbilly", "Farmer", "Hillbilly", "Black Bouncer", "White Bouncer", "White MIB agent", "Black MIB agent", "Cluckin' Bell Worker", "Chilli Dog Vendor", "Normal Ped", // 159 - 169
-    "Normal Ped", "Blackjack Dealer", "Casino croupier", "Rifa", "Rifa", "Rifa", "Barber", "Barber", "Whore", "Ammunation", // 170 - 179
-    "Tattoo Artist", "Punk", "Cab Driver", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Businessman", "Normal Ped", "Valet", "Barbara Schternvart", // 180 - 190
-    "Helena Wankstein", "Michelle Cannes", "Katie Zhan", "Millie Perkins", "Denise Robinson", "Farm Inhabitan", "Hillbill", "Farm Inhabitan", "Farm Inhabitan", // 191 - 199
-    "Hillbilly", "Farmer", "Farmer", "Karate Teacher", "Karate Teacher", "Burger Shot Cashier", "Cab Driver", "Prostitute", "Su Xi Mu", "Noodle Vendor", // 200 - 209 
-    "School Instructor", "Shop Staff", "Homeless", "Weird old man", "Maria Latore", "Normal Ped", "Normal Ped", "Shop Staff", "Normal Ped", "Rich Woman", // 210 - 219
-	"Cab Driver", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Oriental Businessman", "Oriental Ped", "Oriental Ped", // 220 - 229
-	"Homeless", "Normal Ped", "Normal Ped", "Normal Ped", "Cab Driver", "Normal Ped", "Normal Ped", "Prostitute", "Prostitute", "Homeless", // 230 - 239
-	"The D.A", "Afro-American", "Mexican", "Prostitute", "Stripper", "Prostitute", "Stripper", "Biker", "Biker", "Pimp", // 240 - 249
-	"Normal Ped", "Lifeguard", "Naked Valet", "Bus Driver", "Biker Drug Dealer", "Chauffeu", "Stripper", "Stripper", "Heckler", "Heckler", // 250 - 259
-	"Construction Worker", "Cab driver", "Cab driver", "Normal Ped", "Clown", "Frank Tenpenny", "Eddie Pulaski", "Jimmy Hernandez", "Dwayne", "Big Smoke", // 260 - 269
-	"Sweet", "Ryder", "Mafia Boss", "T-Bone Mendez", "Paramedic", "Paramedic", "Paramedic", "Firefighter", "Firefighter", "Firefighter", // 270 - 279
-	"Police Officer", "Police Officer", "Police Officer", "County Sheriff", "Motorbike Cop", "Special Forces", "Federal Agent", "Army", "Desert Sheriff", "Zero", // 280 - 289
-	"Ken Rosenberg", "Kent Paul", "Cesar Vialpando", "OG Loc", "Wu Zi Mu", "Michael Toreno", "Jizzy", "Madd Dogg", "Catalina", "Claude", // 290 - 299
-	"Police Officer", "Police Officer", "Police Officer", "Police Officer", "Police Officer", "Police Officer", "Police Officer", "Police Officer", "Paramedic", "Police Officer", // 300 - 309
-	"Country Sheriff", "Desert Sheriff" // 310 - 311
-};
-
 // Проверка на доступные ID скинов
 stock IsASkinExisting(s)
 {
-    if(s >= 1 && s <= 73 || s >= 75 && s <= 311 // Стандартные скины сампа (0 - cj, 74 косячина сампа - не используем его)
-
-    || s >= 312 && s <= MAX_MODELS_SKIN) return 1; // Кастомные скины пирса
-    return 0;
-}
-
-stock GetSkinName(skin)
-{
-	new skinName[34];
-	if(skin >= sizeof(skinNameAll)) 
-	{
-		if(!strcmp(SkinName[skin],"\0",true) || !strcmp(SkinName[skin],"NULL",true)) format(skinName, sizeof(skinName), "Одежда");
-		else format(skinName, sizeof(skinName), "%s", SkinName[skin]);
-	}
-	else format(skinName, sizeof(skinName), "%s", skinNameAll[skin]);
-	return skinName;
+    return IsValidSkinId(s);
 }
 
 // Получаем id скина для другого игрока forplayerid +
@@ -1270,8 +1217,7 @@ function LoadPriceSkin()
 			// Старая система определения, доступен ли скин в продажу
 			if(ResetSkin == true)
 			{
-				if(SkinPearsInfo[skinList][eSkinClass] == 1 
-					|| SkinPearsInfo[skinList][eSkinClass] == 2) SkinSale[skinList] = 1;
+				if(CanSkinBeAvailableForSaleInShops(skinList)) SkinSale[skinList] = 1;
 				else SkinSale[skinList] = 0;
 			}
 		}
@@ -1422,8 +1368,7 @@ stock ReloadSettingSkin(playerid, s, bool:notifyOwner = true)
 	format(SkinName[s], MAX_SKIN_NAME, "%s", SkinPearsInfo[s][eSkinName]);
 	SaveSkinName(s);
 
-	if(SkinPearsInfo[s][eSkinClass] == 1 
-		|| SkinPearsInfo[s][eSkinClass] == 2) SkinSale[s] = 1;
+	if(CanSkinBeAvailableForSaleInShops(s)) SkinSale[s] = 1;
 	else SkinSale[s] = 0;
 	SaveSkinSale(s);
 	return true;
