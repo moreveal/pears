@@ -326,7 +326,6 @@ CMD:gthing(playerid, const params[])
 	return 1;
 }
 
-alias:givecar("gc")
 CMD:givecar(playerid, const params[])
 {
 	new vehiclename[64];

@@ -93,6 +93,7 @@ stock CheckAutoInRangeService(playerid)
     {
         return ErrorMessage(playerid, "{FF6347}Это транспорт другого класса, перенос характеристик невозможен!");
     }
+    if(GetVehicleType(VehInfo[v][vModel]) != GetVehicleType(VehInfo[veh][vModel])) return ErrorMessage(playerid, "{FF6347}Типы транспортных средств должны сопвпадать");
     // Ищем дефолтные характеристики той тачки
     new vehicleHandlingID = FindVehicleModelHandling(GetVehicleRealModel(veh));
     if(vehicleHandlingID == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Характеристики транспорта не были найдены");

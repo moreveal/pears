@@ -314,7 +314,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
             {
                 new cnnonline;
                 foreach (new id: Player) {
-                    if (fraction(id) == 9) cnnonline++;
+                    if (fraction(id) == 9 && GetPVarInt(id,"afksystem") < 1200 && SleepRP[id] == 0 && GetAccessRankOrgMay(id, fraction(id), 79, NO_FBI)) cnnonline++;
                 }
                 if (cnnonline <= 0) {
                     for (new j = 0; j < CNN_AD_QUEUE_MAX; j++) {
@@ -365,7 +365,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
             {
                 new cnnonline;
                 foreach (new id: Player) {
-                    if (fraction(id) == 9) cnnonline++;
+                    if (fraction(id) == 9 && GetPVarInt(id,"afksystem") < 1200 && SleepRP[id] == 0 && GetAccessRankOrgMay(id, fraction(id), 79, NO_FBI)) cnnonline++;
                 }
 
                 if (cnnonline <= 0) {

@@ -59,6 +59,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "GunWarns", "INT NOT NULL DEFAULT '0'"); // Количество ганварнов
     AddColumnIfNotExists("pp_igroki", "GunWarnsZZTime", "INT NOT NULL DEFAULT '0'"); // Время персональной ЗЗ при ганварне
     AddColumnIfNotExists("pp_igroki", "GunWarnsDonateCD", "INT NOT NULL DEFAULT '0'"); // Когда можно будет снять ганварн за донат
+    
+    AddColumnIfNotExists("pp_igroki", "Fame", "INT NOT NULL DEFAULT '0'"); // 3D-название семьи на игроке
 
     //Top
     AddColumnIfNotExists("pp_igroki_top", "pCraftCount", "INT NOT NULL DEFAULT '0'"); // Кол-во очков для крафта.
