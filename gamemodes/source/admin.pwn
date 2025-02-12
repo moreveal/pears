@@ -1655,7 +1655,7 @@ CMD:fullpotreb(playerid)
 CMD:fuel(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выполнить это действие");
-	new vehid, driverplayer = INVALID_PLAYER_ID, string[124];
+	new vehid, string[124];
 	if(!sscanf(params, "i", vehid))
 	{
 		if(!IsValidVehicle(vehid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Неверный ID транспорта");
@@ -1670,7 +1670,7 @@ CMD:fuel(playerid, const params[])
 		|| IsAVehicleNPC(vehid)) return ErrorMessage(playerid, "{FF6347}Этот транспорт нельзя заправить");
 	VehInfo[vehid][vGas] = GasMax - VehInfo[vehid][vGelium];
 	format(string, sizeof(string), "[ Мысли ADM ]: %s [ID: %d] заправлен.", GetVehicleName(VehInfo[vehid][vModel]), vehid);
-	driverplayer = GetVehicleDriver(vehid);
+	new driverplayer = GetVehicleDriver(vehid);
 	if (driverplayer == INVALID_PLAYER_ID)
 	{
 		AdminLog("fuel", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 
