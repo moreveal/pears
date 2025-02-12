@@ -1344,7 +1344,7 @@ CMD:rskinall(playerid, const params[])
 		ReloadSettingSkin(playerid, params[0], true);
 
 		new string[144];
-		format(string, sizeof(string), " [ ADM ]: %s сбросил настройки скина ID %d", params[0]);
+		format(string, sizeof(string), " [ ADM ]: %s сбросил настройки скина ID %d", PlayerInfo[playerid][pName], params[0]);
 		ABroadCast(COLOR_ADM,string,1);
 		AdminLog("rskinall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Default настройки скина");
 	}
