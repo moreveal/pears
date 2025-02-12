@@ -80,6 +80,12 @@ stock GetThingForCraft(thingId, thingType, &thingAmount, craftThing[], craftQuan
                 craftThing[0] = 60, craftQuan[0] = 20, craftType[0] = 0; // Палладий 20 Штук
                 craftThing[1] = 238, craftQuan[1] = 10, craftType[1] = 0; // Алюминий 10 Штук
             }
+            case 268: // Резина
+            {
+                craftThing[0] = 279, craftQuan[0] = 5, craftType[0] = 0; // Резиновая смесь 5 Штук
+                craftThing[1] = 237, craftQuan[1] = 1, craftType[1] = 0; // Термитная смесь
+                thingAmount = 10;
+            }
             case 258: // Плотная кожа
             {
                 craftThing[0] = 260, craftQuan[0] = 5, craftType[0] = 0; // Иголки
@@ -719,6 +725,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                         format(line,sizeof(line),"\n{ff9000}Отмычка"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Бомба Липучка"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Термитная смесь"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Резина"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Оболочка Респиратора"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Фильтр Респиратора"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Респиратор"), strcat(lines,line);

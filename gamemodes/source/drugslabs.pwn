@@ -1097,6 +1097,40 @@ DIALOG:narcospot_chemical_amount(playerid, response, listitem, const inputtext[]
     return 1;
 }
 
+DIALOG:narcospot_chemical_material_amount(playerid, response, listitem, const inputtext[])
+{
+    if (!response) return ShowAdvancedDialog(playerid, "narcospot_chemical");
+
+    new fpick = GetDialogContextInt(playerid, "material");
+    new price = getThingPriceGos(fpick, 0);
+
+    new amount;
+    if (sscanf(inputtext, "d", amount)) return PlayerPlaySound(playerid, 4203), ShowAdvancedDialog(playerid, "narcospot_chemical_material_amount");
+
+    new getQuan, getLimit;
+    i_limit(playerid, fpick, getQuan, getLimit);
+    if (amount < 1) return PlayerPlaySound(playerid, 4203), ShowAdvancedDialog(playerid, "narcospot_chemical_material_amount");
+
+    FORMAT_SIZE:string(144, "{FF6347}Максимальное количество этого материала в инвентаре: %d", getLimit);
+    if (getQuan + amount > getLimit) return ErrorText(playerid, string), ShowAdvancedDialog(playerid, "narcospot_chemical_material_amount");
+
+    new put_inva = GiveThingPlayer(playerid, fpick, amount, 0, 0, 0, 0);
+    if (put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+
+    price *= amount;
+    if (PlayerInfo[playerid][pMoney] < price) return ErrorMessage(playerid, "{FF6347}У вас недостаточно денег");
+    oGivePlayerMoney(playerid, -price);
+
+    format(string, sizeof(string), "Купил %s (%d шт.)", GetNameThing(0, fpick, 0, 0), amount);
+    MoneyLog("buy_material", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, string);
+
+    format(string, sizeof(string), "{99ff66}Вы успешно купили %s (%d шт.)!", GetNameThing(0, fpick, 0, 0), amount);
+    SuccessMessage(playerid, string);
+
+    return 1;
+}
+
+
 DIALOG:narcospot_chemical_buykit(playerid, response, listitem, const inputtext[])
 {
     if (!response) return ShowAdvancedDialog(playerid, "narcospot_chemical");
@@ -1162,7 +1196,16 @@ DIALOG_ITEMS:narcospot_chemical(playerid, response, listitem, i, const inputtext
             FORMAT:text("{cccccc}Вы выбрали: {99ff66}%s\n{cccccc}Цена (1 шт.): {99ff66}$%d\n\n{cccccc}Введите количество:", GetNameThing(0, fpick, 0, 0), price);
             ShowAdvancedDialog(playerid, "narcospot_chemical_amount", DIALOG_STYLE_INPUT, "{cccccc}Меню", text, "Выбор", "Назад");
         }
-        case 1: { // Наборы
+        case 1: { // Расходники
+            new fpick = i;
+            new price = getThingPriceGos(fpick, 0);
+
+            SetDialogContextInt(playerid, "material", i);
+
+            FORMAT:text("{cccccc}Вы выбрали: {99ff66}%s\n{cccccc}Цена (1 шт.): {99ff66}$%d\n\n{cccccc}Введите количество:", GetNameThing(0, fpick, 0, 0), price);
+            ShowAdvancedDialog(playerid, "narcospot_chemical_material_amount", DIALOG_STYLE_INPUT, "{cccccc}Меню", text, "Выбор", "Назад");
+        }
+        case 2: { // Наборы
             new dialog_text[1024];
             format(dialog_text, sizeof(dialog_text), "{cccccc}Вы выбрали: {99ff66}Набор \"%s\"\n{cccccc}Цена: {99ff66}$%d\n\n{cccccc}Ингредиенты:\n", NarcoSpotIngredientKits[i][nsikName], NarcoSpot_GetIngredientKitPrice(i));
             for (new j = 0; j < NARCO_MAX_INGREDIENTS_PER_KIT; j++)
@@ -1203,6 +1246,20 @@ DIALOG:narcospot_chemical_type(playerid, response, listitem, const inputtext[])
             ShowAdvancedDialog(playerid, "narcospot_chemical", DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}Меню", dialog_text, "Выбор", "Назад");
         }
         case 1: {
+            new dialog_text[1024] = "{cccccc}Материал\t{cccccc}Цена\n";
+            new items[] = {279};
+            for (new i = 0; i < sizeof(items); i++)
+            {
+                new fpick = items[i];
+                format(dialog_text, sizeof(dialog_text), "%s{ff9000}%s\t{99ff66}$%d\n", dialog_text,
+                    GetNameThing(0, fpick, 0, 0),
+                    getThingPriceGos(fpick, 0)
+                );
+                AttachAdvancedDialogItemValue(playerid, "narcospot_chemical", fpick);
+            }
+            ShowAdvancedDialog(playerid, "narcospot_chemical", DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}Меню", dialog_text, "Выбор", "Назад");
+        }
+        case 2: {
             new dialog_text[1024] = "{cccccc}Набор\t{cccccc}Цена\n";
             for (new i = 0; i < NARCO_MAX_INGREDIENT_KITS; i++)
             {
@@ -1275,7 +1332,7 @@ stock NarcoSpot_OnPlayerPressALT(playerid)
     if (GetPlayerVirtualWorld(playerid) == 0 && IsPlayerInRangeOfPoint(playerid, 1.5, 1787.7637, -1135.4215, 24.1105))
     {
         if (IsPoliceMember(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не можете воспользоваться услугами поставщика [ Служитель закона ]");
-        ShowAdvancedDialog(playerid, "narcospot_chemical_type", DIALOG_STYLE_LIST, "{cccccc}Поставщик", "{cccccc}Ингредиенты\n{cccccc}Наборы", "Выбор", "Закрыть", true);
+        ShowAdvancedDialog(playerid, "narcospot_chemical_type", DIALOG_STYLE_LIST, "{cccccc}Поставщик", "{cccccc}Ингредиенты\n{cccccc}Расходный материал\n{cccccc}Наборы", "Выбор", "Закрыть", true);
         return 1;
     }
 
