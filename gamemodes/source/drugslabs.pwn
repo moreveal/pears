@@ -1111,9 +1111,10 @@ DIALOG:narcospot_chemical_material_amount(playerid, response, listitem, const in
     i_limit(playerid, fpick, getQuan, getLimit);
     if (amount < 1) return PlayerPlaySound(playerid, 4203), ShowAdvancedDialog(playerid, "narcospot_chemical_material_amount");
 
+    new string[144];
     if (getQuan + amount > getLimit) 
     {
-        FORMAT_SIZE:string(144, "{FF6347}Максимальное количество этого материала в инвентаре: %d", getLimit);
+        format(string, sizeof(string), "{FF6347}Максимальное количество этого материала в инвентаре: %d", getLimit);
         return ErrorText(playerid, string), ShowAdvancedDialog(playerid, "narcospot_chemical_material_amount");
     }
 
