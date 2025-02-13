@@ -1749,7 +1749,7 @@ CMD:ahelp(playerid)
 		format(string,sizeof(string),"\n\n{007a08}Админ 4:"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/armgro /dynamiczz /areav /delareav /gotoareav /gomp /kickmp /offmp /freezeall /unfreezeall /flycam /flyveh /mc /weathergro /gotomap /rgungro"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/gototo /givegungro /vehhp /vehhpgro /setarm /animbot /bottext /botid /bot /delbot /cobject /eobject /dobject /veh /delveh /delvehgro /rvc"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/fixcam /snowall /freeze /unfreeze /fuel /fuelgro /map /setskingro /setskinmp /makeparty /fixvehgro /toearth"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/fixcam /snowall /freeze /unfreeze /fuel /fuelgro /map /setskingro /setskinmp /makeparty /fixvehgro /toearth /zombie"), strcat(str,string);
 	}
 	if(PlayerInfo[playerid][pSoska] >= 5)
 	{
