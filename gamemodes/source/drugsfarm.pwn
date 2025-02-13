@@ -1,6 +1,3 @@
-// TODO: Если ферма никому не принадлежит и ее захватывают - спавнить NPC (если хоть один из участников без лаунчера - не разрешать)
-// TODO: Предупреждать о том, что все автомобили на территории фермы будут заспавнены, поэтому лучше их убрать
-
 function NarcoFarmLoad()
 {
     new rows;
@@ -19,6 +16,7 @@ function NarcoFarmLoad()
         NarcoFarmCreatePickup(id);
         NarcoFarmCreateActors(id);
         NarcoFarmCreateMapIcon(id);
+        NarcoFarmCreateDynamicArea(id);
     }
 
     // Заполняем пустые слоты наркоферм
@@ -120,6 +118,16 @@ stock NarcoFarmCreateMapIcon(id)
     if (!NarcoFarmIsExists(id)) return 0;
 
     CreateDynamicMapIcon(NarcoFarmInfo[id][dfiInfoPos][0], NarcoFarmInfo[id][dfiInfoPos][1], NarcoFarmInfo[id][dfiInfoPos][2], 11, 0xFF9000FF, 0, 0);
+
+    return 1;
+}
+
+stock NarcoFarmCreateDynamicArea(id)
+{
+    if (!NarcoFarmIsExists(id)) return 0;
+
+    if (IsValidDynamicArea(NarcoFarmInfo[id][dfiArea])) DestroyDynamicArea(NarcoFarmInfo[id][dfiArea]);
+    NarcoFarmInfo[id][dfiArea] = CreateDynamicCube(NarcoFarmInfo[id][dfiAreaPos][0], NarcoFarmInfo[id][dfiAreaPos][1], NarcoFarmInfo[id][dfiAreaPos][2] - 10.0, NarcoFarmInfo[id][dfiAreaPos][3], NarcoFarmInfo[id][dfiAreaPos][4], NarcoFarmInfo[id][dfiAreaPos][5] + 15.0, 0, 0);
 
     return 1;
 }
@@ -1392,8 +1400,8 @@ stock NarcoFarm_OnPlayerPressY(playerid)
                 NarcoFarmPlayerInfo[playerid][dfpiArea][2], NarcoFarmPlayerInfo[playerid][dfpiArea][3],
                 NarcoFarmPlayerInfo[playerid][dfpiArea][4], NarcoFarmPlayerInfo[playerid][dfpiArea][5],
 
-                NarcoFarmInfo[farmid][dfiArea][0], NarcoFarmInfo[farmid][dfiArea][1], NarcoFarmInfo[farmid][dfiArea][2],
-                NarcoFarmInfo[farmid][dfiArea][3], NarcoFarmInfo[farmid][dfiArea][4], NarcoFarmInfo[farmid][dfiArea][5]
+                NarcoFarmInfo[farmid][dfiAreaPos][0], NarcoFarmInfo[farmid][dfiAreaPos][1], NarcoFarmInfo[farmid][dfiAreaPos][2],
+                NarcoFarmInfo[farmid][dfiAreaPos][3], NarcoFarmInfo[farmid][dfiAreaPos][4], NarcoFarmInfo[farmid][dfiAreaPos][5]
             );
             NarcoFarmSave(farmid);
 
@@ -1580,6 +1588,51 @@ DIALOG_GENERATOR:edit_drugfarmboothmafia(playerid)
     return ShowAdvancedDialog(playerid, "edit_drugfarmboothmafia", DIALOG_STYLE_INPUT, "{ff9000}Установка будки под нужды мафии", text, "Выбор", "Назад");
 }
 
+DIALOG:edit_drugfarmspawnarea(playerid, response, listitem, const inputtext[])
+{
+    new type = GetDialogContextInt(playerid, "spawn_area_type");
+    if (!response) return ShowAdvancedDialog(playerid, "edit_drugfarm");
+
+    new farmid = GetDialogContextInt(playerid, "farmid");
+    if (!NarcoFarmIsExists(farmid)) return ErrorMessage(playerid, "{FF6347}Указанной наркофермы не существует");
+
+    if (Protect_X[playerid] - NARCO_FARMS_SPAWN_RADIUS < NarcoFarmInfo[farmid][dfiAreaPos][0] || Protect_X[playerid] + NARCO_FARMS_SPAWN_RADIUS > NarcoFarmInfo[farmid][dfiAreaPos][3] ||
+        Protect_Y[playerid] - NARCO_FARMS_SPAWN_RADIUS < NarcoFarmInfo[farmid][dfiAreaPos][1] || Protect_Y[playerid] + NARCO_FARMS_SPAWN_RADIUS > NarcoFarmInfo[farmid][dfiAreaPos][4])
+    {
+        return ErrorMessage(playerid, "{FF6347}Указанная область выходит за пределы фермы");
+    }
+
+    new Float: angle;
+    GetPlayerFacingAngle(playerid, angle);
+
+    switch(type)
+    {
+        case 0: { // Защитники
+            NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0] = Protect_X[playerid];
+            NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1] = Protect_Y[playerid];
+            NarcoFarmInfo[farmid][dfiSpawnDefendersPos][2] = Protect_Z[playerid];
+            NarcoFarmInfo[farmid][dfiSpawnDefendersPos][3] = angle;
+            NarcoFarmSave(farmid);
+
+            AdminLog("editdrugfarmspawnarea", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", farmid + 1, "Изменил область спавна защитников");
+        }
+        case 1: { // Атакующие
+            NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0] = Protect_X[playerid];
+            NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1] = Protect_Y[playerid];
+            NarcoFarmInfo[farmid][dfiSpawnAttackersPos][2] = Protect_Z[playerid];
+            NarcoFarmInfo[farmid][dfiSpawnAttackersPos][3] = angle;
+            
+            NarcoFarmSave(farmid);
+            AdminLog("editdrugfarmspawnarea", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", farmid + 1, "Изменил область спавна атакующих");
+        }
+        default: return ErrorMessage(playerid, "{FF6347}Неизвестный тип области спавна");
+    }
+
+    SuccessMessage(playerid, "{99ff66}Область спавна успешно изменена!");
+
+    return 1;
+}
+
 DIALOG:edit_drugfarm(playerid, response, listitem, const inputtext[])
 {
     if (!response) return ShowAdvancedDialogGen<show_drugfarms>(playerid);
@@ -1588,10 +1641,16 @@ DIALOG:edit_drugfarm(playerid, response, listitem, const inputtext[])
     {
         case 0: return ShowAdvancedDialog(playerid, "edit_drugfarmpickup", DIALOG_STYLE_MSGBOX, "{ff9000}Перемещение пикапа", "{cccccc}Вы уверены, что хотите переместить информационный пикап наркофермы в это место?", "Да", "Назад");
         case 1: return ShowAdvancedDialog(playerid, "edit_drugfarmarea", DIALOG_STYLE_MSGBOX, "{ff9000}Изменение области", "{cccccc}Вы уверены, что хотите изменить область наркофермы?", "Да", "Назад");
-        case 2: return ShowAdvancedDialog(playerid, "edit_drugfarmseller", DIALOG_STYLE_MSGBOX, "{ff9000}Перемещение продавца", "{cccccc}Вы уверены, что хотите переместить продавца наркофермы в это место?", "Да", "Назад");
-        case 3: return ShowAdvancedDialogGen<edit_drugfarmrentprice>(playerid);
-        case 4: return ShowAdvancedDialogGen<edit_drugfarmboothmafia>(playerid);
-        case 5: return ShowAdvancedDialogGen<edit_drugfarmfraction>(playerid);
+        case 2, 3: {
+            if (listitem == 2) ShowAdvancedDialog(playerid, "edit_drugfarmspawnarea", DIALOG_STYLE_MSGBOX, "{ff9000}Изменение спавна защитников", "{cccccc}Вы уверены, что хотите изменить спавн защитников наркофермы?\n\n{ff6347}[!] {cccccc}Ваша текущая позиция будет взята за центр, старайтесь выбирать ровную поверхность\n{ff6347}[!] {cccccc}Позиция спавна будет рассчитываться случайным образом в диапазоне: {ff9000}(-6.0; 6.0)", "Да", "Назад");
+            else if (listitem == 3) ShowAdvancedDialog(playerid, "edit_drugfarmspawnarea", DIALOG_STYLE_MSGBOX, "{ff9000}Изменение спавна атакующих", "{cccccc}Вы уверены, что хотите изменить спавн атакующих наркофермы?\n\n{ff6347}[!] {cccccc}Ваша текущая позиция будет взята за центр, старайтесь выбирать ровную поверхность\n{ff6347}[!] {cccccc}Позиция спавна будет рассчитываться случайным образом в диапазоне: {ff9000}(-6.0; 6.0)", "Да", "Назад");
+
+            SetDialogContextInt(playerid, "spawn_area_type", listitem - 2);
+        }
+        case 4: return ShowAdvancedDialog(playerid, "edit_drugfarmseller", DIALOG_STYLE_MSGBOX, "{ff9000}Перемещение продавца", "{cccccc}Вы уверены, что хотите переместить продавца наркофермы в это место?", "Да", "Назад");
+        case 5: return ShowAdvancedDialogGen<edit_drugfarmrentprice>(playerid);
+        case 6: return ShowAdvancedDialogGen<edit_drugfarmboothmafia>(playerid);
+        case 7: return ShowAdvancedDialogGen<edit_drugfarmfraction>(playerid);
     }
 
     return 1;
@@ -1608,6 +1667,8 @@ DIALOG_GENERATOR:edit_drugfarm(playerid, farmid)
     format(dialog_text, sizeof(dialog_text),
         "{cccccc}Переместить пикап\n" \
         "{cccccc}Задать область фермы\n" \
+        "{cccccc}Задать спавн защитников\n" \
+        "{cccccc}Задать спавн атакующих\n" \
         "{cccccc}Задать положение продавца\n" \
         "{cccccc}Задать стоимость аренды\t{99ff66}[ $%d ]\n" \
         "{cccccc}Задать номер будки под нужды мафии\t{ff9000}[ %d ]\n" \
@@ -1717,7 +1778,7 @@ stock NarcoFarmGetNearest(playerid)
     {
         if (!NarcoFarmIsExists(i)) continue;
         
-        if (IsPlayerInCube(playerid, NarcoFarmInfo[i][dfiArea][0], NarcoFarmInfo[i][dfiArea][1], NarcoFarmInfo[i][dfiArea][2], NarcoFarmInfo[i][dfiArea][3], NarcoFarmInfo[i][dfiArea][4], NarcoFarmInfo[i][dfiArea][5]))
+        if (IsPlayerInCube(playerid, NarcoFarmInfo[i][dfiAreaPos][0], NarcoFarmInfo[i][dfiAreaPos][1], NarcoFarmInfo[i][dfiAreaPos][2], NarcoFarmInfo[i][dfiAreaPos][3], NarcoFarmInfo[i][dfiAreaPos][4], NarcoFarmInfo[i][dfiAreaPos][5]))
         {
             return i;
         }
@@ -1733,23 +1794,4 @@ stock NarcoFarmIsInside(playerid, id = INVALID_NARCOFARM_ID)
         return NarcoFarmGetNearest(playerid) == id;
     }
     return NarcoFarmGetNearest(playerid) != INVALID_NARCOFARM_ID;
-}
-
-DIALOG_GENERATOR:mafiafarm(playerid)
-{
-    new farmid = NarcoFarmGetNearest(playerid);
-    if (farmid == INVALID_NARCOFARM_ID) return ErrorMessage(playerid, "{FF6347}Вы не находитесь на территории наркофермы");
-
-    SetDialogContextInt(playerid, "farmid", farmid);
-    return 1;
-}
-
-CMD:mafiafarm(playerid, const params[])
-{
-    new g = fraction(playerid);
-    if(!IsAFunctionOrganization(26, g, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не участник мафии");
-	if(!GetAccessRankOrg(playerid, g, 26, NO_FBI)) return 1;
-    if(!NarcoFarmIsInside(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не находитесь на территории наркофермы");
-
-    return ShowAdvancedDialog(playerid, "mafiafarm");
 }

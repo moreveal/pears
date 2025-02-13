@@ -32,6 +32,8 @@
 #define NARCO_FARMS_SEED_PUMP_POINTS            50 // Количество очков, которые нужно потратить на посадку саженца
 #define NARCO_FARMS_PACK_PUMP_POINTS            50 // Количество очков, которые нужно потратить на упаковку порошка
 
+#define NARCO_FARMS_SPAWN_RADIUS                6.0 // Радиус спавна защитников и атакующих
+
 #define INVALID_NARCOFARM_ID                    -1 // Неверный ID наркофермы
 
 enum e_NarcoFarmInfo {
@@ -43,7 +45,10 @@ enum e_NarcoFarmInfo {
     dfiMafiaBoothId, // ID будки для нужд мафии
     Float: dfiInfoPos[3], // Расположение информационного пикапа
     Float: dfiSellerPos[4], // Расположение продавца
-    Float: dfiArea[6], // Область наркофермы
+    Float: dfiAreaPos[6], // Позиция области наркофермы
+    Float: dfiSpawnDefendersPos[4], // Позиция спавна защитников
+    Float: dfiSpawnAttackersPos[4], // Позиция спавна атакующих
+    STREAMER_TAG_AREA: dfiArea, // Область наркофермы
     STREAMER_TAG_3D_TEXT_LABEL: dfiPackLabel, // Лейбл упаковочного стола
     STREAMER_TAG_3D_TEXT_LABEL: dfiSeedLabel, // Лейбл места для семян
     STREAMER_TAG_3D_TEXT_LABEL: dfiLeekLabel, // Лейбл места для леек
@@ -51,7 +56,7 @@ enum e_NarcoFarmInfo {
     STREAMER_TAG_PICKUP: dfiInfoPickup, // Информационный пикап
     STREAMER_TAG_3D_TEXT_LABEL: dfiInfoLabel, // Лейбл информационного пикапа
     STREAMER_TAG_ACTOR: dfiSellerActor, // Продавец
-    STREAMER_TAG_3D_TEXT_LABEL: dfiSellerActorLabel // Лейбл продавца
+    STREAMER_TAG_3D_TEXT_LABEL: dfiSellerActorLabel // Лейбл продавца=
 };
 new NarcoFarmInfo[MAX_NARCO_FARMS][e_NarcoFarmInfo];
 SQL_ENUM_DEFINE(NarcoFarmInfo) {
@@ -72,7 +77,15 @@ SQL_ENUM_DEFINE(NarcoFarmInfo) {
     {"area_max_x", FIELD_TYPE_FLOAT},
     {"area_max_y", FIELD_TYPE_FLOAT},
     {"area_max_z", FIELD_TYPE_FLOAT},
-    {"", FIELD_TYPE_SKIP, 8}
+    {"defenders_pos_x", FIELD_TYPE_FLOAT},
+    {"defenders_pos_y", FIELD_TYPE_FLOAT},
+    {"defenders_pos_z", FIELD_TYPE_FLOAT},
+    {"defenders_pos_a", FIELD_TYPE_FLOAT},
+    {"attackers_pos_x", FIELD_TYPE_FLOAT},
+    {"attackers_pos_y", FIELD_TYPE_FLOAT},
+    {"attackers_pos_z", FIELD_TYPE_FLOAT},
+    {"attackers_pos_a", FIELD_TYPE_FLOAT},
+    {"", FIELD_TYPE_SKIP, 9}
 };
 
 new Float: NarcoFarmBoothArea[MAX_NARCO_FARMS][MAX_NARCO_FARMS_BOOTHS][] = {
