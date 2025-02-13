@@ -728,7 +728,7 @@ new SkinPearsInfo[][SKINENUM] =
 
 stock bool:IsValidSkinId(skinid)
 {
-    return skinid > 0 && skinid < sizeof(SkinPearsInfo) && SkinPearsInfo[skinid][eSkinClass] != SKINCLASS_INVALID;
+    return skinid >= 0 && skinid < sizeof(SkinPearsInfo) && SkinPearsInfo[skinid][eSkinClass] != SKINCLASS_INVALID;
 }
 
 stock bool:IsCustomSkin(skinid)
