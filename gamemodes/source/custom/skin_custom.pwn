@@ -795,13 +795,21 @@ stock bool:IsSkinFemale(skinid)
 stock bool:IsSpecialSystemSkin(skinid)
 {
     if (!IsValidSkinId(skinid)) return false;
-    switch (GetSkinClass(skinid))
-    {
-        case SKINCLASS_INVALID:
-        // case SKINCLASS_SYSTEM, SKINCLASS_INVALID: // ВРЕМЕННО ЗАКОМЕНТИЛ. СКИНЫ ОРГАНИЗАЦИЙ И ВООБЩЕ КУЧА ОБЫЧНЫХ СКИНОВ НЕ МОГУТ БЫТЬ СИСТЕМНЫМИ, ЕПТА БЛЯ SKINCLASS_SYSTEM
-        return true;
-    }
-    return false;
+    // Скромник (SCP)
+	if (skinid == 505) return true;
+	// Горилла, Маньяк, Овца, Корова, Крик, Пеннивайз
+	if (skinid >= 506 && skinid <= 511) return true;
+	// Хеллоуин
+	if (skinid >= 594 && skinid <= 596) return true;
+	// Зомби
+	if (skinid >= 512 && skinid <= 520) return true;
+	// Раскопка могил и гробница
+	if (skinid >= 602 && skinid <= 604) return true;
+	// Звери
+	if (skinid >= 605 && skinid <= 609) return true;
+	// Домашние животные + Санта
+	if (skinid >= 626 && skinid <= 649) return true;
+	return false;
 }
 
 stock bool:CanSkinBeAvailableForSaleInShops(skinid)
