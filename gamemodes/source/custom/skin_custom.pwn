@@ -797,7 +797,8 @@ stock bool:IsSpecialSystemSkin(skinid)
     if (!IsValidSkinId(skinid)) return false;
     switch (GetSkinClass(skinid))
     {
-    case SKINCLASS_SYSTEM, SKINCLASS_INVALID:
+        case SKINCLASS_INVALID:
+        // case SKINCLASS_SYSTEM, SKINCLASS_INVALID: // ВРЕМЕННО ЗАКОМЕНТИЛ. СКИНЫ ОРГАНИЗАЦИЙ И ВООБЩЕ КУЧА ОБЫЧНЫХ СКИНОВ НЕ МОГУТ БЫТЬ СИСТЕМНЫМИ, ЕПТА БЛЯ SKINCLASS_SYSTEM
         return true;
     }
     return false;
