@@ -1,10 +1,22 @@
 
 #define COLOR_ZOMBIE_GAME 0x5c7057FF
-#define COLOR_PLAYER_ZOMBIE_GAME 0xa6d8b3FF
+#define COLOR_PLAYER_ZOMBIE_GAME 0xcee0cc00 // Игрок не зомби, не имеет клиста на карте (чтобы могли прятаться)
 
-new bool:PlayerZombieGame[MAX_REALPLAYERS];
-new bool:PlayerIsZombie[MAX_REALPLAYERS];
-new ZombieGameStatus;
+new bool:PlayerZombieGame[MAX_REALPLAYERS]; // Статус участия в игре
+new bool:PlayerIsZombie[MAX_REALPLAYERS]; // Статус зомби
+new PersonalZombiePeople[MAX_REALPLAYERS]; // Количество обращенных мною людей в зомби
+
+new ZombieGameStatus; // Статус игры
+new ZombieQuan;
+new PeopleQuan;
+
+stock ClearVariableZombieGame(playerid)
+{
+    PlayerZombieGame[playerid] = false;
+    PlayerIsZombie[playerid] = false;
+    PersonalZombiePeople[playerid] = 0;
+    return true;
+}
 
 CMD:zombie(playerid)
 {
@@ -25,6 +37,11 @@ stock ZombieGameDamage(playerid, damagedid, weaponid)
     if(ProxDetectorS(4.0, playerid, damagedid) && weaponid == 0)
     {
         GiveZombieStatus(damagedid, true);
+
+        PersonalZombiePeople[playerid] ++;
+        new string[144];
+        format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~3APA„EHO: ~r~%d / %d~n~~y~‹AЋ…: ~r~%d", ZombieQuan, ZombieQuan + PeopleQuan, PersonalZombiePeople[playerid]);
+		GameTextForPlayer(playerid,string,8000,3);
     }
     return true;
 }
@@ -45,48 +62,49 @@ stock GiveZombieStatus(playerid, bool:FindNext)
     keep(playerid, true);
     m_custom_sync_SetPlayerSkin(playerid, 505);
     SetPlayerColor(playerid, COLOR_ZOMBIE_GAME);
+    OffAccessory(playerid); // Скрываем аксы
 
+    ZombieQuan ++;
+    PeopleQuan --;
+
+    new quanPlayers;
     if(FindNext == true)
     {
-        new quanPlayers, quanZombie, lastPlayerid;
-        foreach(Player,i)
-        {
-            if(OnlineInfo[i][oLogged] == 1)
-            {
-                if(PlayerZombieGame[i] == true) 
-                {
-                    if(PlayerIsZombie[i] == false) quanPlayers ++, lastPlayerid = i;
-                }
-                if(PlayerIsZombie[i] == true) quanZombie ++;
-            }
-        }
+        quanPlayers = CountingPlayersZombie();
+        ZombieQuan = quanPlayers; // Записываем количество зомбарей
 
-        // Отсался один игрок в игре
-        if(quanPlayers <= 1)
-        {
-            foreach(Player,i)
-            {
-                if(OnlineInfo[i][oLogged] == 1)
-                {
-                    if(PlayerZombieGame[i] == true)
-                    {
-                        PlayerPlaySound(i,6401,0,0,0);
-                        SendClientMessage(i, COLOR_LIGHTBLUE, "Zombie Game завершена! Последний выживший %s[%d]", PlayerInfo[lastPlayerid][pName], lastPlayerid);
-                    }
-                }
-            }
-            CloseZombie();
-        }
-        else SoundZombie(playerid);
+        if(quanPlayers >= 2) SoundZombie(playerid);
     }  
     else SoundZombie(playerid);
-    return true;
+    return quanPlayers;
+}
+
+stock CountingPlayersZombie()
+{
+    new quanPlayers, quanZombie, lastPlayerid;
+    foreach(Player,i)
+    {
+        if(OnlineInfo[i][oLogged] == 1)
+        {
+            if(PlayerZombieGame[i] == true) 
+            {
+                if(PlayerIsZombie[i] == false) quanPlayers ++, lastPlayerid = i;
+            }
+            if(PlayerIsZombie[i] == true) quanZombie ++;
+        }
+    }
+
+    // Отсался один игрок в игре
+    if(quanPlayers <= 1)
+    {
+        ShowTopZombiePlayers(lastPlayerid); // Подсчитываем и отображаем результаты в чат
+        CloseZombie(); // Выключаем игру
+    }
+    return quanPlayers;
 }
 
 stock SoundZombie(playerid)
 {
-    ApplyAnimation(playerid,"SWEET","LaFin_Sweet", 4.0, false, true, true, false, false, SYNC_ALL);
-
     new Float:pla_pos[3];
     GetPlayerPos(playerid, pla_pos[0],pla_pos[1],pla_pos[2]);
 
@@ -111,12 +129,13 @@ stock bool:IsPlayerInEligibleList(playerid, const list[], count)
 stock StartZombie(playerid)
 {
     new eligiblePlayers[MAX_REALPLAYERS], count = 0;
+    PeopleQuan = 0;
 
     foreach(Player,i)
     {
         if(OnlineInfo[i][oLogged] == 1 && !IsPlayerAfk(i) && !IsPlayerNPC(i))
         {
-            if(GetDistanceBetweenPlayers(playerid,i) < 100 
+            if(GetDistanceBetweenPlayers(playerid,i) < 200 
                 && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i)
                 && GetPlayerInterior(playerid) == GetPlayerInterior(i))
 			{
@@ -135,6 +154,9 @@ stock StartZombie(playerid)
         if(IsPlayerInEligibleList(i, eligiblePlayers, count))
         {
             PlayerZombieGame[i] = true;
+            PlayerIsZombie[i] = false;
+            PersonalZombiePeople[i] = 0;
+            PeopleQuan ++; // Записываем количество людей (не зомби)
             
             if(i == zombieId)
             {   
@@ -162,18 +184,89 @@ stock CloseZombie()
         {
             if(PlayerZombieGame[i] == true)
             {
-                PlayerZombieGame[i] = false;
                 keep(i);
-                if(PlayerIsZombie[i] == true) 
-                {
-                    m_custom_sync_SetPlayerSkin(i, PlayerInfo[i][pModel]);
-                    PlayerIsZombie[i] = false;
-                }
-                SetPlayerToTeamColor(i);
+                ExitPlayerZombie(i);
             }
         }
     }
 
     ZombieGameStatus = 0;
+    PeopleQuan = 0;
+    ZombieQuan = 0;
+    return true;
+}
+
+// Игрок покинул игру зомби (помер, заспавнился, вышел)
+stock ExitPlayerZombie(playerid, bool:countMembers = false)
+{
+    if(PlayerZombieGame[playerid] == true)
+    {
+        keep(playerid);
+        if(PlayerIsZombie[playerid] == true) 
+        {
+            m_custom_sync_SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]); // Возвращаем скин
+            BackAccessory(playerid); // Возвращаем аксы
+            ZombieQuan --;
+        }
+        else PeopleQuan --;
+        SetPlayerToTeamColor(playerid);
+        ClearVariableZombieGame(playerid); // Очищаем переменные
+
+        if(countMembers == true) CountingPlayersZombie(); // Считаем участников, если необходимо (например смерть или выход из игры)
+    }
+    return true;
+}
+
+// Отображаем победителя и топ зомби в конце игры
+stock ShowTopZombiePlayers(winplayerid) 
+{
+    new playerCount = 0;
+    new playerList[MAX_REALPLAYERS][2]; // [0] playerid, [1] значение
+
+    // Собираем данные игроков
+    foreach(Player,i)
+    {
+        if(OnlineInfo[i][oLogged] == 1 && PlayerIsZombie[i] == true)
+        {
+            playerList[playerCount][0] = i;
+            playerList[playerCount][1] = PersonalZombiePeople[i];
+            playerCount++;
+        }
+    }
+
+    // Сортировка пузырьком по убыванию
+    for(new i = 0; i < playerCount; i++) 
+    {
+        for(new j = i + 1; j < playerCount; j++) 
+        {
+            if(playerList[i][1] < playerList[j][1]) 
+            {
+                // Меняем местами
+                new tmpId = playerList[i][0];
+                new tmpVal = playerList[i][1];
+                
+                playerList[i][0] = playerList[j][0];
+                playerList[i][1] = playerList[j][1];
+                
+                playerList[j][0] = tmpId;
+                playerList[j][1] = tmpVal;
+            }
+        }
+    }
+
+    // Вывод в чат
+    foreach(Player,i)
+    {
+        if(OnlineInfo[i][oLogged] == 1 && PlayerIsZombie[i] == true)
+        {
+            PlayerPlaySound(i,6401,0,0,0);
+            SendClientMessage(i, COLOR_GREY, "{0088ff}Zombie Game {ffcc66}| Выживший %s[%d]", PlayerInfo[winplayerid][pName], winplayerid);
+
+            for(new p = 0; p < 5 && p < playerCount; p++) 
+            {
+                SendClientMessage(i, COLOR_GREY, "{ffcc66}%d. %s[%d] {cccccc}- %d заражений", p + 1, PlayerInfo[playerList[p][0]][pName], playerList[p][0], playerList[p][1]);
+            }
+        }
+    }
     return true;
 }
