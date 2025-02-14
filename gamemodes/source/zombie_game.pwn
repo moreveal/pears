@@ -9,6 +9,9 @@ new PersonalZombiePeople[MAX_REALPLAYERS]; // Количество обраще�
 new ZombieGameStatus; // Статус игры
 new ZombieQuan;
 new PeopleQuan;
+new Float:ZombieGamePosition[3];
+new ZombieGameWorld;
+new ZombieGameInterior;
 
 stock ClearVariableZombieGame(playerid)
 {
@@ -91,6 +94,13 @@ stock CountingPlayersZombie()
         {
             if(PlayerZombieGame[i] == true) 
             {
+                // Если вдруг один из участников оказался далеко от игры, кикаем его
+                if(GetPlayerDistanceFromPoint(i, ZombieGamePosition[0], ZombieGamePosition[1], ZombieGamePosition[2]) >= 500.0
+                    || GetPlayerVirtualWorld(i) != ZombieGameWorld || GetPlayerInterior(i) != ZombieGameInterior)
+                {
+                    ClosePlayerZombieGame(i); // Закрываем игру одному из участников
+                }
+
                 if(PlayerIsZombie[i] == false) quanPlayers ++, lastPlayerid = i;
                 if(PlayerIsZombie[i] == true) quanZombie ++;
             }
@@ -136,7 +146,7 @@ stock StartZombie(playerid)
 
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1 && !IsPlayerAfk(i) && !IsPlayerNPC(i))
+        if(OnlineInfo[i][oLogged] == 1 && !IsPlayerAfk(i) && !IsPlayerNPC(i) && ADUTY[i] == 0)
         {
             if(GetDistanceBetweenPlayers(playerid,i) < 200 
                 && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i)
@@ -147,6 +157,10 @@ stock StartZombie(playerid)
         }
     }
     if(count <= 2) return ErrorMessage(playerid, "{FF6347}Минимум 3 игрока для начала игры в Zombie");
+
+    GetPlayerPos(playerid, ZombieGamePosition[0], ZombieGamePosition[1], ZombieGamePosition[2]);
+    ZombieGameWorld = GetPlayerVirtualWorld(playerid);
+    ZombieGameInterior = GetPlayerInterior(playerid);
 
     // Выбираем случайного зомби
     new zombieId = eligiblePlayers[random(count)];
@@ -204,6 +218,16 @@ stock ExitPlayerZombie(playerid, bool:countMembers = false)
 {
     if(PlayerZombieGame[playerid] == true)
     {
+        ClosePlayerZombieGame(playerid);
+        if(countMembers == true) CountingPlayersZombie(); // Считаем участников, если необходимо (например смерть или выход из игры)
+    }
+    return true;
+}
+
+stock ClosePlayerZombieGame(playerid)
+{
+    if(PlayerZombieGame[playerid] == true)
+    {
         keep(playerid);
         if(PlayerIsZombie[playerid] == true) 
         {
@@ -214,8 +238,6 @@ stock ExitPlayerZombie(playerid, bool:countMembers = false)
         else PeopleQuan --;
         SetPlayerToTeamColor(playerid);
         ClearVariableZombieGame(playerid); // Очищаем переменные
-
-        if(countMembers == true) CountingPlayersZombie(); // Считаем участников, если необходимо (например смерть или выход из игры)
     }
     return true;
 }
