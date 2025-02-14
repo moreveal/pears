@@ -36,12 +36,15 @@ stock ZombieGameDamage(playerid, damagedid, weaponid)
 
     if(ProxDetectorS(4.0, playerid, damagedid) && weaponid == 0)
     {
-        GiveZombieStatus(damagedid, true);
-
         PersonalZombiePeople[playerid] ++;
-        new string[144];
-        format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~3APA„EHO: ~r~%d / %d~n~~y~‹AЋ…: ~r~%d", ZombieQuan, ZombieQuan + PeopleQuan, PersonalZombiePeople[playerid]);
-		GameTextForPlayer(playerid,string,8000,3);
+    
+        new quanPlayers = GiveZombieStatus(damagedid, true);
+        if(quanPlayers > 0)
+        {
+            new string[144];
+            format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~3APA„EHO: ~r~%d / %d~n~~y~‹AЋ…: ~r~%d", ZombieQuan, ZombieQuan + PeopleQuan, PersonalZombiePeople[playerid]);
+		    GameTextForPlayer(playerid,string,8000,3);
+        }
     }
     return true;
 }
@@ -89,8 +92,8 @@ stock CountingPlayersZombie()
             if(PlayerZombieGame[i] == true) 
             {
                 if(PlayerIsZombie[i] == false) quanPlayers ++, lastPlayerid = i;
+                if(PlayerIsZombie[i] == true) quanZombie ++;
             }
-            if(PlayerIsZombie[i] == true) quanZombie ++;
         }
     }
 
@@ -226,7 +229,7 @@ stock ShowTopZombiePlayers(winplayerid)
     // Собираем данные игроков
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1 && PlayerIsZombie[i] == true)
+        if(OnlineInfo[i][oLogged] == 1 && PlayerZombieGame[i] == true)
         {
             playerList[playerCount][0] = i;
             playerList[playerCount][1] = PersonalZombiePeople[i];
@@ -257,7 +260,7 @@ stock ShowTopZombiePlayers(winplayerid)
     // Вывод в чат
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1 && PlayerIsZombie[i] == true)
+        if(OnlineInfo[i][oLogged] == 1 && PlayerZombieGame[i] == true)
         {
             PlayerPlaySound(i,6401,0,0,0);
             SendClientMessage(i, COLOR_GREY, "{0088ff}Zombie Game {ffcc66}| Выживший %s[%d]", PlayerInfo[winplayerid][pName], winplayerid);
