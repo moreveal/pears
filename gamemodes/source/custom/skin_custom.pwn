@@ -131,7 +131,7 @@ new SkinPearsInfo[][SKINENUM] =
     {0     , 0               , 0           , "Security Guard"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 71     | WMYSGRD
     {0     , 0               , 0           , "Hippy"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 72     | SWMYHP1
     {0     , 0               , 0           , "Hippy"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 73     | SWMYHP2
-    {0     , 0               , 0           , "Unknown"                                                       , SKINCLASS_INVALID       , SKINSEX_MALE      }, // 74     | 
+    {0     , 0               , 0           , "Unknown"                                                       , SKINCLASS_INVALID       , SKINSEX_MALE      }, // 74     |
     {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 75     | SWFOPRO
     {0     , 0               , 0           , "Stewardess"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 76     | WFYSTEW
     {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 77     | SWMOTR1
@@ -191,184 +191,184 @@ new SkinPearsInfo[][SKINENUM] =
     {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 131    | DNFYLC
     {0     , 300_000         , 150         , "Farm Inhabitant"                                               , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 132    | DNMOLC1
     {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 133    | DNMOLC2
-    {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 134    | SBMOTR2
-    {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 135    | SWMOTR2
-    {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 136    | SBMYTR3
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 134    | SBMOTR2
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 135    | SWMOTR2
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 136    | SBMYTR3
     {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 137    | SWMOTR3
-    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 138    | WFYBE
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 139    | BFYBE
-    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 140    | HFYBE
-    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 141    | SOFYBU
-    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 142    | SBMYST
-    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 143    | SBMYCR
-    {0     , 0               , 0           , "Businesswoman"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 144    | BMYCG
-    {0     , 0               , 0           , "Taxi Driver"                                                   , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 145    | WFYCRK
+    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 138    | WFYBE
+    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 139    | BFYBE
+    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 140    | HFYBE
+    {0     , 0               , 0           , "Businesswoman"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 141    | SOFYBU
+    {0     , 0               , 0           , "Taxi Driver"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 142    | SBMYST
+    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 143    | SBMYCR
+    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 144    | BMYCG
+    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 145    | WFYCRK
     {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 146    | HMYCM
-    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 147    | WMYBU
-    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 148    | BFYBU
-    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 149    | SMOKEV
-    {0     , 0               , 0           , "Businessman"                                                   , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 150    | WFYBU
-    {0     , 0               , 0           , "Businesswoman"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 151    | DWFYLC1
-    {0     , 0               , 0           , "Big Smoke Armored"                                             , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 152    | WFYPRO
-    {0     , 0               , 0           , "Businesswoman"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 153    | WMYCONB
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 154    | WMYBE
-    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 155    | WMYPIZZ
-    {0     , 250_000         , 125         , "Construction Worker"                                           , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 156    | BMOBAR
-    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 157    | CWFYHB
-    {0     , 300_000         , 150         , "Pizza Worker"                                                  , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 158    | CWMOFR
-    {0     , 0               , 0           , "Barber"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 159    | CWMOHB1
+    {0     , 0               , 0           , "Businessman"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 147    | WMYBU
+    {0     , 0               , 0           , "Businesswoman"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 148    | BFYBU
+    {0     , 0               , 0           , "Big Smoke Armored"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 149    | SMOKEV
+    {0     , 0               , 0           , "Businesswoman"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 150    | WFYBU
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 151    | DWFYLC1
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 152    | WFYPRO
+    {0     , 0               , 0           , "Construction Worker"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 153    | WMYCONB
+    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 154    | WMYBE
+    {0     , 0               , 0           , "Pizza Worker"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 155    | WMYPIZZ
+    {0     , 250_000         , 125         , "Barber"                                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 156    | BMOBAR
+    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 157    | CWFYHB
+    {0     , 300_000         , 150         , "Farmer"                                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 158    | CWMOFR
+    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 159    | CWMOHB1
     {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 160    | CWMOHB2
     {0     , 300_000         , 150         , "Farmer"                                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 161    | CWMYFR
     {0     , 300_000         , 150         , "Hillbilly"                                                     , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 162    | CWMYHB1
-    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 163    | BMYBOUN
-    {0     , 0               , 0           , "Farmer"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 164    | WMYBOUN
-    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 165    | WMOMIB
-    {0     , 0               , 0           , "Black Bouncer"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 166    | BMYMIB
-    {0     , 0               , 0           , "White Bouncer"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 167    | WMYBELL
-    {0     , 0               , 0           , "White MIB agent"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 168    | BMOCHIL
-    {0     , 0               , 0           , "Black MIB agent"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 169    | SOFYRI
-    {0     , 0               , 0           , "Cluckin' Bell Worker"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 170    | SOMYST
-    {0     , 800_000         , 500         , "Chilli Dog Vendor"                                             , SKINCLASS_RARE          , SKINSEX_MALE      }, // 171    | VWMYBJD
-    {0     , 800_000         , 500         , "Normal Ped"                                                    , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 172    | VWFYCRP
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 173    | SFR1
-    {0     , 0               , 0           , "Blackjack Dealer"                                              , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 174    | SFR2
-    {0     , 0               , 0           , "Casino croupier"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 175    | SFR3
-    {0     , 500_000         , 250         , "Rifa"                                                          , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 176    | BMYBAR
-    {0     , 900_000         , 600         , "Rifa"                                                          , SKINCLASS_RARE          , SKINSEX_MALE      }, // 177    | WMYBAR
-    {0     , 0               , 0           , "Rifa"                                                          , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 178    | WFYSEX
-    {0     , 0               , 0           , "Barber"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 179    | WMYAMMO
-    {0     , 500_000         , 250         , "Barber"                                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 180    | BMYTATT
-    {0     , 0               , 0           , "Whore"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 181    | VWMYCR
-    {0     , 0               , 0           , "Ammunation"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 182    | VBMOCD
-    {0     , 0               , 0           , "Tattoo Artist"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 183    | VBMYCR
-    {0     , 0               , 0           , "Punk"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 184    | VHMYCR
-    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 185    | SBMYRI
+    {0     , 0               , 0           , "Black Bouncer"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 163    | BMYBOUN
+    {0     , 0               , 0           , "White Bouncer"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 164    | WMYBOUN
+    {0     , 0               , 0           , "White MIB agent"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 165    | WMOMIB
+    {0     , 0               , 0           , "Black MIB agent"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 166    | BMYMIB
+    {0     , 0               , 0           , "Cluckin' Bell Worker"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 167    | WMYBELL
+    {0     , 0               , 0           , "Chilli Dog Vendor"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 168    | BMOCHIL
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 169    | SOFYRI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 170    | SOMYST
+    {0     , 800_000         , 500         , "Blackjack Dealer"                                              , SKINCLASS_RARE          , SKINSEX_MALE      }, // 171    | VWMYBJD
+    {0     , 800_000         , 500         , "Casino croupier"                                               , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 172    | VWFYCRP
+    {0     , 0               , 0           , "Rifa"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 173    | SFR1
+    {0     , 0               , 0           , "Rifa"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 174    | SFR2
+    {0     , 0               , 0           , "Rifa"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 175    | SFR3
+    {0     , 500_000         , 250         , "Barber"                                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 176    | BMYBAR
+    {0     , 900_000         , 600         , "Barber"                                                        , SKINCLASS_RARE          , SKINSEX_MALE      }, // 177    | WMYBAR
+    {0     , 0               , 0           , "Whore"                                                         , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 178    | WFYSEX
+    {0     , 0               , 0           , "Ammunation"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 179    | WMYAMMO
+    {0     , 500_000         , 250         , "Tattoo Artist"                                                 , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 180    | BMYTATT
+    {0     , 0               , 0           , "Punk"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 181    | VWMYCR
+    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 182    | VBMOCD
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 183    | VBMYCR
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 184    | VHMYCR
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 185    | SBMYRI
     {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 186    | SOMYRI
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 187    | SOMYBU
+    {0     , 0               , 0           , "Businessman"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 187    | SOMYBU
     {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 188    | SWMYST
-    {0     , 700_000         , 550         , "Normal Ped"                                                    , SKINCLASS_RARE          , SKINSEX_MALE      }, // 189    | WMYVA
-    {0     , 0               , 0           , "Businessman"                                                   , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 190    | COPGRL3
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 191    | GUNGRL3
-    {0     , 0               , 0           , "Valet"                                                         , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 192    | MECGRL3
-    {0     , 0               , 0           , "Barbara Schternvart"                                           , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 193    | NURGRL3
-    {0     , 900_000         , 700         , "Helena Wankstein"                                              , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 194    | CROGRL3
-    {0     , 0               , 0           , "Michelle Cannes"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 195    | GANGRL3
-    {0     , 0               , 0           , "Katie Zhan"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 196    | CWFOFR
-    {0     , 0               , 0           , "Millie Perkins"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 197    | CWFOHB
-    {0     , 0               , 0           , "Denise Robinson"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 198    | CWFYFR1
+    {0     , 700_000         , 550         , "Valet"                                                         , SKINCLASS_RARE          , SKINSEX_MALE      }, // 189    | WMYVA
+    {0     , 0               , 0           , "Barbara Schternvart"                                           , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 190    | COPGRL3
+    {0     , 0               , 0           , "Helena Wankstein"                                              , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 191    | GUNGRL3
+    {0     , 0               , 0           , "Michelle Cannes"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 192    | MECGRL3
+    {0     , 0               , 0           , "Katie Zhan"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 193    | NURGRL3
+    {0     , 900_000         , 700         , "Millie Perkins"                                                , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 194    | CROGRL3
+    {0     , 0               , 0           , "Denise Robinson"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 195    | GANGRL3
+    {0     , 0               , 0           , "Farm Inhabitan"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 196    | CWFOFR
+    {0     , 0               , 0           , "Hillbill"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 197    | CWFOHB
+    {0     , 0               , 0           , "Farm Inhabitan"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 198    | CWFYFR1
     {0     , 0               , 0           , "Farm Inhabitan"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 199    | CWFYFR2
-    {0     , 0               , 0           , "Hillbill"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 200    | CWMYHB2
-    {0     , 0               , 0           , "Farm Inhabitan"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 201    | DWFYLC2
-    {0     , 0               , 0           , "Farm Inhabitan"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 202    | DWMYLC2
-    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 203    | OMYKARA
-    {0     , 0               , 0           , "Farmer"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 204    | WMYKARA
-    {0     , 0               , 0           , "Farmer"                                                        , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 205    | WFYBURG
-    {0     , 0               , 0           , "Karate Teacher"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 206    | VWMYCD
-    {0     , 0               , 0           , "Karate Teacher"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 207    | VHFYPRO
-    {0     , 0               , 0           , "Burger Shot Cashier"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 208    | SUZIE
-    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 209    | OMONOOD
-    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 210    | OMOBOAT
-    {0     , 450_000         , 225         , "Su Xi Mu"                                                      , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 211    | WFYCLOT
-    {0     , 0               , 0           , "Noodle Vendor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 212    | VWMOTR1
-    {0     , 0               , 0           , "School Instructor"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 213    | VWMOTR2
-    {0     , 0               , 0           , "Shop Staff"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 214    | VWFYWAI
-    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 215    | SBFORI
-    {0     , 0               , 0           , "Weird old man"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 216    | SWFYRI
-    {0     , 0               , 0           , "Maria Latore"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 217    | WMYCLOT
+    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 200    | CWMYHB2
+    {0     , 0               , 0           , "Farmer"                                                        , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 201    | DWFYLC2
+    {0     , 0               , 0           , "Farmer"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 202    | DWMYLC2
+    {0     , 0               , 0           , "Karate Teacher"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 203    | OMYKARA
+    {0     , 0               , 0           , "Karate Teacher"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 204    | WMYKARA
+    {0     , 0               , 0           , "Burger Shot Cashier"                                           , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 205    | WFYBURG
+    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 206    | VWMYCD
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 207    | VHFYPRO
+    {0     , 0               , 0           , "Su Xi Mu"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 208    | SUZIE
+    {0     , 0               , 0           , "Noodle Vendor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 209    | OMONOOD
+    {0     , 0               , 0           , "School Instructor"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 210    | OMOBOAT
+    {0     , 450_000         , 225         , "Shop Staff"                                                    , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 211    | WFYCLOT
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 212    | VWMOTR1
+    {0     , 0               , 0           , "Weird old man"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 213    | VWMOTR2
+    {0     , 0               , 0           , "Maria Latore"                                                  , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 214    | VWFYWAI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 215    | SBFORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 216    | SWFYRI
+    {0     , 0               , 0           , "Shop Staff"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 217    | WMYCLOT
     {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 218    | SBFOST
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 219    | SBFYRI
-    {0     , 0               , 0           , "Shop Staff"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 220    | SBMOCD
+    {0     , 0               , 0           , "Rich Woman"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 219    | SBFYRI
+    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 220    | SBMOCD
     {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 221    | SBMORI
-    {0     , 0               , 0           , "Rich Woman"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 222    | SBMOST
-    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 223    | SHMYCR
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 222    | SBMOST
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 223    | SHMYCR
     {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 224    | SOFORI
     {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 225    | SOFOST
     {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 226    | SOFYST
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 227    | SOMOBU
-    {0     , 0               , 0           , "Oriental Businessman"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 228    | SOMORI
+    {0     , 0               , 0           , "Oriental Businessman"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 227    | SOMOBU
+    {0     , 0               , 0           , "Oriental Ped"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 228    | SOMORI
     {0     , 0               , 0           , "Oriental Ped"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 229    | SOMOST
-    {0     , 0               , 0           , "Oriental Ped"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 230    | SWMOTR5
-    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 231    | SWFORI
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 230    | SWMOTR5
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 231    | SWFORI
     {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 232    | SWFOST
     {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 233    | SWFYST
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 234    | SWMOCD
-    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 235    | SWMORI
+    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 234    | SWMOCD
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 235    | SWMORI
     {0     , 500_000         , 400         , "Normal Ped"                                                    , SKINCLASS_RARE          , SKINSEX_MALE      }, // 236    | SWMOST
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 237    | SHFYPRO
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 237    | SHFYPRO
     {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 238    | SBFYPRO
-    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 239    | SWMOTR4
-    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 240    | SWMYRI
-    {0     , 0               , 0           , "The D.A"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 241    | SMYST
-    {0     , 0               , 0           , "Afro-American"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 242    | SMYST2
-    {0     , 0               , 0           , "Mexican"                                                       , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 243    | SFYPRO
-    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 244    | VBFYST2
-    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 245    | VBFYPRO
-    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 246    | VHFYST3
-    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 247    | BIKERA
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 239    | SWMOTR4
+    {0     , 0               , 0           , "The D.A"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 240    | SWMYRI
+    {0     , 0               , 0           , "Afro-American"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 241    | SMYST
+    {0     , 0               , 0           , "Mexican"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 242    | SMYST2
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 243    | SFYPRO
+    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 244    | VBFYST2
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 245    | VBFYPRO
+    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 246    | VHFYST3
+    {0     , 0               , 0           , "Biker"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 247    | BIKERA
     {0     , 0               , 0           , "Biker"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 248    | BIKERB
-    {0     , 1_000_000       , 750         , "Biker"                                                         , SKINCLASS_RARE          , SKINSEX_MALE      }, // 249    | BMYPIMP
-    {0     , 0               , 0           , "Pimp"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 250    | SWMYCR
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 251    | WFYLG
-    {0     , 0               , 0           , "Lifeguard"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 252    | WMYVA2
-    {0     , 0               , 0           , "Naked Valet"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 253    | BMOSEC
-    {0     , 0               , 0           , "Bus Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 254    | BIKDRUG
-    {0     , 0               , 0           , "Biker Drug Dealer"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 255    | WMYCH
-    {0     , 0               , 0           , "Chauffeu"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 256    | SBFYSTR
+    {0     , 1_000_000       , 750         , "Pimp"                                                          , SKINCLASS_RARE          , SKINSEX_MALE      }, // 249    | BMYPIMP
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 250    | SWMYCR
+    {0     , 0               , 0           , "Lifeguard"                                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 251    | WFYLG
+    {0     , 0               , 0           , "Naked Valet"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 252    | WMYVA2
+    {0     , 0               , 0           , "Bus Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 253    | BMOSEC
+    {0     , 0               , 0           , "Biker Drug Dealer"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 254    | BIKDRUG
+    {0     , 0               , 0           , "Chauffeu"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 255    | WMYCH
+    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 256    | SBFYSTR
     {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 257    | SWFYSTR
-    {0     , 500_000         , 250         , "Stripper"                                                      , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 258    | HECK1
+    {0     , 500_000         , 250         , "Heckler"                                                       , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 258    | HECK1
     {0     , 500_000         , 250         , "Heckler"                                                       , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 259    | HECK2
-    {0     , 0               , 0           , "Heckler"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 260    | BMYCON
-    {0     , 0               , 0           , "Construction Worker"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 261    | WMYCD1
+    {0     , 0               , 0           , "Construction Worker"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 260    | BMYCON
+    {0     , 0               , 0           , "Cab driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 261    | WMYCD1
     {0     , 0               , 0           , "Cab driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 262    | BMOCD
-    {0     , 0               , 0           , "Cab driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 263    | VWFYWA2
-    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 264    | WMOICE
-    {0     , 0               , 0           , "Dwayne"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 265    | TENPEN
-    {0     , 0               , 0           , "Big Smoke"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 266    | PULASKI
-    {0     , 0               , 0           , "Sweet"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 267    | HERN
-    {0     , 0               , 0           , "Ryder"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 268    | DWAYNE
-    {0     , 0               , 0           , "Mafia Boss"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 269    | SMOKE
-    {0     , 0               , 0           , "T-Bone Mendez"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 270    | SWEET
-    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 271    | RYDER2
-    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 272    | FORELLI
-    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 273    | TBONE
-    {0     , 0               , 0           , "Firefighter"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 274    | laemt1
-    {0     , 0               , 0           , "Firefighter"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 275    | lvemt1
-    {0     , 0               , 0           , "Firefighter"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 276    | sfemt1
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 277    | lafd1
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 278    | lvfd1
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 279    | sffd1
-    {0     , 0               , 0           , "County Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 280    | lapd1
-    {0     , 0               , 0           , "Motorbike Cop"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 281    | sfpd1
-    {0     , 0               , 0           , "Special Forces"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 282    | lvpd1
-    {0     , 0               , 0           , "Federal Agent"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 283    | csher
-    {0     , 0               , 0           , "Army"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 284    | lapdm1
-    {0     , 0               , 0           , "Desert Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 285    | swat
-    {0     , 0               , 0           , "Zero"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 286    | fbi
-    {0     , 0               , 0           , "Ken Rosenberg"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 287    | army
-    {0     , 0               , 0           , "Kent Paul"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 288    | dsher
-    {0     , 0               , 0           , "Cesar Vialpando"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 289    | ZERO
-    {0     , 800_000         , 550         , "OG Loc"                                                        , SKINCLASS_RARE          , SKINSEX_MALE      }, // 290    | ROSE
-    {0     , 600_000         , 450         , "Wu Zi Mu"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 291    | PAUL
-    {0     , 0               , 0           , "Michael Toreno"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 292    | CESAR
-    {0     , 0               , 0           , "Jizzy"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 293    | OGLOC
-    {0     , 0               , 0           , "Madd Dogg"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 294    | WUZIMU
-    {0     , 0               , 0           , "Catalina"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 295    | TORINO
-    {0     , 0               , 0           , "Claude"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 296    | JIZZY
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 297    | MADDOGG
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 298    | CAT
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 299    | CLAUDE
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 300    | 
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 301    | 
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 302    | 
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 303    | 
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 304    | 
-    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 305    | 
-    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 306    | 
-    {0     , 0               , 0           , "Country Sheriff"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 307    | 
-    {0     , 0               , 0           , "Desert Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 308    | 
-    {0     , 0               , 0           , "Desert Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 309    | 
-    {0     , 0               , 0           , "Desert Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 310    | 
-    {0     , 0               , 0           , "Desert Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 311    | 
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 263    | VWFYWA2
+    {0     , 0               , 0           , "Clown"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 264    | WMOICE
+    {0     , 0               , 0           , "Frank Tenpenny"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 265    | TENPEN
+    {0     , 0               , 0           , "Eddie Pulaski"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 266    | PULASKI
+    {0     , 0               , 0           , "Jimmy Hernandez"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 267    | HERN
+    {0     , 0               , 0           , "Dwayne"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 268    | DWAYNE
+    {0     , 0               , 0           , "Big Smoke"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 269    | SMOKE
+    {0     , 0               , 0           , "Sweet"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 270    | SWEET
+    {0     , 0               , 0           , "Ryder"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 271    | RYDER2
+    {0     , 0               , 0           , "Mafia Boss"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 272    | FORELLI
+    {0     , 0               , 0           , "T-Bone Mendez"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 273    | TBONE
+    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 274    | laemt1
+    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 275    | lvemt1
+    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 276    | sfemt1
+    {0     , 0               , 0           , "Firefighter"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 277    | lafd1
+    {0     , 0               , 0           , "Firefighter"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 278    | lvfd1
+    {0     , 0               , 0           , "Firefighter"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 279    | sffd1
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 280    | lapd1
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 281    | sfpd1
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 282    | lvpd1
+    {0     , 0               , 0           , "County Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 283    | csher
+    {0     , 0               , 0           , "Motorbike Cop"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 284    | lapdm1
+    {0     , 0               , 0           , "Special Forces"                                                , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 285    | swat
+    {0     , 0               , 0           , "Federal Agent"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 286    | fbi
+    {0     , 0               , 0           , "Army"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 287    | army
+    {0     , 0               , 0           , "Desert Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 288    | dsher
+    {0     , 0               , 0           , "Zero"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 289    | ZERO
+    {0     , 800_000         , 550         , "Ken Rosenberg"                                                 , SKINCLASS_RARE          , SKINSEX_MALE      }, // 290    | ROSE
+    {0     , 600_000         , 450         , "Kent Paul"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 291    | PAUL
+    {0     , 0               , 0           , "Cesar Vialpando"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 292    | CESAR
+    {0     , 0               , 0           , "OG Loc"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 293    | OGLOC
+    {0     , 0               , 0           , "Wu Zi Mu"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 294    | WUZIMU
+    {0     , 0               , 0           , "Michael Toreno"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 295    | TORINO
+    {0     , 0               , 0           , "Jizzy"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 296    | JIZZY
+    {0     , 0               , 0           , "Madd Dogg"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 297    | MADDOGG
+    {0     , 0               , 0           , "Catalina"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 298    | CAT
+    {0     , 0               , 0           , "Claude"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 299    | CLAUDE
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 300    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 301    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 302    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 303    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 304    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 305    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 306    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 307    |
+    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 308    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 309    |
+    {0     , 0               , 0           , "Country Sheriff"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 310    |
+    {0     , 0               , 0           , "Desert Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 311    |
     {294   , 300_000         , 120         , "Парень в черном"                                               , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 312    | pearspedcu
     {60    , 1_000_000       , 660         , "Стильный мужик"                                                , SKINCLASS_RARE          , SKINSEX_MALE      }, // 313    | pearspeda
     {233   , 350_000         , 140         , "Девушка в белом платье"                                        , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 314    | pearspedb
