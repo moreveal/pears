@@ -189,6 +189,11 @@ stock StartZombie(playerid)
     }
 
     ZombieGameStatus = 1;
+
+    new chat_msg[144];
+	format(chat_msg, sizeof(chat_msg), " [ ADM ]: %s запустил%s режим Zombie на мероприятии!", PlayerInfo[playerid][pName], gender(playerid));
+	ABroadCast(COLOR_ADM,chat_msg,1);
+
     return true;
 }
 
