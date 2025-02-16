@@ -397,7 +397,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
         {
         	if(listitem == 0)
         	{
-        		if(PromoNumber >= 50) return ErrorMessage(playerid, "{FF6347}Лимит активных промокодов: 50");
+        		if(PromoNumber >= MAX_PROMO) return ErrorMessage(playerid, "{FF6347}Лимит активных промокодов: " #MAX_PROMO);
           		ShowDialog(playerid,623,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите название для промокода [3 - 60 символов]\n\n{cccccc}Это текст, который будет вводить игрок, чтобы получить промокод","Принять","Отмена");
         	}
         	else if(listitem >= 1 && listitem <= MAX_PROMO)
@@ -814,7 +814,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 	{
   	    if(response)
   	    {
-  	        if(PromoNumber >= 50) return ErrorMessage(playerid, "{FF6347}Лимит активных промокодов: 50");
+  	        if(PromoNumber >= MAX_PROMO) return ErrorMessage(playerid, "{FF6347}Лимит активных промокодов: " #MAX_PROMO);
   	    	if(strlen(inputtext) < 3 || strlen(inputtext) > 60) return ErrorMessage(playerid, "{FF6347}Не меньше 3 и не больше 60 символов");
   	    	if(!strlen(inputtext)) return pc_cmd_promo(playerid);
 			if(checksimvolPromo(inputtext)) return ErrorMessage(playerid, "{FF6347}Этот символ запрещено использовать в названии промокода\
