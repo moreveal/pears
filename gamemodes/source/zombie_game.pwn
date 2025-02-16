@@ -25,7 +25,11 @@ CMD:zombie(playerid)
 {
     if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
-    if(ZombieGameStatus == 0) StartZombie(playerid);
+    if(ZombieGameStatus == 0)
+    {
+        if(Pognalinamp == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно запустить мероприятие для этого...");
+        StartZombie(playerid);
+    }
     else CloseZombie();
     return true;
 }
@@ -146,14 +150,9 @@ stock StartZombie(playerid)
 
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1 && !IsPlayerAfk(i) && !IsPlayerNPC(i) && ADUTY[i] == 0)
+        if(OnlineInfo[i][oLogged] == 1 && !IsPlayerAfk(i) && !IsPlayerNPC(i) && ADUTY[i] == 0 && (MPGO[i] != 0 || playerid == i))
         {
-            if(GetDistanceBetweenPlayers(playerid,i) < 200 
-                && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(i)
-                && GetPlayerInterior(playerid) == GetPlayerInterior(i))
-			{
-                eligiblePlayers[count++] = i;
-            }
+            eligiblePlayers[count++] = i;
         }
     }
     if(count <= 2) return ErrorMessage(playerid, "{FF6347}Минимум 3 игрока для начала игры в Zombie");
