@@ -297,5 +297,15 @@ stock ShowTopZombiePlayers(winplayerid)
             }
         }
     }
+
+    new chat_msg[144];
+    format(chat_msg, sizeof(chat_msg), " [ ADM ]: Zombie Game завершён | Выживший: %s[%d]", PlayerInfo[winplayerid][pName], winplayerid);
+    ABroadCast(COLOR_ADM,chat_msg,1);
+    for(new p = 0; p < 5 && p < playerCount; p++)
+    {
+        format(chat_msg, sizeof(chat_msg), " [ ADM ]: %d. %s[%d] - %d заражений", p + 1, PlayerInfo[playerList[p][0]][pName], playerList[p][0], playerList[p][1]);
+        ABroadCast(COLOR_ADM,chat_msg,1);
+    }
+
     return true;
 }
