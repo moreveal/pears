@@ -197,7 +197,8 @@ new vehNameCustom[][] =
     "Volkswagen Golf VII GTI", // 2181
     "Bugatti Bolide", // 2182
     "Chevrolet Impala 1967", // 2183
-    "XPeng Voyager X2" // 2184
+    "XPeng Voyager X2", // 2184
+    "Nissan Skyline R32 GT-R" // 2185
     };
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
@@ -387,6 +388,7 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     90000000, // "Bugatti Bolide" // 2182
     30000000, // "Chevrolet Impala 1967" // 2183
     900000000, // "XPeng Voyager X2" // 2184
+    5000000, // "Nissan Skyline R32 GT-R" // 2185
 };
 
 new vehSummaGoldCustom[] = // Гос цены на авто в голде (Дефолтные) Кастомный транспорт
@@ -575,7 +577,8 @@ new vehSummaGoldCustom[] = // Гос цены на авто в голде (Де�
 	1500, // "Volkswagen Golf VII GTI", // 2181  
 	22500, // "Bugatti Bolide", // 2182  
 	7500, // "Chevrolet Impala 1967", // 2183
-    100000, // "XPeng Voyager X2" // 2184  
+    100000, // "XPeng Voyager X2" // 2184
+    1200, // "Nissan Skyline R32 GT-R" // 2185  
 };
 
 stock AddCustomVehicle() // Добавляем тс на карту
@@ -765,6 +768,7 @@ stock AddCustomVehicle() // Добавляем тс на карту
     AddVehicleSyncModel(411, 2182); // "Bugatti Bolide" // 2182
     AddVehicleSyncModel(445, 2183); // "Chevrolet Impala 1967" // 2183
     AddVehicleSyncModel(469, 2184); // "XPeng Voyager X2" // 2184
+    AddVehicleSyncModel(562, 2185); // "Nissan Skyline R32 GT-R" // 2185 
     return 1;
 }
 
@@ -773,7 +777,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2184) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2185) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;
@@ -846,7 +850,7 @@ stock GetVehicleClass(m)
     // Новый класс, типо лимитированные (8)
     else if(m == 2063 || m == 2064 || m == 2088 || m == 2104 || m == 2120 || m == 2124 || m == 2126 || m == 2128 || m == 2153
     || m == 2159 || m == 2160 || m == 2162 || m == 2163 || m == 2176 || m == 2177 || m == 2178
-    || m == 2179 || m == 2180 || m == 2181 || m == 2183 || m == 2184) class = 8;
+    || m == 2179 || m == 2180 || m == 2181 || m == 2183 || m == 2184 || m == 2185) class = 8;
 
     else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
     return class;
