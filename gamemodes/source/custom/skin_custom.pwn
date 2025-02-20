@@ -15,6 +15,7 @@ eSkinClass класс скина
 eSkinSex пол скина
 
 name класса пишется: при просмотре подробной инфы о скине в инвентаре, при выпадении из кейса (желательно)
+Внимание! Названия классов прописываются в stock GetSkinClassName
 
 SKINCLASS_SYSTEM класс - любая продажа в магазах одежды оффнута, не сливаемый скупщику, не дропается с кейсов
 name: Системный, цвет #444444
@@ -726,6 +727,8 @@ new SkinPearsInfo[][SKINENUM] =
 
 #define MAX_MODELS_SKIN (sizeof(SkinPearsInfo))
 
+forward SKINCLASSENUM:GetRandomSkinClass(CASE_TYPE_ENUM:caseType);
+
 stock bool:IsValidSkinId(skinid)
 {
     return skinid >= 0 && skinid < sizeof(SkinPearsInfo) && SkinPearsInfo[skinid][eSkinClass] != SKINCLASS_INVALID;
@@ -865,6 +868,25 @@ stock DeleteSpecialSystemSkins(playerid)
 		}
 	}
 	return 1;
+}
+
+stock GetSkinClassName(s)
+{
+    new atext[44];
+    switch(SkinPearsInfo[s][eSkinClass])
+    {
+        case SKINCLASS_INVALID: atext = "Инвалид";
+        case SKINCLASS_SYSTEM: atext = "{444444}Системный";
+        case SKINCLASS_COMMON: atext = "{a2a0a0}Обычный";
+        case SKINCLASS_UNCOMMON: atext = "{66ca55}Необычный";
+        case SKINCLASS_RARE: atext = "{6d48e2}Редкий";
+        case SKINCLASS_RESERVED1: atext = "Зарезервированный (1)";
+        case SKINCLASS_RESERVED2: atext = "Зарезервированный (2)";
+        case SKINCLASS_RESERVED3: atext = "Зарезервированный (3)";
+        case SKINCLASS_LEGENDARY: atext = "{d90763}Легендарный";
+        default: atext = "Неизвестный";
+    }
+    return atext;
 }
 
 // Сюда добавляются скины для организаций (Максимально 50 слотов, значит 49 ПОСЛЕДНИЙ)
@@ -1187,4 +1209,168 @@ public ReloadSkin(playerid, g)
 		OrgLog(g, "rskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Скины");
 	}
 	return 1;
+}
+
+// Добавляем enum для типов кейсов
+enum CASE_TYPE_ENUM 
+{
+    CASE_TYPE_CLOTHES,
+    CASE_TYPE_GOLD
+};
+
+// Правильное объявление массива с инициализацией
+static const Float:gCaseClassChances[2][4] = {
+    // Обычный кейс          COMMON  UNCOMMON  RARE  LEGENDARY
+    {60.0, 40.0, 0.0, 0.0}, // CASE_TYPE_CLOTHES (индекс 0)
+    {0.0, 65.0, 20.0, 15.0}  // CASE_TYPE_GOLD    (индекс 1)
+};
+
+GetRandomSkinFromCase(CASE_TYPE_ENUM:caseType) 
+{
+    if(caseType != CASE_TYPE_CLOTHES && caseType != CASE_TYPE_GOLD) 
+        return -1;
+
+    // 1. Выбираем класс скина
+    new SKINCLASSENUM:selectedClass = GetRandomSkinClass(caseType);
+    if(selectedClass == SKINCLASS_INVALID) 
+        return -1;
+
+    // 2. Выбираем скин внутри класса
+    return GetRandomSkinByClass(selectedClass, caseType);
+}
+
+// Исправленная функция GetRandomSkinClass
+SKINCLASSENUM:GetRandomSkinClass(CASE_TYPE_ENUM:caseType) 
+{
+    // Проверка валидности индекса
+    if(_:caseType < 0 || _:caseType >= sizeof(gCaseClassChances)) 
+        return SKINCLASS_INVALID;
+
+    new Float:total = 0.0;
+    new Float:randValue = frandom(100.0);
+    
+    for(new i = 0; i < sizeof(gCaseClassChances[]); i++) 
+    {
+        // Явное приведение типа для caseType
+        total += gCaseClassChances[_:caseType][i];
+        
+        if(randValue <= total) 
+        {
+            switch(i) {
+                case 0: return SKINCLASS_COMMON;
+                case 1: return SKINCLASS_UNCOMMON;
+                case 2: return SKINCLASS_RARE;
+                case 3: return SKINCLASS_LEGENDARY;
+            }
+        }
+    }
+    return SKINCLASS_INVALID;
+}
+
+GetRandomSkinByClass(SKINCLASSENUM:targetClass, CASE_TYPE_ENUM:caseType) 
+{
+    new totalWeight = 0;
+    new skinCount = sizeof(SkinPearsInfo);
+    new validSkins[MAX_MODELS_SKIN], validCount = 0;
+
+    for(new i = 0; i < skinCount; i++) 
+    {
+        // Разрешаем RARE и LEGENDARY для целевого LEGENDARY класса
+        if(targetClass == SKINCLASS_LEGENDARY) {
+            if(SkinPearsInfo[i][eSkinClass] != SKINCLASS_RARE && 
+               SkinPearsInfo[i][eSkinClass] != SKINCLASS_LEGENDARY) continue;
+        }
+        else {
+            if(SkinPearsInfo[i][eSkinClass] != targetClass) continue;
+        }
+        
+        if(SkinPearsInfo[i][eSkinClass] == SKINCLASS_SYSTEM) continue;
+        if(!IsSkinAllowedInCase(i, caseType)) continue;
+
+        validSkins[validCount++] = i;
+    }
+
+    if(validCount == 0) return -1;
+
+    // Используем веса на основе целевого класса
+    new skinWeights[MAX_MODELS_SKIN];
+    for(new i = 0; i < validCount; i++) 
+    {
+        new idx = validSkins[i];
+        skinWeights[i] = GetSkinWeightByCost(targetClass, SkinPearsInfo[idx][eSkinGold]);
+        totalWeight += skinWeights[i];
+    }
+
+    new randomWeight = random(totalWeight);
+    new accumulated = 0;
+
+    for(new i = 0; i < validCount; i++) 
+    {
+        accumulated += skinWeights[i];
+        if(randomWeight < accumulated) 
+        {
+            return validSkins[i];
+        }
+    }
+    return -1;
+}
+
+// Проверка доступности скина в кейсе
+IsSkinAllowedInCase(skinIndex, CASE_TYPE_ENUM:caseType) 
+{
+    switch(caseType) 
+    {
+        case CASE_TYPE_CLOTHES: 
+            return SkinPearsInfo[skinIndex][eSkinClass] != SKINCLASS_RARE &&
+                   SkinPearsInfo[skinIndex][eSkinClass] != SKINCLASS_LEGENDARY;
+        
+        case CASE_TYPE_GOLD: 
+            return SkinPearsInfo[skinIndex][eSkinClass] != SKINCLASS_COMMON;
+    }
+    return false;
+}
+
+// Формула веса на основе стоимости (чем выше цена - тем меньше вес)
+GetSkinWeightByCost(SKINCLASSENUM:class, goldCost) 
+{
+    switch(class) 
+    {
+        case SKINCLASS_COMMON:    return 100000 / (goldCost + 1); // Базовый множитель для баланса
+        case SKINCLASS_UNCOMMON:  return 75000 / (goldCost + 1);
+        case SKINCLASS_RARE:     return 50000 / (goldCost + 1);
+        case SKINCLASS_LEGENDARY: return 25000 / (goldCost + 1);
+    }
+    return 1;
+}
+
+// Пример использования в командах
+CMD:opencase(playerid, params[]) {
+
+    if(server != 0) return 0;
+
+    new caseTypeStr[12], CASE_TYPE_ENUM:caseType;
+    if(sscanf(params, "s[12]", caseTypeStr)) {
+        return SendClientMessage(playerid, 0xFF0000AA, "Используй: /opencase [clothes/gold]");
+    }
+    
+    if(!strcmp(caseTypeStr, "clothes", true)) {
+        caseType = CASE_TYPE_CLOTHES;
+    }
+    else if(!strcmp(caseTypeStr, "gold", true)) {
+        caseType = CASE_TYPE_GOLD;
+    }
+    else {
+        return SendClientMessage(playerid, 0xFF0000AA, "Доступные кейсы: clothes, gold");
+    }
+
+    new skinIndex = GetRandomSkinFromCase(caseType);
+    if(skinIndex == -1) return SendClientMessage(playerid, 0xFF0000AA, "Ошибка при открытии кейса!");
+
+    // Выдача скина
+    m_custom_sync_SetPlayerSkin(playerid, skinIndex);
+    
+    // Отправка цветного сообщения
+    SendClientMessage(playerid, -1, "Вы получили: %s | Редкость: %s {cccccc}| Gold: {ffcc00}%d", 
+        SkinPearsInfo[skinIndex][eSkinName], GetSkinClassName(skinIndex), SkinPearsInfo[skinIndex][eSkinGold]);
+    return 1;
 }

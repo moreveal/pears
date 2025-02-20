@@ -744,9 +744,6 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 				else SkinTop[list] = true;
 				SaveSkinTop(list);
 				SettingGosPriceSkin(playerid, list);
-
-				// Перезасобираем набор скинов
-				CreateSkinGiftCase();
 			}
 		}
 		else skinprice(playerid, OnlineInfo[playerid][oDialogMenu][1]);
@@ -1222,9 +1219,6 @@ function LoadPriceSkin()
 			}
 		}
 		printf("[MODE]: Настройки Скинов [%d ms]", GetTickCount() - time);
-
-		// Собираем набор скинов для шкатулке
-		CreateSkinGiftCase();
 	}
 	return 1;
 }

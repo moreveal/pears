@@ -21,22 +21,6 @@ new ThingPremiumVehicleQuan;
 new ThingLimitedVehiclecaseGift[MAX_MODELS_VEHICLE];
 new ThingLimitedehicleQuan;
 
-// Мужские скины
-new ThingSkincaseGift[MAX_MODELS_SKIN];
-new ThingSkinQuan;
-
-// Женские скины
-new ThingSkincaseGiftFemale[MAX_MODELS_SKIN];
-new ThingSkinQuanFemale;
-
-// Мужские скины TOP
-new ThingSkinTopcaseGift[MAX_MODELS_SKIN];
-new ThingSkinTopQuan;
-
-// Женские скины TOP
-new ThingSkinTopcaseGiftFemale[MAX_MODELS_SKIN];
-new ThingSkinTopQuanFemale;
-
 // Аксессуары
 new ThingAccessoryGift[MAX_ACCESSORY];
 new ThingAccessoryGiftBone[MAX_ACCESSORY];
@@ -135,36 +119,6 @@ stock CreateVehicleGiftCase()
     return true;
 }
 
-stock CreateSkinGiftCase() // Собираем скины
-{
-    ThingSkinQuan = 0;
-    ThingSkinQuanFemale = 0;
-
-    ThingSkinTopQuan = 0;
-    ThingSkinTopQuanFemale = 0;
-    
-    for(new i = 1; i < MAX_MODELS_SKIN; i++)
-    {
-        if(SkinSale[i] == 1) 
-        {
-            new genderSkin = GetSkinSex(i);
-
-            if(SkinTop[i] == true)
-            {
-                if(genderSkin == 1 || genderSkin == 0) ThingSkinTopcaseGift[ThingSkinTopQuan] = i, ThingSkinTopQuan ++;
-                else if(genderSkin == 2 || genderSkin == 0) ThingSkinTopcaseGiftFemale[ThingSkinTopQuanFemale] = i, ThingSkinTopQuanFemale ++;
-            }
-            else
-            {
-                if(genderSkin == 1 || genderSkin == 0) ThingSkincaseGift[ThingSkinQuan] = i, ThingSkinQuan ++;
-                else if(genderSkin == 2 || genderSkin == 0) ThingSkincaseGiftFemale[ThingSkinQuanFemale] = i, ThingSkinQuanFemale ++;
-            }
-        }
-    }
-    
-    return true;
-}
-
 stock CreateAccessoryGiftCase() // Собираем аксессуары для шкатулки
 {
     ThingAccessoryQuan = 0;
@@ -250,6 +204,8 @@ stock CommonThingCase(&thingId, &thingQuan, &thingType, &thingPack)
 // Рандомайзер для создания шкатулки
 stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &thingPack, const name[] = "default")
 {
+    #pragma unused playerid
+
     // Поиск кастомного шкатулки
     new caseID = GetCustomCaseID(name);
     if(caseID >= 0) // Обнаружили кастомный шкатулки по идентификатору
@@ -374,94 +330,15 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         }
     }
 
-    else if(thingType == 3) // Одежда (Список собирается при запуске сервера)
+    else if(thingType == 3) // Одежда (Новый рандомайзер для скинов в skin_custom.pwn от 21.05.25)
     {
-        new bool:givePremiumSkin = false;
-        switch(random(5))
-        {
-            case 1:
-            {
-                if(strcmp(name,"gold") == 0) givePremiumSkin = true; // Premium
-                else givePremiumSkin = false;
-            }
-            default: givePremiumSkin = false;
-        }
-        if (givePremiumSkin)
-        {
-            if(playerid == INVALID_PLAYER_ID)
-            {
-                if (ThingSkinTopQuan == 0)
-                {
-                    givePremiumSkin = false;
-                }
-                else
-                {
-                    new thingTemp = random(ThingSkinTopQuan);
-                    thingId = ThingSkinTopcaseGift[thingTemp];
-                }
-            }
-            else
-            {
-                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в шкатулке
-                {
-                    if (ThingSkinTopQuan == 0)
-                    {
-                        givePremiumSkin = false;
-                    }
-                    else
-                    {
-                        new thingTemp = random(ThingSkinTopQuan);
-                        thingId = ThingSkinTopcaseGift[thingTemp];
-                    }
-                }
-                else // Женский скин в шкатулке
-                {
-                    if (ThingSkinTopQuanFemale == 0)
-                    {
-                        givePremiumSkin = false;
-                    }
-                    else
-                    {
-                        new thingTemp = random(ThingSkinTopQuanFemale);
-                        thingId = ThingSkinTopcaseGiftFemale[thingTemp];
-                    }
-                }
-            }
-        }
+        new skinIndex;
+        if(strcmp(name,"gold") == 0) skinIndex = GetRandomSkinFromCase(CASE_TYPE_GOLD);
+        else skinIndex = GetRandomSkinFromCase(CASE_TYPE_CLOTHES);
 
-        if (!givePremiumSkin) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет премиум скинов в шкатулке
-        {
-            if(playerid == INVALID_PLAYER_ID)
-            {
-                if (ThingSkinQuan == 0)
-                {
-                    return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для шкатулки нет, выпадет обычный предмет
-                }
-                new thingTemp = random(ThingSkinQuan);
-                thingId = ThingSkincaseGift[thingTemp];
-            }
-            else
-            {
-                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в шкатулке
-                {
-                    if (ThingSkinQuan == 0)
-                    {
-                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для шкатулки нет, выпадет обычный предмет
-                    }
-                    new thingTemp = random(ThingSkinQuan);
-                    thingId = ThingSkincaseGift[thingTemp];
-                }
-                else // Женский скин в шкатулке
-                {
-                    if (ThingSkinQuanFemale == 0)
-                    {
-                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для шкатулки нет, выпадет обычный предмет
-                    }
-                    new thingTemp = random(ThingSkinQuanFemale);
-                    thingId = ThingSkincaseGiftFemale[thingTemp];
-                }
-            }
-        }
+        if(skinIndex == -1) return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг ошибка выбора скина, дропаем обычный предмет
+
+        thingId = skinIndex;
         thingPara = 0;
         thingQuan = 1;
     }
