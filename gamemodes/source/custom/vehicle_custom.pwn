@@ -1,15 +1,12 @@
 // last update 04.11.2024 zver
 /*
 Как добавить новый тс?
-1. Добавляем в define MAX_VEHICLE_CUSTOM (в целом, там сейчас с запасом до 200 кастомных авто)
-2. Добавляем имя транспорта в vehNameCustom[
-3. Добавляем гос стоимость в vehSummaCustom[
+1. Добавляем имя транспорта в vehNameCustom[
+2. Добавляем гос стоимость в vehSummaCustom[
+3. Добавляем gold стоимость в vehSummaGoldCustom[
 4. Добавляем в AddCustomVehicle заменку и следующий id (Внимание! От заменки зависит расположение двигателя, количество дверей и наличие багажника)
-5. Добавляем в IsAVehExisting новую цифру для создания транспорта
-6. stock GetVehicleClass - класс авто
+5. stock GetVehicleClass - класс авто
 */
-
-#define MAX_VEHICLE_CUSTOM 200 // Кастомный транспорт
 
 new vehNameCustom[][] =
 {
@@ -199,7 +196,7 @@ new vehNameCustom[][] =
     "Chevrolet Impala 1967", // 2183
     "XPeng Voyager X2", // 2184
     "Nissan Skyline R32 GT-R" // 2185
-    };
+};
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
 {
@@ -777,7 +774,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2185) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2000 + sizeof(vehNameCustom)) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;

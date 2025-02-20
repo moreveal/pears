@@ -419,7 +419,7 @@ CMD:pricevehup(playerid, const params[])
 	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
 	
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new v = 0; v < MAX_VEHICLE_ALL; v++)
 	{
 		VehGos[v] += params[0];
 		SaveVehiclePrice(v);
@@ -438,7 +438,7 @@ CMD:pricevehdown(playerid, const params[])
 	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
 
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new v = 0; v < MAX_VEHICLE_ALL; v++)
 	{
 		if(VehGos[v]-params[0] >= 1000) VehGos[v] -= params[0], SaveVehiclePrice(v);
 	}
