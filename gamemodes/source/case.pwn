@@ -317,8 +317,8 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     else if(thingType == 3) // Одежда (Новый рандомайзер для скинов в skin_custom.pwn от 21.05.25)
     {
         new skinIndex;
-        if(strcmp(name,"gold") == 0) skinIndex = GetRandomSkinFromCase(CASE_TYPE_GOLD);
-        else skinIndex = GetRandomSkinFromCase(CASE_TYPE_NORMAL);
+        if(strcmp(name,"gold") == 0) skinIndex = GetRandomSkinFromCase(CASE_TYPE_GOLD, PlayerInfo[playerid][pSex]);
+        else skinIndex = GetRandomSkinFromCase(CASE_TYPE_NORMAL, PlayerInfo[playerid][pSex]);
 
         if(skinIndex == -1) return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг ошибка выбора скина, дропаем обычный предмет
 
@@ -508,7 +508,7 @@ static const Float:gCaseClassChances[2][4] = {
     {0.0, 65.0, 20.0, 15.0}  // CASE_TYPE_GOLD    (индекс 1)
 };
 
-GetRandomSkinFromCase(CASE_TYPE_ENUM:caseType) 
+GetRandomSkinFromCase(CASE_TYPE_ENUM:caseType, sex = 0) 
 {
     if(caseType != CASE_TYPE_NORMAL && caseType != CASE_TYPE_GOLD) 
         return -1;
@@ -519,7 +519,7 @@ GetRandomSkinFromCase(CASE_TYPE_ENUM:caseType)
         return -1;
 
     // 2. Выбираем скин внутри класса
-    return GetRandomSkinByClass(selectedClass, caseType);
+    return GetRandomSkinByClass(selectedClass, caseType, sex);
 }
 
 // Исправленная функция GetRandomSkinClass
@@ -550,7 +550,7 @@ SKINCLASSENUM:GetRandomSkinClass(CASE_TYPE_ENUM:caseType)
     return SKINCLASS_INVALID;
 }
 
-GetRandomSkinByClass(SKINCLASSENUM:targetClass, CASE_TYPE_ENUM:caseType) 
+GetRandomSkinByClass(SKINCLASSENUM:targetClass, CASE_TYPE_ENUM:caseType, sex = 0) 
 {
     new totalWeight = 0;
     new skinCount = sizeof(SkinPearsInfo);
@@ -568,6 +568,9 @@ GetRandomSkinByClass(SKINCLASSENUM:targetClass, CASE_TYPE_ENUM:caseType)
         }
         
         if(SkinPearsInfo[i][eSkinClass] == SKINCLASS_SYSTEM) continue;
+
+        if(sex == 1 && GetSkinSex(i) == 2) continue; // Пропускаем женские скины для мужчин
+        if(sex == 2 && GetSkinSex(i) == 1) continue; // Пропускаем мужские скины для женщин
         if(!IsSkinAllowedInCase(i, caseType)) continue;
 
         validSkins[validCount++] = i;
