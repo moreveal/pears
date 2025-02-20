@@ -747,7 +747,7 @@ DIALOG_GENERATOR:narcofarm_info(playerid, farmid)
 {
     if (!NarcoFarmIsExists(farmid)) return 0;
 
-    FORMAT:header("{ff9000}Наркоферма №%d\n\n", NarcoFarmInfo[farmid][dfiID]);
+    FORMAT:header("{ff9000}Наркоферма №%d\n", NarcoFarmInfo[farmid][dfiID]);
 
     new total_bushes = 0, occupied_bushes = 0;
     for (new i = 0; i < MAX_NARCO_FARMS_BOOTHS; i++)

@@ -1,77 +1,4 @@
-/*
-    Захват наркофермы участниками других мафий
-
-    TODO:
-        Если ферма кому-то принадлежит:
-            1.  Приезжает чел у которого есть доступ к /mafia(-farm) на территорию нужной фермы, вводит команду и нажимает что хочет ее захватить
-                Проверка доступа: 
-            2.  Если нет ни одного игрока с доступом к участию в другой мафии - выбиваем ошибку
-                Если у обороняющейся/нападающей мафии уже активная стрела, или активный захват наркофермы - выбиваем ошибку, что у них активная битва
-                    Strel[fractionid] > 0 || Zahvat[fractionid] > 0
-                Если не установлены спавны хотя бы одной из организаций - выбиваем ошибку
-
-                Также в диалоге написать, что нужно быть ознакомленым с правилами, что будет время на подготовку, что весь транспорт должен быть за пределами фермы, потому что он заспавнится
-                и что следует оставаться на территории фермы всем участвующим
-
-                Если есть - отправляем уведомление участникам обоих мафий, имеющих доступ, и говорим готовиться
-
-                    Команде атакующих ставим GPS-метку на их спавн, если они уже на территории, или ставим ее при вхождении на нее
-                    Команде защищающихся тоже ставим GPS-метку на их спавн, если они уже на территории, или ставим ее при вхождении на нее
-                    
-                    Спавны: NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0] - x
-                            NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1] - y
-                            NarcoFarmInfo[farmid][dfiSpawnDefendersPos][2] - z
-
-                            NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0] - x
-                            NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1] - y
-                            NarcoFarmInfo[farmid][dfiSpawnAttackersPos][2] - z
-
-                После окончания подготовки (вызов NarcoFarmCreateBattle) проверяем нахождение всех участников в квадрате, если кого-то вовсе нет - автоматически засчитываем их поражение
-                (fraction(playerid) == NarcoFarmInfo[farmid][dfiFraction] && GetAccessRankOrg(playerid, NarcoFarmInfo[farmid][dfiFraction], 26, NO_FBI))
-
-                NarcoFarmInfo[farmid][dfiFraction] - защита
-                номер организации атаки заносится в NarcoFarmBattleInfo[farmid][dfbiAttackFraction] при объявлении
-            3.  Заносим номера аккаунтов (PlayerInfo[playerid][pID]) участников в массив, и будем убирать от туда при их смерти, чтобы не учитывать их в дальнейших подсчетах и предотвратить возвращение на территорию вновь
-            4.  Начинаем битву
-                    Спавним всех участников захвата (и атакующих и защитников)
-                    Спавним весь находящийся транспорт на территории фермы (IsPointInDynamicArea(NarcoFarmInfo[farmid][dfiArea], x, y, z))
-                        foreach (new vehicleid : Vehicle)
-                        {
-                            new Float: x, Float: y, Float: z;
-                            GetVehiclePos(vehicleid, x, y, z);
-                            if (!IsPointInDynamicArea(NarcoFarmInfo[farmid][dfiArea], x, y, z)) continue;
-                            
-                            PP_SetVehicleToRespawn(vehicleid);
-                        }
-                    
-                    Выводим текстдрав и инициируем запуск таймера обновления битвы (NarcoFarmUpdateBattle)
-                    Таймер сам себя вызывает каждую секунду, пока битва активна, поэтому можно не беспокоиться о его завершении
-
-                Далее проводим обработку в NarcoFarmUpdateBattle (каждую секунду вызывается)
-            5.  Завершаем битву если из квадрата уходят все участники одной из организаций в пользу второй
-                Завершаем битву если убийство привело к тому, что на территории не осталось ни одного игрока из одной из организаций в пользу убившей
-            6.  После окончания битвы (вызов NarcoFarmFinishBattle) определяем победителя, и в зависимости от этого:
-                    Выводим соответствующее уведомление в чат типа:
-                    SendRadioMessage(fractionid,COLOR_LIGHTRED,""{0088ff}[ Mafia War ]: Вы выиграли! {ffcc66}Ферма №%d теперь принадлежит вашей мафии");
-                    (остальные уведы такж можно со стрел скопировать)
-
-                    Если победила атакующая сторона - забираем ферму::
-                        NarcoFarmInfo[farmid][dfiFraction] = fractionid;
-                        NarcoFarmCreatePickup(farmid);
-                        NarcoFarmSave(farmid);
-                        
-                    Если победили защитники - оставляем им, поздравляем с победой
-
-        Если ферма никому не принадлежит:
-            - То же самое, за исключением отсутствия необходимости уведомлять о чем-то вторую организацию и т.п.
-
-            - Проверяем, если хоть один из участников без лаунчера - отменяем захват фулл
-            - Спавнить NPC и отдельно обрабатывать их убийства (NarcoFarmBattle_OnPlayerGiveDamageNpc)
-            - Как только убиваем всех - отдаем ферму атакующей мафии
-            - Если все игроки умерли (в стадии) или вышли с территории - отменяем захват, вешаем кд может даже
-*/
-
-#define MAX_NARCO_FARMS_NPC            30 // Максимальное количество NPC на наркоферме
+#define MAX_NARCO_FARMS_NPC            20 // Максимальное количество NPC на наркоферме
 
 enum e_NarcoFarmBattleInfo {
     dfbiAttackFraction, // Организация, которая атакует
@@ -79,10 +6,13 @@ enum e_NarcoFarmBattleInfo {
     dfbiAttackers[MAX_REALPLAYERS], // ID аккаунтов атакующих
     dfbiDefenders[MAX_REALPLAYERS], // ID аккаунтов защитников
     dfbiAttackScore, // Количество убитых атакующих
+    dfbiAttackCount,
     dfbiDefendScore, // Количество убитых защитников
+    dfbiDefendCount,
     dfbiStartTime, // Время начала битвы
     dfbiEndTime, // Время окончания битвы
-    dfbiPrepareTimer // Таймер подготовки
+    dfbiPrepareTimer, // Таймер подготовки
+    dfbiPrepareTime // Unix времени со старта подготовки
 };
 new NarcoFarmBattleInfo[MAX_NARCO_FARMS][e_NarcoFarmBattleInfo];
 
@@ -111,53 +41,60 @@ new Float: NarcoFarmNpcPositions[MAX_NARCO_FARMS][][] = {
     }
 };
 new NPC: NarcoFarmNPC[MAX_NARCO_FARMS][MAX_NARCO_FARMS_NPC];
+new NarcoFarmNpcAttac[MAX_NARCO_FARMS][MAX_NARCO_FARMS_NPC];
+new bool:NarcoFarmNpcDeath[MAX_NARCO_FARMS][MAX_NARCO_FARMS_NPC];
 
-function NarcoFarmCreateBattleDelay(farmid, attack_fraction, bool: force)
+function NarcoFarmCreateBattleDelay(farmid, bool: force)
 {
-    if (NarcoFarmIsBattleActive(farmid)) return 0;
-    return NarcoFarmCreateBattle(farmid, attack_fraction, force);
+    if (NarcoFarmBattleInfo[farmid][dfbiPrepareTime] == 0) return false;
+    return NarcoFarmCreateBattle(farmid, force);
 }
 
-stock NarcoFarmCreatePrepareTimer(farmid, attack_fraction, bool: force = false, delay = 600000)
+stock NarcoFarmCreatePrepareTimer(farmid, bool: force = false, delay = 600000)
 {
     if (IsValidTimer(NarcoFarmBattleInfo[farmid][dfbiPrepareTimer])) KillTimer(NarcoFarmBattleInfo[farmid][dfbiPrepareTimer]);
-    NarcoFarmBattleInfo[farmid][dfbiPrepareTimer] = SetTimerEx("NarcoFarmCreateBattleDelay", delay, false, "iii", farmid, attack_fraction, force);
+    NarcoFarmBattleInfo[farmid][dfbiPrepareTimer] = SetTimerEx("NarcoFarmCreateBattleDelay", delay, false, "ii", farmid, force);
 
     return 1;
 }
 
-stock NarcoFarmPrepareBattle(farmid, attack_fraction)
+stock NarcoFarmPrepareBattle(farmid)
 {
     if (!NarcoFarmIsExists(farmid)) return 0;
     if (NarcoFarmIsBattleActive(farmid)) return 0;
 
-    NarcoFarmNotifyAboutBattle(farmid);
-    NarcoFarmCreatePrepareTimer(farmid, attack_fraction, false);
+    NarcoFarmCreatePrepareTimer(farmid, true);
 
     return 1;
 }
 
-stock NarcoFarmCreateBattle(farmid, attack_fraction, bool: force = false)
+stock NarcoFarmCreateBattle(farmid, bool: force = false)
 {
     if (!force && !NarcoFarmIsBattleReady(farmid)) return 0;
-    if (NarcoFarmIsBattleActive(farmid)) return 0;
+    if (!NarcoFarmIsBattleActive(farmid)) return 0;
 
     if (!IsAMafiaID(NarcoFarmInfo[farmid][dfiFraction])) // Никому не принадлежит
     {
+        #pragma warning disable 204
+        new skins[] = {15754, 15733, 15723, 15506};
+        new weapons[] = {24, 25, 30, 33};
         for (new i = 0; i < MAX_NARCO_FARMS_NPC; i++)
         {
             if (NarcoFarmNpcPositions[farmid][i][0] == 0.0) continue;
-
-            // TODO: Спавн NPC (помещаем ID в NarcoFarmNPC[farmid][i])
+            NarcoFarmNPC[farmid][i] = CreateNpc(skins[random(sizeof(skins))],NarcoFarmNpcPositions[farmid][i][0],NarcoFarmNpcPositions[farmid][i][1],NarcoFarmNpcPositions[farmid][i][2]);
+            SetNpcVirtualWorld(NarcoFarmNPC[farmid][i], 0);
+            SetNpcHealth(NarcoFarmNPC[farmid][i], 100.0);
+            SetNpcWeapon(NarcoFarmNPC[farmid][i], WEAPON:weapons[random(sizeof(weapons))]);
+            NarcoFarmNpcDeath[farmid][i] = false;
         }
     }
-    
-    NarcoFarmBattleInfo[farmid][dfbiAttackFraction] = attack_fraction;
-    NarcoFarmBattleInfo[farmid][dfbiDefendFraction] = NarcoFarmInfo[farmid][dfiFraction];
     NarcoFarmTeleportVehicles(farmid);
     NarcoFarmRespawnPlayers(farmid);
     NarcoFarmUpdateBattle(farmid);
-
+    SendRadioMessage(NarcoFarmBattleInfo[farmid][dfbiDefendFraction],COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Битва началась! {ffcc66}Вперед!");
+    SendRadioMessage(NarcoFarmBattleInfo[farmid][dfbiAttackFraction],COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Битва началась! {ffcc66}Вперед!");
+    NarcoFarmBattleInfo[farmid][dfbiStartTime] = gettime();
+    NarcoFarmBattleInfo[farmid][dfbiPrepareTime] = 0;
     return 1;
 }
 
@@ -166,24 +103,56 @@ stock NarcoFarmIsBattleActive(farmid)
     return NarcoFarmBattleInfo[farmid][dfbiAttackFraction] > 0;
 }
 
-stock NarcoFarmFinishBattle(farmid)
+stock NarcoFarmFinishBattle(farmid, fraction, bool: defenderwin = true)
 {
     if (!NarcoFarmIsBattleActive(farmid)) return 0;
 
-    // TODO: Определяем победителя, завершаем битву
-
+    if(defenderwin)
+    {
+        if(NarcoFarmBattleInfo[farmid][dfbiDefendFraction] != 0) SendRadioMessage(fraction,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Вы выиграли! {ffcc66}Ферма осталась под нашим контролем!");
+    }
+    else
+    {
+        SendRadioMessage(fraction,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Вы выиграли! {ffcc66}Теперь эта ферма под вашим контролем!");
+        NarcoFarmInfo[farmid][dfiFraction] = fraction;
+        NarcoFarmCreatePickup(farmid);
+        NarcoFarmSave(farmid);
+        for(new e_NarcoFarmBattleInfo:i; i < e_NarcoFarmBattleInfo; ++i) NarcoFarmBattleInfo[farmid][i] = 0;
+        for(new i; i < MAX_REALPLAYERS; i++) NarcoFarmBattleInfo[farmid][dfbiAttackers][i] = 0, NarcoFarmBattleInfo[farmid][dfbiDefenders][i] = 0;
+    }
+    if(NarcoFarmBattleInfo[farmid][dfbiDefendFraction] == 0)
+    {
+        for(new npc = 0; npc < MAX_NARCO_FARMS_NPC; npc++)
+        {
+            if(IsValidNpc(NarcoFarmNPC[farmid][npc])) DestroyNpc(NarcoFarmNPC[farmid][npc]);
+        }
+    }
+    foreach(Player,i)
+    {
+        if(gNarkoFerm[i] != 9999 && OnlineInfo[i][oLogged] == 1)
+        {
+            DelMaf(i);
+        }
+    }
     return 1;
 }
 
-stock NarcoFarmNotifyAboutBattle(farmid)
+stock NarcoFarmNotifyAboutBattle(farmid, status)
 {
-    if (NarcoFarmInfo[farmid][dfiAttackFraction] <= 0) return 0;
+    if (NarcoFarmBattleInfo[farmid][dfbiAttackFraction] <= 0) return 0;
 
     new fractionid = NarcoFarmInfo[farmid][dfiFraction],
-        attack_fraction = NarcoFarmInfo[farmid][dfiAttackFraction];
+        attack_fraction = NarcoFarmBattleInfo[farmid][dfbiAttackFraction];
 
-    // TODO: Отправка сообщений в обе мафии о предстоящем захвате фермы №%d
-
+    if(status)
+    {
+        SendRadioMessage(fractionid,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Началась подготовка к битве за ферму {ffcc66}Не покидайте территорию фермы!");
+        SendRadioMessage(attack_fraction,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Началась подготовка к битве за ферму {ffcc66}Не покидайте территорию фермы!");
+    }
+    else {
+        SendRadioMessage(fractionid,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Ваша мафия снизила времям на подготовку. Осталось 30 секунд!");
+        SendRadioMessage(attack_fraction,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Владельцы фермы снизили время на подготовку. Осталось 30 секунд!");
+    }
     return 1;
 }
 
@@ -204,7 +173,7 @@ stock NarcoFarmRespawnPlayers(farmid)
 {
     foreach (new playerid : Player)
     {
-        if (fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiDefendFraction] && IsPlayerHaveMafFarmAccess(playerid))
+        if (fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiDefendFraction] && farmid == NarcoFarmGetNearest(playerid))
         {
             PPSetPlayerPos(
                 playerid,
@@ -213,7 +182,7 @@ stock NarcoFarmRespawnPlayers(farmid)
                 NarcoFarmInfo[farmid][dfiSpawnDefendersPos][2]
             );
             PPSetPlayerFacingAngle(playerid, NarcoFarmInfo[farmid][dfiSpawnDefendersPos][3]);
-        } else if (fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiAttackFraction] && IsPlayerHaveMafFarmAccess(playerid))
+        } else if (fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiAttackFraction] && farmid == NarcoFarmGetNearest(playerid))
         {
             PPSetPlayerPos(
                 playerid,
@@ -224,7 +193,7 @@ stock NarcoFarmRespawnPlayers(farmid)
             PPSetPlayerFacingAngle(playerid, NarcoFarmInfo[farmid][dfiSpawnAttackersPos][3]);
         } else continue; // скип всех прочих
 
-        // TODO: PlayerPlaySound (возможно)
+        PlayerPlaySound(playerid,3201,0,0,0);
     }
     return 1;
 }
@@ -234,7 +203,8 @@ function NarcoFarmUpdateBattle(farmid)
     if (!NarcoFarmIsExists(farmid)) return 0;
     if (!NarcoFarmIsBattleActive(farmid)) return 0;
 
-    // TODO: Отображаем/обновляем текстдрав с колвом убитых, временем и т.п. (просто взять со стрел - PlayerGangDraw, за исключением режима стрельбы и прочего)
+    if (!NarcoFarmHasAttackers(farmid)) return NarcoFarmFinishBattle(farmid,NarcoFarmBattleInfo[farmid][dfbiDefendFraction],true);
+    if (!NarcoFarmHasDefenders(farmid)) return NarcoFarmFinishBattle(farmid,NarcoFarmBattleInfo[farmid][dfbiAttackFraction],false);
 
     return SetTimerEx("NarcoFarmUpdateBattle", 1000, false, "i", farmid);
 }
@@ -243,7 +213,7 @@ stock NarcoFarmIsBattleReady(farmid)
 {
     if (!NarcoFarmIsExists(farmid)) return 0;
     if (!NarcoFarmHasAttackers(farmid)) return 0;
-    if (!NarcoFarmHasDefenders(farmid)) return 0;
+    if (!NarcoFarmHasDefenders(farmid) && NarcoFarmBattleInfo[farmid][dfbiDefendFraction] != 0) return 0;
 
     return 1;
 }
@@ -281,12 +251,80 @@ stock NarcoFarmGetAttackersAmount(farmid)
     new count = 0;
     foreach (new id : Player)
     {
-        if (NarcoFarmIsInside(farmid) && NarcoFarmIsAttacker(farmid, id))
+        if (NarcoFarmIsInside(id, farmid) && NarcoFarmIsAttacker(farmid, id))
         {
             count++;
         }
     }
+    NarcoFarmBattleInfo[farmid][dfbiAttackCount] = count;
     return count;
+}
+
+stock NarkoFerm_TaskNpcAttackPlayer(NPC:npc, playerid, i, farmid)
+{
+    TaskNpcAttackPlayer(npc, playerid, true);
+    NarcoFarmNpcAttac[farmid][i] = playerid;
+    return true;
+}
+
+stock LifeNarkoFermNpc()
+{
+    for(new i = 0; i < MAX_NARCO_FARMS; i++)
+    {
+        if(!NarcoFarmIsBattleActive(i)) continue;
+        else{
+            for(new npc; npc < MAX_NARCO_FARMS_NPC; npc++)
+            {
+                if(!IsNpcDead(NarcoFarmNPC[i][npc]))
+                {
+                    AttackNarkoFermNpcNearbyPlayer(i, npc);
+                }
+            }
+        }
+    }
+    return true;
+}
+
+stock AttackNarkoFermNpcNearbyPlayer(farmid, i)
+{
+    new latestid = FindClosestPlayerToNarkoFermNpc(NarcoFarmNPC[farmid][i], i, farmid);
+
+    if(latestid != -1 && latestid != INVALID_PLAYER_ID) 
+    {
+        NarkoFerm_TaskNpcAttackPlayer(NarcoFarmNPC[farmid][i], latestid, i, farmid);
+    }
+
+    else if(latestid == INVALID_PLAYER_ID)
+    {
+        // А че бля, в рекурсию вгонять тут или шо?
+    }
+    return true;
+}
+
+stock FindClosestPlayerToNarkoFermNpc(NPC:npc, i, farmid) 
+{
+    new Float:npc_x, Float:npc_y, Float:npc_z;
+    GetNpcPosition(npc, npc_x, npc_y, npc_z);
+
+    new Float:dist = 99999.0;
+    new latestId = INVALID_PLAYER_ID;
+
+    foreach (Player, playerid) 
+    {
+        if(gNarkoFerm[playerid] == 9999) continue;
+
+        new Float:thisDist = GetPlayerDistanceFromPoint(playerid, npc_x, npc_y, npc_z);
+        if (thisDist < dist) 
+        {
+            dist = thisDist;
+            latestId = playerid;
+        }
+    }
+
+    if(NarcoFarmNpcAttac[farmid][i] == latestId 
+        && latestId != INVALID_PLAYER_ID) return -1;
+
+    return latestId;
 }
 
 stock NarcoFarmGetDefendersAmount(farmid)
@@ -294,27 +332,68 @@ stock NarcoFarmGetDefendersAmount(farmid)
     if (!NarcoFarmIsExists(farmid)) return 0;
     
     new count = 0;
-    foreach (new id : Player)
+    if(NarcoFarmBattleInfo[farmid][dfbiDefendFraction] != 0)
     {
-        if (NarcoFarmIsInside(farmid) && NarcoFarmIsDefender(farmid, id))
+        foreach (new id : Player)
         {
-            count++;
+            if (NarcoFarmIsInside(id, farmid) && NarcoFarmIsDefender(farmid, id))
+            {
+                count++;
+            }
         }
     }
+    else
+    {
+        for (new i = 0; i < MAX_NARCO_FARMS_NPC; i++)
+        {
+            if (IsValidNpc(NarcoFarmNPC[farmid][i]))
+            {
+                new Float:tempHealt;
+                GetNpcHealth(NarcoFarmNPC[farmid][i],tempHealt);
+                if(tempHealt > 0.0) count++;
+            }
+        }
+    }
+    NarcoFarmBattleInfo[farmid][dfbiDefendCount] = count;
     return count;
 }
 
 stock CheckMafFarmKill(playerid, killerid)
 {
-    // Вызывается только при убийстве в пределах наркофермы
-
-    // TODO: Обработка киллов игроков
-
+    #pragma unused killerid
+    new farmid = NarcoFarmGetNearest(playerid);
+    if(fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiAttackFraction])
+    {
+        for(new i = 0; i < MAX_REALPLAYERS; i++)
+        {
+            if(NarcoFarmBattleInfo[farmid][dfbiAttackers][i] == 0) continue;
+            if(NarcoFarmBattleInfo[farmid][dfbiAttackers][i] == PlayerInfo[playerid][pID])
+            {
+                NarcoFarmBattleInfo[farmid][dfbiDefendScore]++,NarcoFarmBattleInfo[farmid][dfbiAttackers][i] = 0;
+                break;
+            }
+        }
+    }
+    else if(fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiDefenders])
+    {
+        for(new i = 0; i < MAX_REALPLAYERS; i++)
+        {
+            if(NarcoFarmBattleInfo[farmid][dfbiDefenders][i] == 0) continue;
+            if(NarcoFarmBattleInfo[farmid][dfbiDefenders][i] == PlayerInfo[playerid][pID])
+            {
+                NarcoFarmBattleInfo[farmid][dfbiAttackScore]++,NarcoFarmBattleInfo[farmid][dfbiDefenders][i] = 0;
+                break;
+            }
+        }
+    }
     return 1;
 }
 
 stock NarcoFarmBattle_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, weaponid, bodypart)
 {
+    #pragma unused weaponid
+    #pragma unused bodypart
+
     new farmid = NarcoFarmGetNearest(damagerid);
     
     new npc_id = -1;
@@ -329,9 +408,16 @@ stock NarcoFarmBattle_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, 
 
     if (npc_id > -1)
     {
-        if (!NarcoFarmIsExists(farmid)) return 0; // Отменяем урон по NPC, если атакующий вне фермы
+        if (!NarcoFarmIsExists(farmid)) return 0;
+        if (fraction(damagerid) != NarcoFarmBattleInfo[farmid][dfbiAttackFraction]) return 0;
 
-        // TODO: Обработка дамага NPC (при первом захвате фермы)
+        new Float:tempHealt = 0.0;
+        GetNpcHealth(NarcoFarmNPC[farmid][npc_id], tempHealt);
+        if(tempHealt - amount <= 0.0 && NarcoFarmNpcDeath[farmid][npc_id] == false) 
+        {
+            NarcoFarmBattleInfo[farmid][dfbiAttackScore]++;
+            NarcoFarmNpcDeath[farmid][npc_id] = true;
+        }
     }
 
     return 1;
@@ -339,13 +425,36 @@ stock NarcoFarmBattle_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, 
 
 stock NarcoFarmEnterDynamicArea(playerid, farmid)
 {
-    // TODO: Обработка захода на территорию фермы
+    if(NarcoFarmIsBattleActive(farmid))
+    {
+        if(NarcoFarmBattleInfo[farmid][dfbiAttackFraction] == fraction(playerid)) CreateGps(playerid, NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][2], -1, -1, 2.0);
+        else if(NarcoFarmBattleInfo[farmid][dfbiDefendFraction] == fraction(playerid)) CreateGps(playerid, NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][2], -1, -1, 2.0);
+    }
     return 1;
 }
 
 stock NarcoFarmLeaveDynamicArea(playerid, farmid)
 {
-    // TODO: Обработка выхода с территории фермы
+    if(NarcoFarmIsBattleActive(farmid))
+    {
+        DestroyGps(playerid);
+        if(fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiAttackFraction])
+        {
+            for(new i = 0; i < MAX_REALPLAYERS; i++)
+            {
+                if(NarcoFarmBattleInfo[farmid][dfbiDefenders][i] == 0) continue;
+                if(NarcoFarmBattleInfo[farmid][dfbiDefenders][i] == PlayerInfo[playerid][pID]) NarcoFarmBattleInfo[farmid][dfbiAttackScore]++,NarcoFarmBattleInfo[farmid][dfbiDefenders][i] = 0;
+            }
+        }
+        else if(fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiDefenders])
+        {
+            for(new i = 0; i < MAX_REALPLAYERS; i++)
+            {
+                if(NarcoFarmBattleInfo[farmid][dfbiAttackers][i] == 0) continue;
+                if(NarcoFarmBattleInfo[farmid][dfbiAttackers][i] == PlayerInfo[playerid][pID]) NarcoFarmBattleInfo[farmid][dfbiDefendScore]++,NarcoFarmBattleInfo[farmid][dfbiAttackers][i] = 0;
+            }
+        }
+    }
     return 1;
 }
 
@@ -357,22 +466,204 @@ stock IsPlayerHaveMafFarmAccess(playerid)
 DIALOG_GENERATOR:mafiafarm(playerid)
 {
     new farmid = NarcoFarmGetNearest(playerid);
-    if (farmid == INVALID_NARCOFARM_ID) return ErrorMessage(playerid, "{FF6347}Вы не находитесь на территории наркофермы");
+    if (farmid == INVALID_NARCOFARM_ID) return ErrorMessage(playerid, "{FF6347}Вы не находитесь на территории фермы мафии");
 
-    /* TODO:
-        Если команду вводит лидер/зам обороняющейся фраки на этапе подготовки - предлагаем скипнуть подготовку и начинаем через 30 сек:
-        NarcoFarmCreatePrepareTimer(farmid, fraction(playerid), false, 30000); */
+    new dialog_text[1024];
+    if(GetAccessRankOrg(playerid, fraction(playerid), 26, NO_FBI) && fraction(playerid) == NarcoFarmInfo[farmid][dfiFraction] && NarcoFarmBattleInfo[farmid][dfbiAttackFraction] > 0)
+    {
+        format(dialog_text, sizeof(dialog_text),"{cccccc}Для начала битвы ознакомьтесь с правилами данного ивента\n"\
+                                            "{cccccc}Время на подготовку будет снижено до 30 секунд!\n"\
+                                            "{cccccc}Во время захвата важно находится на территории или битва будет проиграна\n"\
+                                            "{cccccc}Весь транспорт, который на территории фермы, будет заспавнен\n\n"\
+                                            "{0088ff}Готовы начать битву?");
+    }
+    else{
+        format(dialog_text, sizeof(dialog_text),"{cccccc}Прежде чем запустить битву, прочитайте правила данного ивента\n"\
+                                            "{cccccc}Перед началом у вас будет время на подготовку к битве (10 минут)\n"\
+                                            "{cccccc}Во время захвата важно находится на территории или битва будет проиграна\n"\
+                                            "{cccccc}Весь транспорт, который на территории фермы, будет заспавнен\n\n"\
+                                            "{0088ff}Готовы начать битву?");
+    }
 
     SetDialogContextInt(playerid, "farmid", farmid);
-    return 1;
+    return ShowAdvancedDialog(playerid, "mafiafarm", DIALOG_STYLE_MSGBOX, "{ff9000}Битва за ферму мафии", dialog_text, "Да", "Нет");
+}
+
+DIALOG:mafiafarm(playerid, response, listitem, const inputtext[]){
+    if (!response) return false;
+    new farmid = GetDialogContextInt(playerid,"farmid");
+    if(NarcoFarmInfo[farmid][dfiFraction] == fraction(playerid) && NarcoFarmBattleInfo[farmid][dfbiPrepareTime] != 0)
+    {
+        if(NarcoFarmBattleInfo[farmid][dfbiPrepareTime] < gettime() + 570)
+        {
+            NarcoFarmCreatePrepareTimer(farmid, true, 30000), NarcoFarmBattleInfo[farmid][dfbiPrepareTime] = 570 + gettime();
+            NarcoFarmNotifyAboutBattle(farmid, false);
+        }
+        else return false;
+    }
+    else if(NarcoFarmBattleInfo[farmid][dfbiPrepareTime] == 0) 
+    {
+        if(NarcoFarmInfo[farmid][dfiFraction] == 0) NarcoFarmCreatePrepareTimer(farmid, true, 30000), NarcoFarmBattleInfo[farmid][dfbiPrepareTime] = gettime() + 570;
+        else NarcoFarmCreatePrepareTimer(farmid, true), NarcoFarmBattleInfo[farmid][dfbiPrepareTime] = gettime();
+        NarcoFarmBattleInfo[farmid][dfbiAttackFraction] = fraction(playerid);
+        NarcoFarmBattleInfo[farmid][dfbiDefendFraction] = NarcoFarmInfo[farmid][dfiFraction];
+        NarcoFarmNotifyAboutBattle(farmid, true);
+        new quanattac = 0, quandefender = 0;
+        foreach(Player,i)
+        {
+            if(gNarkoFerm[i] == 9999 && OnlineInfo[i][oLogged] == 1)
+            {
+                if(fraction(i) == NarcoFarmBattleInfo[farmid][dfbiAttackFraction])
+                {
+                    CreateGps(i, NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][2], -1, -1, 2.0);
+                    GetNarkoFermFractionName(i, farmid, NarcoFarmBattleInfo[farmid][dfbiDefendFraction]);
+                    NarcoFarmBattleInfo[farmid][dfbiAttackers][quanattac] = PlayerInfo[i][pID];
+                    quanattac++;
+                }
+                if(fraction(i) == NarcoFarmBattleInfo[farmid][dfbiDefendFraction]) 
+                {
+                    GetNarkoFermFractionName(i, farmid, NarcoFarmBattleInfo[farmid][dfbiAttackFraction]);
+                    CreateGps(i, NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][2], -1, -1, 2.0);
+                    NarcoFarmBattleInfo[farmid][dfbiDefenders][quandefender] = PlayerInfo[i][pID];
+                    quandefender++;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 CMD:mafiafarm(playerid, const params[])
 {
     new g = fraction(playerid);
     if(!IsAFunctionOrganization(26, g, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не участник мафии");
-	if(!GetAccessRankOrg(playerid, g, 26, NO_FBI)) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к захвату наркофермы");
-    if(!NarcoFarmIsInside(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не находитесь на территории наркофермы");
+	if(!GetAccessRankOrg(playerid, g, 26, NO_FBI)) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к захвату фермы мафии");
+    if(!NarcoFarmIsInside(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не находитесь на территории фермы мафии");
+    if(!NarkoFerm_ReadyBattleAccess(playerid)) return false;
 
-    return ShowAdvancedDialog(playerid, "mafiafarm");
+    return ShowAdvancedDialogGen<mafiafarm>(playerid);
+}
+
+stock NarkoFerm_ReadyBattleAccess(playerid)
+{
+    new farmid = NarcoFarmGetNearest(playerid);
+    if (farmid == INVALID_NARCOFARM_ID) {
+        ErrorMessage(playerid, "{FF6347}Вы не находитесь на территории фермы мафии"); 
+        return false;
+    }
+
+    if((NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0] == 0.0 && NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1] == 0.0 ) || NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0] == 0.0 && NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1] == 0.0) {
+        ErrorMessage(playerid, "{FF6347}У данной фермы мафии не установлены спавны. Захват не возможен!");
+        return false;
+    }
+    if(NarcoFarmInfo[farmid][dfiFraction] != 0 && NarcoFarmInfo[farmid][dfiFraction] != fraction(playerid))
+    {
+        new frakID = NarcoFarmInfo[farmid][dfiFraction];
+        if(Strel[frakID] > 0 || Zahvat[frakID] > 0) 
+        {
+            ErrorMessage(playerid, "{FF6347}У данной мафии сейчас идет битва. Нельзя начинать захват!");
+            return false;
+        }
+        new bool:result = false;
+        if(frakID != 0 && frakID != fraction(playerid))
+        {
+            foreach(Player, i)
+            {
+                if(OnlineInfo[i][oLogged] != 1) continue;
+                if(fraction(i) != frakID) continue;
+                if(GetAccessRankOrg(i, frakID, 26, NO_FBI)) 
+                {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        if(!result) {
+            ErrorMessage(playerid, "{FF6347}Вы не можете начать захват когда у мафии нет руководителя!"); 
+            return false;
+        }
+    }
+    if(NarcoFarmInfo[farmid][dfiFraction] != fraction(playerid) && NarcoFarmBattleInfo[farmid][dfbiPrepareTime] != 0) {
+        ErrorMessage(playerid, "{FF6347}Уже идет подготовка к захвату, не покидайте территорию фермы!");
+        return false;
+    }
+    else if(NarcoFarmInfo[farmid][dfiFraction] == fraction(playerid) && NarcoFarmBattleInfo[farmid][dfbiPrepareTime]+540 < gettime() && NarcoFarmBattleInfo[farmid][dfbiPrepareTime] != 0) {
+        ErrorMessage(playerid, "{FF6347}Не возможно ускорить подготовку к битве, она вот вот начнется!");
+        return false;
+    }
+    else if(NarcoFarmInfo[farmid][dfiFraction] == fraction(playerid) && NarcoFarmBattleInfo[farmid][dfbiPrepareTime] == 0) {
+        ErrorMessage(playerid, "{FF6347}Зачем мне начинать захват своей же фермы?");
+        return false;
+    }
+    return true;
+}
+
+stock UpdateNarkoFarmDraw(playerid) //+
+{
+    new farmid = gNarkoFerm[playerid];
+    if(farmid == INVALID_NARCOFARM_ID) return DelMaf(playerid);
+	if(OnlineInfo[playerid][oLogged] >= 1)
+    {
+		if(NarcoFarmBattleInfo[farmid][dfbiPrepareTime] != 0) // Подготовка к Битве
+		{
+	  		new sotring[24];
+            new preparetime;
+            if(NarcoFarmBattleInfo[farmid][dfbiPrepareTime] < gettime()) preparetime = NarcoFarmBattleInfo[farmid][dfbiPrepareTime]-gettime()+600;
+            else preparetime = NarcoFarmBattleInfo[farmid][dfbiPrepareTime]-gettime()-540;
+            format(sotring, sizeof(sotring), "%s", fine_time(preparetime));
+         	PlayerTextDrawSetString(playerid, PlayerGangDraw[9][playerid], sotring);
+         	PlayerTextDrawShow(playerid, PlayerGangDraw[9][playerid]);
+		}
+	    else if(NarcoFarmBattleInfo[farmid][dfbiStartTime] != 0)
+		{
+            PlayerTextDrawSetString(playerid, PlayerGangDraw[9][playerid], " ");
+         	PlayerTextDrawShow(playerid, PlayerGangDraw[9][playerid]);
+            if(fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiAttackFraction]) // Если обновляем тому, кто нападает
+            {
+                new string[24];
+                format(string, sizeof(string), "%02d", NarcoFarmBattleInfo[farmid][dfbiAttackScore]);
+                PlayerTextDrawSetString(playerid, PlayerGangDraw[7][playerid], string);
+
+                new sctring[24];
+                format(sctring, sizeof(sctring), "%02d", NarcoFarmBattleInfo[farmid][dfbiDefendScore]);
+                PlayerTextDrawSetString(playerid, PlayerGangDraw[8][playerid], sctring);
+            }
+            if(fraction(playerid) == NarcoFarmBattleInfo[farmid][dfbiDefendFraction]) // Если обновляем тому, кто защищается
+            {
+                new string[24];
+                format(string, sizeof(string), "%02d", NarcoFarmBattleInfo[farmid][dfbiDefendScore]);
+                PlayerTextDrawSetString(playerid, PlayerGangDraw[7][playerid], string);
+
+                new sctring[24];
+                format(sctring, sizeof(sctring), "%02d", NarcoFarmBattleInfo[farmid][dfbiAttackScore]);
+                PlayerTextDrawSetString(playerid, PlayerGangDraw[8][playerid], sctring);
+            }
+            PlayerTextDrawShow(playerid, PlayerGangDraw[7][playerid]);
+            PlayerTextDrawShow(playerid, PlayerGangDraw[8][playerid]);
+		}
+	}
+	return 1;
+}
+
+stock GetNarkoFermFractionName(playerid,farmid, protiv) // +
+{
+	if(gNarkoFerm[playerid] == 9999 && OnlineInfo[playerid][oLogged] == 1 && setting_pos_draw[playerid] != 1 && setting_size_draw[playerid] != 1)
+	{
+		gNarkoFerm[playerid] = farmid;
+		PlayerPlaySound(playerid,3201,0,0,0);
+		PlayerTextDrawShow(playerid, PlayerGangDraw[0][playerid]);
+		PlayerTextDrawShow(playerid, PlayerGangDraw[3][playerid]);
+		PlayerTextDrawShow(playerid, PlayerGangDraw[4][playerid]);
+		UpdateNarkoFarmDraw(playerid);
+
+		new string[24];
+		format(string, sizeof(string), "%s", frakDraw[fraction(playerid)]);
+		PlayerTextDrawSetString(playerid,PlayerGangDraw[1][playerid], string);
+		PlayerTextDrawShow(playerid, PlayerGangDraw[1][playerid]);
+
+        format(string, sizeof(string), "%s", frakDraw[protiv]);
+		PlayerTextDrawSetString(playerid,PlayerGangDraw[2][playerid], string);
+		PlayerTextDrawShow(playerid, PlayerGangDraw[2][playerid]);
+	}
+	return 1;
 }
