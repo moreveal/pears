@@ -100,7 +100,8 @@ stock CountingPlayersZombie()
             {
                 // Если вдруг один из участников оказался далеко от игры, кикаем его
                 if(GetPlayerDistanceFromPoint(i, ZombieGamePosition[0], ZombieGamePosition[1], ZombieGamePosition[2]) >= 500.0
-                    || GetPlayerVirtualWorld(i) != ZombieGameWorld || GetPlayerInterior(i) != ZombieGameInterior)
+                    || GetPlayerVirtualWorld(i) != ZombieGameWorld || GetPlayerInterior(i) != ZombieGameInterior
+                    || GetPlayerState(i) == PLAYER_STATE_SPECTATING)
                 {
                     ClosePlayerZombieGame(i); // Закрываем игру одному из участников
                 }
@@ -150,7 +151,7 @@ stock StartZombie(playerid)
 
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1 && !IsPlayerAfk(i) && !IsPlayerNPC(i) && ADUTY[i] == 0 && (MPGO[i] != 0 || playerid == i))
+        if(OnlineInfo[i][oLogged] == 1 && !IsPlayerAfk(i) && !IsPlayerNPC(i) && ADUTY[i] == 0 && GetPlayerState(i) != PLAYER_STATE_SPECTATING)
         {
             eligiblePlayers[count++] = i;
         }
