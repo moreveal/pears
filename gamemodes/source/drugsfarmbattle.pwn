@@ -47,12 +47,18 @@ new bool:NarcoFarmNpcDeath[MAX_NARCO_FARMS][MAX_NARCO_FARMS_NPC];
 function NarcoFarmCreateBattleDelay(farmid, bool: force)
 {
     if (NarcoFarmBattleInfo[farmid][dfbiPrepareTime] == 0) return false;
+    NarcoFarmBattleInfo[farmid][dfbiPrepareTimer] = 0;
+
     return NarcoFarmCreateBattle(farmid, force);
 }
 
 stock NarcoFarmCreatePrepareTimer(farmid, bool: force = false, delay = 600000)
 {
-    if (IsValidTimer(NarcoFarmBattleInfo[farmid][dfbiPrepareTimer])) KillTimer(NarcoFarmBattleInfo[farmid][dfbiPrepareTimer]);
+    if (IsValidTimer(NarcoFarmBattleInfo[farmid][dfbiPrepareTimer]))
+    {
+        KillTimer(NarcoFarmBattleInfo[farmid][dfbiPrepareTimer]);
+        NarcoFarmBattleInfo[farmid][dfbiPrepareTimer] = 0;
+    }
     NarcoFarmBattleInfo[farmid][dfbiPrepareTimer] = SetTimerEx("NarcoFarmCreateBattleDelay", delay, false, "ii", farmid, force);
 
     return 1;
@@ -103,6 +109,25 @@ stock NarcoFarmIsBattleActive(farmid)
     return NarcoFarmBattleInfo[farmid][dfbiAttackFraction] > 0;
 }
 
+stock NarcoFarmIsPrepareBattleActive(farmid)
+{
+    return IsValidTimer(NarcoFarmBattleInfo[farmid][dfbiPrepareTime]);
+}
+
+stock NarcoFarmIsMafiaBattleActive(fractionid)
+{
+    for (new farmid = 0; farmid < MAX_NARCO_FARMS; farmid++)
+    {
+        if (NarcoFarmInfo[farmid][dfiFraction] != fractionid) continue;
+
+        if (NarcoFarmIsBattleActive(farmid) || NarcoFarmIsPrepareBattleActive(farmid))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 stock NarcoFarmFinishBattle(farmid, fraction, bool: defenderwin = true)
 {
     if (!NarcoFarmIsBattleActive(farmid)) return 0;
@@ -129,7 +154,7 @@ stock NarcoFarmFinishBattle(farmid, fraction, bool: defenderwin = true)
     }
     foreach(Player,i)
     {
-        if(gNarkoFerm[i] != 9999 && OnlineInfo[i][oLogged] == 1)
+        if(gNarkoFarm[i] != 9999 && OnlineInfo[i][oLogged] == 1)
         {
             DelMaf(i);
         }
@@ -311,7 +336,7 @@ stock FindClosestPlayerToNarkoFermNpc(NPC:npc, i, farmid)
 
     foreach (Player, playerid) 
     {
-        if(gNarkoFerm[playerid] == 9999) continue;
+        if(gNarkoFarm[playerid] == 9999) continue;
 
         new Float:thisDist = GetPlayerDistanceFromPoint(playerid, npc_x, npc_y, npc_z);
         if (thisDist < dist) 
@@ -511,7 +536,7 @@ DIALOG:mafiafarm(playerid, response, listitem, const inputtext[]){
         new quanattac = 0, quandefender = 0;
         foreach(Player,i)
         {
-            if(gNarkoFerm[i] == 9999 && OnlineInfo[i][oLogged] == 1)
+            if(gNarkoFarm[i] == 9999 && OnlineInfo[i][oLogged] == 1)
             {
                 if(fraction(i) == NarcoFarmBattleInfo[farmid][dfbiAttackFraction])
                 {
@@ -553,13 +578,13 @@ stock NarkoFerm_ReadyBattleAccess(playerid)
     }
 
     if((NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0] == 0.0 && NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1] == 0.0 ) || NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0] == 0.0 && NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1] == 0.0) {
-        ErrorMessage(playerid, "{FF6347}У данной фермы мафии не установлены спавны. Захват не возможен!");
+        ErrorMessage(playerid, "{FF6347}У данной фермы мафии не установлены спавны [ Обратитесь к администрации ]");
         return false;
     }
     if(NarcoFarmInfo[farmid][dfiFraction] != 0 && NarcoFarmInfo[farmid][dfiFraction] != fraction(playerid))
     {
         new frakID = NarcoFarmInfo[farmid][dfiFraction];
-        if(Strel[frakID] > 0 || Zahvat[frakID] > 0) 
+        if(Strel[frakID] > 0 || Zahvat[frakID] > 0 || NarcoFarmIsMafiaBattleActive(frakID)) 
         {
             ErrorMessage(playerid, "{FF6347}У данной мафии сейчас идет битва. Нельзя начинать захват!");
             return false;
@@ -579,20 +604,20 @@ stock NarkoFerm_ReadyBattleAccess(playerid)
             }
         }
         if(!result) {
-            ErrorMessage(playerid, "{FF6347}Вы не можете начать захват когда у мафии нет руководителя!"); 
+            ErrorMessage(playerid, "{FF6347}Вы не можете начать захват во время отсутствия руководителя мафии!"); 
             return false;
         }
     }
     if(NarcoFarmInfo[farmid][dfiFraction] != fraction(playerid) && NarcoFarmBattleInfo[farmid][dfbiPrepareTime] != 0) {
-        ErrorMessage(playerid, "{FF6347}Уже идет подготовка к захвату, не покидайте территорию фермы!");
+        ErrorMessage(playerid, "{FF6347}Уже идёт подготовка к захвату, не покидайте территорию фермы!");
         return false;
     }
     else if(NarcoFarmInfo[farmid][dfiFraction] == fraction(playerid) && NarcoFarmBattleInfo[farmid][dfbiPrepareTime]+540 < gettime() && NarcoFarmBattleInfo[farmid][dfbiPrepareTime] != 0) {
-        ErrorMessage(playerid, "{FF6347}Не возможно ускорить подготовку к битве, она вот вот начнется!");
+        ErrorMessage(playerid, "{FF6347}Невозможно ускорить подготовку к битве, она вот-вот начнется!");
         return false;
     }
     else if(NarcoFarmInfo[farmid][dfiFraction] == fraction(playerid) && NarcoFarmBattleInfo[farmid][dfbiPrepareTime] == 0) {
-        ErrorMessage(playerid, "{FF6347}Зачем мне начинать захват своей же фермы?");
+        ErrorMessage(playerid, "{FF6347}Эта ферма уже принадлежит вашей организации");
         return false;
     }
     return true;
@@ -600,7 +625,7 @@ stock NarkoFerm_ReadyBattleAccess(playerid)
 
 stock UpdateNarkoFarmDraw(playerid) //+
 {
-    new farmid = gNarkoFerm[playerid];
+    new farmid = gNarkoFarm[playerid];
     if(farmid == INVALID_NARCOFARM_ID) return DelMaf(playerid);
 	if(OnlineInfo[playerid][oLogged] >= 1)
     {
@@ -647,9 +672,9 @@ stock UpdateNarkoFarmDraw(playerid) //+
 
 stock GetNarkoFermFractionName(playerid,farmid, protiv) // +
 {
-	if(gNarkoFerm[playerid] == 9999 && OnlineInfo[playerid][oLogged] == 1 && setting_pos_draw[playerid] != 1 && setting_size_draw[playerid] != 1)
+	if(gNarkoFarm[playerid] == 9999 && OnlineInfo[playerid][oLogged] == 1 && setting_pos_draw[playerid] != 1 && setting_size_draw[playerid] != 1)
 	{
-		gNarkoFerm[playerid] = farmid;
+		gNarkoFarm[playerid] = farmid;
 		PlayerPlaySound(playerid,3201,0,0,0);
 		PlayerTextDrawShow(playerid, PlayerGangDraw[0][playerid]);
 		PlayerTextDrawShow(playerid, PlayerGangDraw[3][playerid]);

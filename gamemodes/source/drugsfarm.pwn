@@ -1500,7 +1500,7 @@ DIALOG_GENERATOR:edit_drugfarmfraction(playerid)
     FORMAT_SIZE:dialog_text(256, "{cccccc}Текущая организация: %s\n", frakName[NarcoFarmInfo[farmid][dfiFraction]]);
     for (new i = 0; i < MAX_ORG; i++)
     {
-        if (!IsAMafiaID(i)) continue;
+        if (!IsAMafiaID(i) && i != 0) continue;
 
         format(dialog_text, sizeof(dialog_text), "%s%s\n", dialog_text, frakName[i]);
         AttachAdvancedDialogItemValue(playerid, "edit_drugfarmfraction", i);
