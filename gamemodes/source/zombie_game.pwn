@@ -13,6 +13,53 @@ new Float:ZombieGamePosition[3];
 new ZombieGameWorld;
 new ZombieGameInterior;
 
+//==================== Новая заморозка игрока ===============
+
+new bool:keepPlayer[MAX_REALPLAYERS];
+new keepTime[MAX_REALPLAYERS];
+
+// Очищаем переменные заморозки
+stock KeepClear_ClearVariation(playerid)
+{
+    keepPlayer[playerid] = false;
+    keepTime[playerid] = 0;
+    return true;
+}
+
+stock KeepClear_Freeze(playerid, bool:freezeLong = false)
+{
+    TogglePlayerControllable(playerid,false), keepPlayer[playerid] = true;
+    if(freezeLong == true) keepTime[playerid] = 4;
+    else
+	{
+		if(GetPlayerPing(playerid) >= 150) keepTime[playerid] = 3; // Высокий пинг, морозим чуть дольше
+		else keepTime[playerid] = 2; // Норм пинг, морозим как обычно
+	}
+    return true;
+}
+
+// Процесс разморозки игрока (с очищением анимки после разморозки)
+stock KeepClear_Process(playerid)
+{
+    if(keepPlayer[playerid] == true)
+    {
+        if(keepTime[playerid] > 0)
+        {
+            keepTime[playerid] --;
+            if(keepTime[playerid] == 0)
+            {
+                keepPlayer[playerid] = false;
+                TogglePlayerControllable(playerid, true);
+                ClearAnimations(playerid);
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+//===========================================================
+
 stock ClearVariableZombieGame(playerid)
 {
     PlayerZombieGame[playerid] = false;
@@ -69,7 +116,7 @@ stock GiveZombieStatus(playerid, bool:FindNext)
     else SetPlayerChatBubble(playerid,"стал зомби",COLOR_ZOMBIE_GAME,20.0,3000);
 
     PlayerIsZombie[playerid] = true;
-    keep(playerid, true);
+    KeepClear_Freeze(playerid, true);
     m_custom_sync_SetPlayerSkin(playerid, 505);
     SetPlayerColor(playerid, COLOR_ZOMBIE_GAME);
     OffAccessory(playerid); // Скрываем аксы
@@ -206,7 +253,7 @@ stock CloseZombie()
         {
             if(PlayerZombieGame[i] == true)
             {
-                keep(i);
+                KeepClear_Freeze(i);
                 ExitPlayerZombie(i);
             }
         }
@@ -233,7 +280,7 @@ stock ClosePlayerZombieGame(playerid)
 {
     if(PlayerZombieGame[playerid] == true)
     {
-        keep(playerid);
+        KeepClear_Freeze(playerid);
         if(PlayerIsZombie[playerid] == true) 
         {
             m_custom_sync_SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]); // Возвращаем скин
@@ -287,7 +334,7 @@ stock ShowTopZombiePlayers(winplayerid)
     // Вывод в чат
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1 && PlayerZombieGame[i] == true)
+        if(OnlineInfo[i][oLogged] == 1 && (PlayerZombieGame[i] == true || PlayerInfo[i][pSoska] >= 2))
         {
             PlayerPlaySound(i,6401,0,0,0);
             SendClientMessage(i, COLOR_GREY, "{0088ff}Zombie Game {ffcc66}| Выживший %s[%d]", PlayerInfo[winplayerid][pName], winplayerid);
@@ -298,15 +345,5 @@ stock ShowTopZombiePlayers(winplayerid)
             }
         }
     }
-
-    new chat_msg[144];
-    format(chat_msg, sizeof(chat_msg), " [ ADM ]: Zombie Game завершён | Выживший: %s[%d]", PlayerInfo[winplayerid][pName], winplayerid);
-    ABroadCast(COLOR_ADM,chat_msg,1);
-    for(new p = 0; p < 5 && p < playerCount; p++)
-    {
-        format(chat_msg, sizeof(chat_msg), " [ ADM ]: %d. %s[%d] - %d заражений", p + 1, PlayerInfo[playerList[p][0]][pName], playerList[p][0], playerList[p][1]);
-        ABroadCast(COLOR_ADM,chat_msg,1);
-    }
-
     return true;
 }
