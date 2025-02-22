@@ -525,7 +525,7 @@ stock CourtCreateOrder(playerid, bool: message = true)
     PlayerInfo[playerid][pCourtsStatus] = 1;
     CourtInfo[courtofferid][ciPlayerID] = playerid;
     OnlineInfo[playerid][oCourtsID] = courtofferid + 1;
-    if(message == true) SuccessMessage(playerid,"{44ff99}Вы успешно отправили заявку в суд для рассмотрения дела");
+    if(message == true) SuccessMessage(playerid,"{99ff66}Вы успешно отправили заявку в суд для рассмотрения дела");
     return 1;
 }
 
