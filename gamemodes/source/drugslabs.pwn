@@ -863,6 +863,7 @@ function NarcoSpot_UpdatePlaceLabel(spotid, placeid)
                 FORMAT:buffer("Место №%d\n\n{ff6347}Порошок сгорел", placeid + 1);
                 UpdateDynamic3DTextLabelText(NarcoPlaceInfo[spotid][placeid][npdLabel], 0xFF9000FF, buffer);
                 NarcoSpotPlaceExplode(spotid, placeid);
+                if(PlayerInfo[playerid][pAchieve][139] == 0) AchievePlayer(playerid, 139, 1);
 
                 NarcoPlaceInfo[spotid][placeid][npdPlayer] = 0;
                 NarcoPlaceInfo[spotid][placeid][npdRentTime] = 0;
@@ -1040,8 +1041,10 @@ stock NarcoSpot_PackPump(playerid)
 
         if (NarcoSpotPlayer_GetType(playerid) == _:NARCO_SPOT_HANGOUT)
             return SuccessMessage(playerid, "{99ff66}Вы успешно упаковали траву!\n\n{cccccc}Вам выдана: 1 упаковка (10 использований)");
-        else if (NarcoSpotPlayer_GetType(playerid) == _:NARCO_SPOT_LABORATORY)
+        else if (NarcoSpotPlayer_GetType(playerid) == _:NARCO_SPOT_LABORATORY){
+            if(PlayerInfo[playerid][pAchieve][138] == 0) AchievePlayer(playerid, 138, 1);
             return SuccessMessage(playerid, "{99ff66}Вы успешно упаковали порошок!\n\n{cccccc}Вам выдана: 1 упаковка (20 использований)");
+        }
     } else {
         format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~%s~~h~~h~YЊAKO‹KA: ~w~%d/%d",
             (NarcoSpotPlayer_GetType(playerid) == _:NARCO_SPOT_HANGOUT) ? "g" : "b",
@@ -1093,6 +1096,7 @@ DIALOG:narcospot_chemical_amount(playerid, response, listitem, const inputtext[]
 
     format(string, sizeof(string), "{99ff66}Вы успешно купили %s (%d шт.)!", GetNameThing(0, fpick, 0, 0), amount);
     SuccessMessage(playerid, string);
+    if(PlayerInfo[playerid][pAchieve][140] == 0) AchievePlayer(playerid, 140, 1);
 
     return 1;
 }
@@ -1518,6 +1522,7 @@ stock NarcoSpot_OnPlayerPressALT(playerid)
                                 GameTextForPlayer(playerid, RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~g~~h~~h~~h~ТРАВА СРЕЗАНА"), 5000, 3);
                                 PlayerPlaySound(playerid, 6401);
                                 NarcoSpotPlaceSave(spotid, potid);
+                                if(PlayerInfo[playerid][pAchieve][77] == 0) AchievePlayer(playerid, 77, 1);
                             } else ErrorMessage(playerid, "{FF6347}Сперва запакуйте уже сорванное растение");
                         }
                         return 1;
@@ -2355,6 +2360,7 @@ function NarcoSpot_Laboratory_GameUpdate(playerid, placeid, e_NarcoSpotIngredien
                 SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я точно что-то сделал не так, теперь этот порошок не выйдет качественным");
                 PlayerPlaySound(playerid, 4203);
                 update_ability(playerid, 7, 10);
+                if(PlayerInfo[playerid][pAchieve][139] == 0) AchievePlayer(playerid, 139, 1);
             } else {
                 // Второй неверный ингредиент
                 NarcoSpotPlaceExplode(spotid, placeid);

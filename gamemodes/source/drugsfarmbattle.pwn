@@ -1,4 +1,5 @@
 #define MAX_NARCO_FARMS_NPC            20 // Максимальное количество NPC на наркоферме
+#define KD_FARM_BATTLE                 7200 // КД на битву за наркоферму
 
 enum e_NarcoFarmBattleInfo {
     dfbiAttackFraction, // Организация, которая атакует
@@ -152,6 +153,7 @@ stock NarcoFarmFinishBattle(farmid, fraction, bool: defenderwin = true)
             if(IsValidNpc(NarcoFarmNPC[farmid][npc])) DestroyNpc(NarcoFarmNPC[farmid][npc]);
         }
     }
+    NarcoFarmBattleInfo[farmid][dfbiEndTime] = gettime();
     foreach(Player,i)
     {
         if(gNarkoFarm[i] != 9999 && OnlineInfo[i][oLogged] == 1)
@@ -175,7 +177,7 @@ stock NarcoFarmNotifyAboutBattle(farmid, status)
         SendRadioMessage(attack_fraction,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Началась подготовка к битве за ферму {ffcc66}Не покидайте территорию фермы!");
     }
     else {
-        SendRadioMessage(fractionid,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Ваша мафия снизила времям на подготовку. Осталось 30 секунд!");
+        SendRadioMessage(fractionid,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Ваша мафия снизила время на подготовку. Осталось 30 секунд!");
         SendRadioMessage(attack_fraction,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Владельцы фермы снизили время на подготовку. Осталось 30 секунд!");
     }
     return 1;
@@ -492,6 +494,10 @@ DIALOG_GENERATOR:mafiafarm(playerid)
 {
     new farmid = NarcoFarmGetNearest(playerid);
     if (farmid == INVALID_NARCOFARM_ID) return ErrorMessage(playerid, "{FF6347}Вы не находитесь на территории фермы мафии");
+    if(NarcoFarmBattleInfo[farmid][dfbiEndTime]+KD_FARM_BATTLE > gettime())
+    {
+        return ErrorMessage(playerid, "{FF6347}За данную ферму недавно была битва. Нужно подождать!\nСледующая битва станет доступна через {ff9000}%s",fine_time(NarcoFarmBattleInfo[farmid][dfbiEndTime]+KD_FARM_BATTLE));
+    }
 
     new dialog_text[1024];
     if(GetAccessRankOrg(playerid, fraction(playerid), 26, NO_FBI) && fraction(playerid) == NarcoFarmInfo[farmid][dfiFraction] && NarcoFarmBattleInfo[farmid][dfbiAttackFraction] > 0)

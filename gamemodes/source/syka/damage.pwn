@@ -386,6 +386,12 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
     // Блочим дамаг если игроки в одной тиме в комп клубе
     if(ComputerClubIsTeammates(playerid, damagedid)) return false;
 
+    // Блочим урон во время подготовки к битве за наркоферму на её территории
+    new farmid = NarcoFarmGetNearest(damagedid);
+    if (NarcoFarmGetNearest(damagedid))
+    {
+        if(NarcoFarmIsPrepareBattleActive(farmid)) return false;
+    }
     // Блочим дамаг если игроки в одной команде в шахте / гробнице
     if (MineWar_IsTeammates(playerid, damagedid) || Tomb_IsTeammates(playerid, damagedid)) return false;
 

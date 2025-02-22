@@ -60,6 +60,18 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "GunWarnsZZTime", "INT NOT NULL DEFAULT '0'"); // Время персональной ЗЗ при ганварне
     AddColumnIfNotExists("pp_igroki", "GunWarnsDonateCD", "INT NOT NULL DEFAULT '0'"); // Когда можно будет снять ганварн за донат
 
+    // Achive
+    for (new i = 141; i < 200; i++)
+    {
+        FORMAT:column("a%d", i);
+        AddColumnIfNotExists("achieve_server", column, "INT NOT NULL DEFAULT '0'");
+    }
+
+    for (new i = 141; i < 200; i++)
+    {
+        FORMAT:column("a%d", i);
+        AddColumnIfNotExists("pp_achieve", column, "BLOB NULL DEFAULT NULL");
+    }
     //Top
     AddColumnIfNotExists("pp_igroki_top", "pCraftCount", "INT NOT NULL DEFAULT '0'"); // Кол-во очков для крафта.
 
