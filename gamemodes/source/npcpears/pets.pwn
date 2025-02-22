@@ -226,7 +226,9 @@ stock CreatePet(playerid, pet)
 
     PetInfo[pet][petAuto] = false;
     PetInfo[pet][petEvent] = pet_TaskToNpc:PET_TASK_WALKING;
-    PetInfo[pet][petID] = CreateNpc(PetsParam[PetInfo[pet][petType]][0], PetX + 0.5, PetY + 0.5, PetZ);
+    
+    new skin = FindPet(PetInfo[pet][petType]);
+    PetInfo[pet][petID] = CreateNpc(PetsParam[skin][0], PetX + 0.5, PetY + 0.5, PetZ);
 
     SetNpcStunAnimationEnabled(PetInfo[pet][petID], true);
     SetNpcVirtualWorld(PetInfo[pet][petID], GetPlayerVirtualWorld(playerid));
@@ -690,7 +692,8 @@ stock IsAFarNpcToPlayer(pet, bool:FollowMe = false)
 
 stock IsAPetType(pet)
 {
-    new skin = PetsParam[PetInfo[pet][petType]][2];
+    new id = PetInfo[pet][petType];
+    new skin = PetsParam[id][2];
     if(skin == 609 || skin >= 632 && skin <= 648) return 1; // Собака
     if(skin >= 626 && skin <= 631) return 2; // Кошки
     return 0;
@@ -738,7 +741,7 @@ stock dialogPetMenagment(playerid,slot)
 {
     new pet = OnlineInfo[playerid][oPet][slot];
     DP[0][playerid] = slot;
-    new type = PetInfo[pet][petType];
+    new type = FindPet(PetInfo[pet][petType]);
 
 	new lines[600], string[60];
 	format(lines,sizeof(lines),"{ff9000}Питомец: %s [ %s ]\t Голод: %d\t HP: %.0f"\
@@ -773,13 +776,14 @@ stock dialogPetInformation(playerid,pet)
 
 stock dialogPetPower(playerid,pet)
 {
+    new type = FindPet(PetInfo[pet][petType]);
 	new lines[512], string[60];
 	format(lines,sizeof(lines),"{ff9000}%s Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/100 ]\tОчков прокачки: %d"\
                                 "\n{ff9000}Что дает сила?\t \t"\
                                 "\n{cccccc} - Сила увеличивает урон питомца на (БАЗОВОЕ ЗНАЧЕНИЕ*Сила)"\
                                 "\n{cccccc} - Сила влияет на кол-во здоровья питомца (БАЗОВОЕ ЗНАЧЕНИЕ+5*(Сила+Выносливость)).\t \t"\
                                 "\n\n{0088ff}Силу можно прокачать за поинты, а так же скормив специальную вкусняшку\t \t",
-                                GetSkinName(PetsParam[PetInfo[pet][petType]][2]),PetInfo[pet][petLevel],PetInfo[pet][petExp], PetInfo[pet][petPoint]);
+                                GetSkinName(PetsParam[type][2]),PetInfo[pet][petLevel],PetInfo[pet][petExp], PetInfo[pet][petPoint]);
 	format(string,sizeof(string),"{ff9000}Управление питомцем");
 	ShowDialog(playerid,PETS_SHOW_PETMANAGE_POWER,DIALOG_STYLE_MSGBOX, string, lines, "Повысить", "Назад");
 	return true;
@@ -787,12 +791,13 @@ stock dialogPetPower(playerid,pet)
 
 stock dialogPetAgility(playerid,pet)
 {
+    new type = FindPet(PetInfo[pet][petType]);
 	new lines[512], string[60];
 	format(lines,sizeof(lines),"{ff9000}%s Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/100 ]\tОчков прокачки: %d"\
                                 "\n{ff9000}Что дает Ловкость?\t \t"\
                                 "\n{cccccc} - Ловкость уменьшает кол-во получаемого урона у питомцу на (Урон/(Ловкость+Выносливость)."\
                                 "\n\n{0088ff}Ловкость можно прокачать за поинты, а так же скормив специальную вкусняшку\t \t",
-                                GetSkinName(PetsParam[PetInfo[pet][petType]][2]),PetInfo[pet][petLevel],PetInfo[pet][petExp], PetInfo[pet][petPoint]);
+                                GetSkinName(PetsParam[type][2]),PetInfo[pet][petLevel],PetInfo[pet][petExp], PetInfo[pet][petPoint]);
 	format(string,sizeof(string),"{ff9000}Управление питомцем");
 	ShowDialog(playerid,PETS_SHOW_PETMANAGE_AGILITY,DIALOG_STYLE_MSGBOX, string, lines, "Повысить", "Назад");
 	return true;
@@ -800,13 +805,14 @@ stock dialogPetAgility(playerid,pet)
 
 stock dialogPetEndurence(playerid,pet)
 {
+    new type = FindPet(PetInfo[pet][petType]);
 	new lines[512], string[60];
 	format(lines,sizeof(lines),"{ff9000}%s Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/100 ]\tОчков прокачки: %d"\
                                 "\n{ff9000}Что дает Выносливость?\t \t"\
                                 "\n{cccccc} - Выносливость влияет на кол-во здоровья питомца (БАЗОВОЕ ЗНАЧЕНИЕ+5*(Сила+Выносливость))."\
                                 "\n{cccccc} - Выносливость уменьшает кол-во получаемого урона у питомцу на (Урон/(Ловкость+Выносливость)."\
                                 "\n\n{0088ff}Выносливость можно прокачать за поинты, а так же скормив специальную вкусняшку\t \t",
-                                GetSkinName(PetsParam[PetInfo[pet][petType]][2]),PetInfo[pet][petLevel],PetInfo[pet][petExp], PetInfo[pet][petPoint]);
+                                GetSkinName(PetsParam[type][2]),PetInfo[pet][petLevel],PetInfo[pet][petExp], PetInfo[pet][petPoint]);
 	format(string,sizeof(string),"{ff9000}Управление питомцем");
 	ShowDialog(playerid,PETS_SHOW_PETMANAGE_ENDURENCE,DIALOG_STYLE_MSGBOX, string, lines, "Повысить", "Назад");
 	return true;
@@ -861,7 +867,7 @@ stock PetUpdateSkill(playerid, pet, skill)
 
 stock dialogPetUpdateSkill(playerid,pet)
 {
-    new type = PetInfo[pet][petType];
+    new type = FindPet(PetInfo[pet][petType]);
 
 	new lines[500], string[60];
 	format(lines,sizeof(lines),"{ff9000}%s Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/100 ]\tОчков прокачки: %d"\
@@ -887,7 +893,7 @@ stock dialogPetCreateTask(playerid,slot)
 {
     new pet = OnlineInfo[playerid][oPet][slot];
     DP[0][playerid] = slot;
-    new type = PetInfo[pet][petType];
+    new type = FindPet(PetInfo[pet][petType]);
 
 	new lines[500], string[60];
 	format(lines,sizeof(lines),"{ff9000}Питомец: %s \t Доступность навыка \t "\
