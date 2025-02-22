@@ -1,24 +1,19 @@
-#define MAX_CRAFT_SKIN 3
+#define MAX_CRAFT_SKIN 1
 #define DOP_SKIN_BUST 0
-#define MAX_CLASS_SKIN 2
+#define MAX_CLASS_SKIN 1
 
 new SkinCraftList[MAX_CRAFT_SKIN][16] =
 {
-    { 610, 258, 10, 0, 246, 1, 0, 248, 1, 0, 256, 20, 0, 260, 5, 0 },            // Хим женщина
-    { 611, 258, 10, 0, 246, 1, 0, 248, 1, 0, 256, 20, 0, 260, 5, 0 },            // Хим мужик
     { 625, 258, 20, 0, 248, 1, 0, 247, 1, 0, 256, 40, 0, 260, 10, 0 }              // Лесной
 };
 
 new SkinCraftListBust[MAX_CRAFT_SKIN+DOP_SKIN_BUST][4] =
 {
-    { 610, 0, 50, 0},           // Хим женщина
-    { 611, 0, 50, 0},         // Хим мужик
     { 625, 1, 1, 0}          // Лесной
 };
 
 new friskQualityBustSkin[MAX_CLASS_SKIN][] =
 {
-    { "Защита от веществ в процентах" },
     { "Скрывает маркер на карте" }
 };
 
@@ -73,6 +68,22 @@ stock ResultCountBustSkin(skinID, skinType, SkinParam)
     return result;
 }
 
+stock dialogShieldSkinCraftList(playerid)
+{
+    ShowDialog(playerid, SKINCRAFT_SHIELD_SKIN_LIST, DIALOG_STYLE_LIST, "{ff9000}Станок",
+        "{cccccc}Оранжевый костюм (ID: 547)\n" \
+        "{cccccc}Оранжевый костюм (ID: 548)\n" \
+        "{cccccc}Оранжевый костюм (ID: 610)\n" \
+        "{cccccc}Оранжевый костюм (ID: 611)\n" \
+        "{cccccc}Белый костюм (ID: 612)\n" \
+        "{cccccc}Черный костюм (ID: 613)\n",
+    
+        "Выбор", "Назад"
+    );
+
+    return 1;
+}
+
 stock CreateSkinListCraft(playerid)
 {
     new line[100],lines[sizeof(friskQualityBustSkin)*100],quan =-1;
@@ -86,6 +97,19 @@ stock CreateSkinListCraft(playerid)
     }
     ShowDialog(playerid,SKINCRAFT_LIST_TYPE,DIALOG_STYLE_LIST,"{ff9000}Станок",lines,"Выбор","Отмена");
     return true;
+}
+
+stock dialogShieldAcsCraftList(playerid)
+{
+    ShowDialog(playerid, ACCESSORYCRAFT_SHIELD_LIST, DIALOG_STYLE_LIST, "{ff9000}Станок",
+        "{cccccc}Респиратор\n" \
+        "{cccccc}Противогаз\n" \
+        "{cccccc}Улучшенный противогаз",
+    
+        "Выбор", "Назад"
+    );
+
+    return 1;
 }
 
 stock CreateSkinListCraftType(playerid)
@@ -111,7 +135,9 @@ stock dialogCraftList(playerid)
     new lines[300];
 	format(lines,sizeof(lines),"{cccccc}Расходники"\
                                 "\n{cccccc}Аксессуары"\
-                                "\n{cccccc}Скины");
+                                "\n{cccccc}Одежда"\
+                                "\n{cccccc}Защитные Костюмы\n" \
+                                "\n{cccccc}Защитные Аксессуары");
 	ShowDialog(playerid,CRAFT_LIST,DIALOG_STYLE_TABLIST, "{ff9000}Станок", lines, "Выбор", "Отмена");
 	return true;
 }
@@ -122,7 +148,12 @@ stock dialogCraftConsumablesList(playerid)
 	format(lines,sizeof(lines),"{cccccc}Уплотненная Кожа"\
                                 "\n{cccccc}Нитки"\
                                 "\n{cccccc}Ткань"\
-                                "\n{cccccc}Иголки");
+                                "\n{cccccc}Иголки"\
+                                "\n{cccccc}Оболочка респиратора"\
+                                "\n{cccccc}Фильтр респиратора"\
+                                "\n{cccccc}Оболочка противогаза"\
+                                "\n{cccccc}Фильтр противогаза"\
+                                );
 	ShowDialog(playerid,CRAFT_CONSUMABLES_LIST,DIALOG_STYLE_TABLIST, "{ff9000}Станок", lines, "Выбор", "Отмена");
 	return true;
 }

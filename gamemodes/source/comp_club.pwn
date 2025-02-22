@@ -1740,7 +1740,7 @@ stock ComputerClubOnPlayerDeath(playerid, killerid) {
                     GetPlayerFacingAngle(killerid, killerA);
 
                     new Float: cameraX = killerX, Float: cameraY = killerY, Float: cameraZ = killerZ + 1.5;
-                    GetXYInFrontOfPoint(cameraX, cameraY, killerA, 10.0);
+                    TranslatePoint2D(cameraX, cameraY, killerA, 10.0);
 
                     if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING) PPOpenSpectating(playerid, cameraX, cameraY, cameraZ);
                     InterpolateCameraPos(playerid, cameraX, cameraY, cameraZ, cameraX, cameraY, cameraZ, 2000);
@@ -1767,7 +1767,7 @@ stock ComputerClubOnPlayerDeath(playerid, killerid) {
                             GetPlayerFacingAngle(playerid, playerA);
 
                             new Float: cameraX = playerX, Float: cameraY = playerY, Float: cameraZ = playerZ + 1.5;
-                            GetXYInFrontOfPoint(cameraX, cameraY, playerA, 10.0);
+                            TranslatePoint2D(cameraX, cameraY, playerA, 10.0);
 
                             PlayerSpectatePlayer(spectator_id, killerid);
                             InterpolateCameraPos(spectator_id, cameraX, cameraY, cameraZ, cameraX, cameraY, cameraZ, 2000);

@@ -11,7 +11,7 @@
 */
 
 stock Hank_IsGood(thingid) {
-    new things[] = {232, 233, 236};
+    new things[] = {232, 233, 236, 273};
     for (new i = 0; i < sizeof(things); i++) {
         if (thingid == things[i]) return true;
     }
@@ -348,6 +348,12 @@ stock Hank_Dialog_BuyGood(playerid, thingid) {
                 "{ffcc66}- Перехват начала преследования [ /pursuit ]\n" \
                 "{ffcc66}- Перехват задержаний [ /cuff ]\n" \
                 "{cccccc}Девайс будет оставаться рабочим "#RADIO_INTERCEPTOR_SOFTWARE_TIME" дней с момента покупки, далее - требуется настройка частоты"
+            );
+        }
+        case 273: {
+            strcat(dialog_text,
+                "{cccccc}Книга содержит информацию о правильном соотношении ингредиентов для приготовления синего порошка.\n" \
+                "При использовании книги в лаборатории вы узнаете верный ингредиент для добавления."
             );
         }
         default: return 0;

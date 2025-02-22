@@ -121,6 +121,31 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 
         SendClientMessage(playerid, COLOR_GREY, "%d = CreateDynamicObject(%d, %f, %f, %f, %f, %f, %f);", MapInfo[0][mapobject][objid], modelid, x, y, z, rx, ry, rz);
     }
+    else if(gRedakt[playerid] == REDAKT_TYPE_NARCOSPOT) // Установка точки наркосбыта
+    {
+        if (oid == 0) // Создание новой
+        {
+            SetDialogContextFloat(playerid, "door_x", x);
+            SetDialogContextFloat(playerid, "door_y", y);
+            SetDialogContextFloat(playerid, "door_z", z);
+            SetDialogContextFloat(playerid, "door_rx", rx);
+            SetDialogContextFloat(playerid, "door_ry", ry);
+            SetDialogContextFloat(playerid, "door_rz", rz);
+            ShowAdvancedDialog(playerid, "accept_drugs_addspot", DIALOG_STYLE_MSGBOX, "{cccccc}Добавление точки", "{FFFFFF}Вы уверены, что хотите установить точку в этом месте?", "Да", "Назад");
+        }
+        else if (oid == 1) // Изменение существующей
+        {
+            SetDialogContextBool(playerid, "changedpos", true);
+            SetDialogContextFloat(playerid, "spot_x", x);
+            SetDialogContextFloat(playerid, "spot_y", y);
+            SetDialogContextFloat(playerid, "spot_z", z);
+            SetDialogContextFloat(playerid, "spot_rx", rx);
+            SetDialogContextFloat(playerid, "spot_ry", ry);
+            SetDialogContextFloat(playerid, "spot_rz", rz);
+            ShowAdvancedDialogGen<drugs_editspot>(playerid);
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Позиция успешно установлена, дверь будет поставлена после применения изменений");
+        }
+    }
     else if(gRedakt[playerid] == REDAKT_TYPE_FURNITURE_SET) // Установка мебели в доме
     {
         new findSlot = CreateObjectInDom(playerid, oid, modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));

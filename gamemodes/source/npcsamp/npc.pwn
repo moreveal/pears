@@ -304,6 +304,9 @@ stock IsAVehicleNPC(vehicleid)
 {
     if(vehicleid == prisonbus_LS || vehicleid == prisonbus_SF || vehicleid == train || vehicleid == collectorveh
         || vehicleid == flyveh || vehicleid == dominicveh) return 1;
+
+    for (new i = 0; i < sizeof(narcovehs); i++) if(vehicleid == narcovehs[i]) return 1;
+    
     return 0;
 }
 

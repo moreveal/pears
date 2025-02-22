@@ -108,7 +108,7 @@ stock AttachTrailer(playerid, model, vehicleid, &trailerid, &trailerobj)
     GetVehicleZAngle(vehicleid, player_pos[3]);
 
     new Float:vehicleX,Float:vehicleY,Float:vehicleA, Float: trailer_car_distance = 3.5; // Расстояние от автомобиля игрока до невидимого транспорта
-    GetXYInFrontOfPoint(vehicleX, vehicleY, vehicleA - 180.0, trailer_car_distance);
+    TranslatePoint2D(vehicleX, vehicleY, vehicleA - 180.0, trailer_car_distance);
 
     trailerid = PP_CreateVehicle(TRAILER_INVISIBLE_VEH_MODEL,player_pos[0], player_pos[1], player_pos[2] - 10.0, 0.0, 0, 0, 600, 0, -1, 2000.0);
     if(!PohVirtualWorldTrailer(model))
@@ -564,7 +564,7 @@ CMD:placetrailer(playerid) {
         new Float: trailerX, Float: trailerY, Float: trailerZ, Float: trailerRX, Float: trailerRY, Float: trailerRZ;
         GetVehiclePos(trailerid, trailerX, trailerY, trailerZ);
         GetVehicleRotation(vehicleid, trailerRX, trailerRY, trailerRZ);
-        GetXYInFrontOfPoint(trailerX, trailerY, trailerRZ - 180.0, 3.0);
+        TranslatePoint2D(trailerX, trailerY, trailerRZ - 180.0, 3.0);
 
         switch (TrailerInfo[tid][tModel]) {
             case 3171: PlaceTrailer(tid, TrailerInfo[tid][tModel], trailerX, trailerY, trailerZ - 1.000, trailerRX, trailerRY, trailerRZ + 180.0);

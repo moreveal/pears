@@ -60,6 +60,18 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "GunWarnsZZTime", "INT NOT NULL DEFAULT '0'"); // Время персональной ЗЗ при ганварне
     AddColumnIfNotExists("pp_igroki", "GunWarnsDonateCD", "INT NOT NULL DEFAULT '0'"); // Когда можно будет снять ганварн за донат
 
+    // Achive
+    for (new i = 141; i < 200; i++)
+    {
+        FORMAT:column("a%d", i);
+        AddColumnIfNotExists("achieve_server", column, "INT NOT NULL DEFAULT '0'");
+    }
+
+    for (new i = 141; i < 200; i++)
+    {
+        FORMAT:column("a%d", i);
+        AddColumnIfNotExists("pp_achieve", column, "BLOB NULL DEFAULT NULL");
+    }
     //Top
     AddColumnIfNotExists("pp_igroki_top", "pCraftCount", "INT NOT NULL DEFAULT '0'"); // Кол-во очков для крафта.
 
@@ -173,6 +185,9 @@ stock CreateMysqlTable()
     // Тариф (GUNWARN)
     AddColumnIfNotExists("pp_server", "serv69", "INT NOT NULL DEFAULT '0'");
 
+    // Курс монет континенталя
+    AddColumnIfNotExists("pp_server", "serv70", "INT NOT NULL DEFAULT '0'");
+
     AddColumnIfNotExists("pp_family", "vehPlate", "VARCHAR(32) DEFAULT ''"); // Номера авто в семье
     AddColumnIfNotExists("pp_family", "statusplate", "INT NOT NULL DEFAULT '0'"); // Статус покупки номерных знаков в семью
 
@@ -189,6 +204,21 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("apartments", "apCoordRoof1", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("apartments", "apCoordRoof2", "FLOAT NOT NULL DEFAULT '0'");
 
+    AddColumnIfNotExists("pp_organization", "offshore", "INT NOT NULL DEFAULT '0'"); // офшорные деньги
+
+    // Монеты континенталя в организациях
+    for (new i = 0; i < _:ContinentalCoinPlayerActions; i++)
+    {
+        FORMAT:column("continental_reward_%d", i);
+        AddColumnIfNotExists("pp_organization", column, "INT NOT NULL DEFAULT '0'");
+    }
+    for (new i = 0; i < 7; i++)
+    {
+        FORMAT:column("continental_%d", i);
+        AddColumnIfNotExists("pp_organization", column, "INT NOT NULL DEFAULT '0'");
+    }
+    AddColumnIfNotExists("pp_organization", "continental_last_update", "INT NOT NULL DEFAULT '0'");
+
     AddColumnIfNotExists("pp_work", "gunwarn", "INT NOT NULL DEFAULT '0'"); // Счетчик выданных GunWarns у администраторов
 
     // Создание недостающих строк в pp_priceskin
@@ -197,17 +227,32 @@ stock CreateMysqlTable()
 	return true;
 }
 
+// Функция для создания недостающих таблиц
+stock CreateTablesIfNotExists()
+{
+    SQL_INIT_TABLE(pearsq, "pp_narco_spots", NarcoSpotInfo);
+    SQL_INIT_TABLE(pearsq, "pp_user_narco_spots", NarcoSpotPlayerInfo);
+    SQL_INIT_TABLE(pearsq, "pp_places_narco_spots", NarcoPlaceInfo);
+    SQL_INIT_TABLE(pearsq, "pp_narco_farms", NarcoFarmInfo);
+    SQL_INIT_TABLE(pearsq, "pp_user_continental", ContinentalCoinPlayerInfo);
+    SQL_INIT_TABLE(pearsq, "pp_continental", ContinentalCoinInfo);
+
+    return 1;
+}
 
 // Функция для проверки существования столбца и его добавления
-stock AddColumnIfNotExists(const table[], const column[], const definition[])
+stock AddColumnIfNotExists(const table[], const column[], const definition[], MySQL: db_handle = MySQL: -1)
 {
+    if (_:db_handle == -1) db_handle = pearsq;
+
     new query[256];
     
     // Проверяем, существует ли столбец
     format(query, sizeof(query), "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '%s' AND COLUMN_NAME = '%s'", table, column);
     
     // Выполняем запрос и проверяем количество строк в результате
-    if (mysql_query(pearsq, query))
+    new Cache: result = mysql_query(db_handle, query);
+    if (result)
     {
         new rows;
 		cache_get_row_count(rows); // Получаем количество строк в результате запроса
@@ -217,7 +262,8 @@ stock AddColumnIfNotExists(const table[], const column[], const definition[])
         {
             // Если столбец не существует, добавляем его
             format(query, sizeof(query), "ALTER TABLE `%s` ADD `%s` %s", table, column, definition);
-            mysql_query(pearsq, query);
+            mysql_query(db_handle, query);
         }
     }
+    cache_delete(result);
 }

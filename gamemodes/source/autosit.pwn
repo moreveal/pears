@@ -816,7 +816,7 @@ stock dialogCase_AutoSit(playerid, dialogid, response, listitem,const inputtext[
 		new Float: player_pos[4];
 		GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 		GetPlayerFacingAngle(playerid, player_pos[3]);
-		GetXYInFrontOfPoint(player_pos[0], player_pos[1], player_pos[3], 2.0);
+		TranslatePoint2D(player_pos[0], player_pos[1], player_pos[3], 2.0);
 
 		new objectid = CreateDynamicObject(modelid, player_pos[0], player_pos[1], player_pos[2], 0.0, 0.0, 0.0);
 		if (objectid == INVALID_STREAMER_ID) {

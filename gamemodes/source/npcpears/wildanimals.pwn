@@ -37,7 +37,7 @@ new bool:LoadBag;
 
 stock LoadAnimalsArea()
 {
-    WildAnimalsArea[0][0] = CreateDynamicCube(-1041.2166,-2752.3936, 0.0, -298.5008,-1658.5681, 250.0, 0, 0);   // Лес Флинт округ
+    WildAnimalsArea[0][0] = CreateDynamicCube(-917.9367,-2753.8101, 0.0, -284.8769,-1649.4725, 250.0, 0, 0);    // Лес Флинт округ
     WildAnimalsArea[1][0] = CreateDynamicCube(-643.5008,-1582.5681, 0.0, -8.5008,-972.5681, 250.0, 0, 0);       // Поля Флинт округ
     WildAnimalsArea[2][0] = CreateDynamicCube(-73.0886,-823.3384, 0.0, 582.9846,-380.0188, 250.0, 0, 0);        // Лес туманный округ
     WildAnimalsArea[3][0] = CreateDynamicCube(1782.0000,-904.5643, 0.0, 2664.0000,-305.5643, 250.0, 0, 0);      // Лес у Шахты
