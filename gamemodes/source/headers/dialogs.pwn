@@ -225,6 +225,7 @@ enum e_DialogId {
     MP_DIALOG_TIME_INPUT,
     MP_DIALOG_SKIN_SELECT,
     MP_DIALOG_SKIN_INPUT,
+    MP_DIALOG_ZONE,
 
     
     // Боевой пропуск
@@ -277,6 +278,10 @@ enum e_DialogId {
 
     // Внутриигровые биржевые сделки
     GOLDEXC_BUY_GOLD_AMOUNT,
-    GOLDEXC_SELL_GOLD_AMOUNT
+    GOLDEXC_SELL_GOLD_AMOUNT,
+
+    // Бот грабитель самолёта
+    ROB_PLANE_INFO,
+    ROB_PLANE_BACK
 };
 

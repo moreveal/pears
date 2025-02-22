@@ -1021,7 +1021,7 @@ stock SendBizMessage(b, const string[]) // Сообщение в чат семь
 	return 1;
 }
 
-stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
+stock ResetBizzPriceItem(playerid, b, thingId, thingType, input, bool:notifyOwner = true)
 {
     new bool:bizUpdate;
 
@@ -1084,7 +1084,8 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
 			if(StoreItem[bn][gs] == thingId) StorePrice[bn][gs] = SkinGos[thingId]+SkinGos[thingId]/2, bizUpdate = true, SaveBizzStore(bn, gs); // Нашли скин и установили новую стоимость
 		}
 	}
-	if(bizUpdate && BizzInfo[b][bSost] > 0) //  Если изменения для бизнеса были, отправляем все необходимые уведомления
+
+	if(bizUpdate && BizzInfo[b][bSost] > 0 && notifyOwner == true) //  Если изменения для бизнеса были, отправляем все необходимые уведомления
 	{
 		new string[80];
         format(string, sizeof(string), "Новая гос. стоимость %s [%d$]", GetNameThing(0, thingId, thingType, 0), input);
@@ -1848,5 +1849,26 @@ stock ProductBizCasino(playerid,b,listitem)
 		DP[1][playerid] = listord;
 		insertorder(playerid, b, listord);
 	}
+	return true;
+}
+
+// Сбрасываем ценники в Магазинах с Одеждой
+stock ResetPriceSkinInBusiness(playerid, thingId, thingType, price, bool:notifyOwner = true)
+{
+    for(new b = 173; b < 182; b++) ResetBizzPriceItem(playerid, b, thingId, thingType, price, notifyOwner);
+	return true;
+}
+
+// Сбрасываем ценники в Магазинах: Заправки, Супермаркеты, Оружейный Магазин, Аптеки, Техника
+stock ResetPriceThingInBusiness(playerid, thingId, thingType, price, bool:notifyOwner = true)
+{
+    for(new b = 1; b < 142; b++) ResetBizzPriceItem(playerid, b, thingId, thingType, price, notifyOwner);
+	return true;
+}
+
+// Сбрасываем ценники в Бизнесах: Все Аренды Транспорта, Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
+stock ResetPriceVehicleInBusiness(playerid, thingId, thingType, price, bool:notifyOwner = true)
+{
+    for(new b = 42; b < 92; b++) ResetBizzPriceItem(playerid, b, thingId, thingType, price, notifyOwner);
 	return true;
 }

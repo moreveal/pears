@@ -82,7 +82,7 @@ stock IsAUnitOrganization(unitid, fraction, playerid)
         case 10: return fraction == 4; // Диагноз пациенту
         case 11: return IsGangMember(playerid) || IsMafiaMember(playerid); // Угон транспорта
         case 12: return IsPolice(fraction); // Найденный транспорт
-        case 13: return fraction == 7 && PlayerInfo[playerid][pDivision] == 1; // Рассмотрение заявки в суд (Дополнить покумекав с Владом как правильно!)
+        case 13: return fraction == 7; // Рассмотрение заявки в суд
         case 14: return fraction == 7; // Создание автобусного маршрута
         case 15: return fraction == 3; // Доставка БП у NGSA
         case 16: return IsGangMember(playerid); // Покраска граффити

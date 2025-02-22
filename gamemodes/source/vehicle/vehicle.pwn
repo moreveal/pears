@@ -1,16 +1,18 @@
 
 #include "../gamemodes/source/custom/vehicle_custom.pwn" // pwn для добавления новых тс в мод
 
-#define MAX_MODELS_VEHICLE 212 + MAX_VEHICLE_CUSTOM // Количество моделей транспорта на сервере
+#define MAX_VEHICLE_CUSTOM (sizeof(vehNameCustom)) // Кастомный транспорт
+#define MAX_VEHICLE_STOCK 211 // Стандартный транспорт
+#define MAX_VEHICLE_ALL (MAX_VEHICLE_CUSTOM + MAX_VEHICLE_STOCK) // Общее количество тс на сервере
 
-new VehGos[MAX_MODELS_VEHICLE]; // Стоимости транспорта
-new VehGold[MAX_MODELS_VEHICLE]; // Gold стоимости транспорта
-new VehBuy[MAX_MODELS_VEHICLE]; // Подсчет покупок транспорта за вирты
-new VehBuyGold[MAX_MODELS_VEHICLE]; // Подсчет покупок транспорта за голду
-new VehLimited[MAX_MODELS_VEHICLE]; // Информация о лимитированном транспорте
-new VehQuan[MAX_MODELS_VEHICLE]; // Количество на руках игроков транспортных средств
-new VehSale[MAX_MODELS_VEHICLE]; // Статус доступности продажи транспорта (1 продаётся, 0 нет)
-new VehLimitedCase[MAX_MODELS_VEHICLE]; // Статус лимитированного транспорта, выданного в шкатулках в данный момент
+new VehGos[MAX_VEHICLE_ALL]; // Стоимости транспорта
+new VehGold[MAX_VEHICLE_ALL]; // Gold стоимости транспорта
+new VehBuy[MAX_VEHICLE_ALL]; // Подсчет покупок транспорта за вирты
+new VehBuyGold[MAX_VEHICLE_ALL]; // Подсчет покупок транспорта за голду
+new VehLimited[MAX_VEHICLE_ALL]; // Информация о лимитированном транспорте
+new VehQuan[MAX_VEHICLE_ALL]; // Количество на руках игроков транспортных средств
+new VehSale[MAX_VEHICLE_ALL]; // Статус доступности продажи транспорта (1 продаётся, 0 нет)
+new VehLimitedCase[MAX_VEHICLE_ALL]; // Статус лимитированного транспорта, выданного в шкатулках в данный момент
 
 new vehClassName[][] =
 {
@@ -946,14 +948,14 @@ stock vehprice(playerid, page) // Настройки гос. цен трансп
 	new line[214],lines[4096];
 
 	// Настраиваем отображение фильтров и страниц
-	LoadPageSorting(playerid, 1066, 211 + sizeof(vehNameCustom) + 1, minlist, page, thisPage);
+	LoadPageSorting(playerid, 1066, MAX_VEHICLE_ALL, minlist, page, thisPage);
 
 	format(line,sizeof(line),"{cccccc}Транспорт [Модель]\t{cccccc}Цена\t{cccccc}Gold\t{cccccc}Куплено за Вирты / Gold"), strcat(lines,line);
 	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t\t\t"), strcat(lines,line);
     else format(line,sizeof(line),"\n{ff9000}Фильтр\t\t\t"), strcat(lines,line);
 
 	new one;
-	for(new v = minlist; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new v = minlist; v < MAX_VEHICLE_ALL; v++)
 	{
 		if(one == 0) OnlineInfo[playerid][oDialogMenu][4] = v, one = 1; // Записывали первый vehicleList
 
@@ -965,7 +967,7 @@ stock vehprice(playerid, page) // Настройки гос. цен трансп
             break;
         }
 
-		if(v > 211 + sizeof(vehNameCustom) + 1 && page > 0)
+		if(v > MAX_VEHICLE_ALL && page > 0)
 		{
 			yesNext = 1; // Последний транспорт, отображаем Next Page
 			OnlineInfo[playerid][oDialogMenu][5] = 1; // Записываем, что эта страница была последней
@@ -1100,7 +1102,7 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
      		OrgLog(7, "minfin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, GetVehicleName(v));
 
 			// Сбрасываем ценники в Бизнесах: Все Аренды Транспорта, Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
-     		for(new b = 42; b < 92; b++) ResetBizzPriceItem(playerid, b, v, 5, input);
+			ResetPriceVehicleInBusiness(playerid, v, 5, input, true);
 		}
 		else SettingGosPriceVehicle(playerid, OnlineInfo[playerid][oDialogMenu][3]);
 	}
@@ -1460,7 +1462,7 @@ function LoadPriceVeh()
 	if(rows)
 	{
 		new vehicleList;
-		for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+		for(new v = 0; v < MAX_VEHICLE_ALL; v++)
 		{
 			cache_get_value_name_int(v, "model", vehicleList); // Получаем id для переменной
 
@@ -1478,6 +1480,12 @@ function LoadPriceVeh()
 			{
 				if(v <= 211) VehGos[vehicleList] = vehSumma[vehicleList];
 				else VehGos[vehicleList] = vehSummaCustom[vehicleList - 212];
+			}
+
+			// Если gold 0, сразу прописываем из дефолт цен (только кастомным)
+			if(VehGold[vehicleList] == 0)
+			{
+				if(v >= 212) VehGold[vehicleList] = vehSummaGoldCustom[vehicleList - 212];
 			}
 
 			// Пересчитываем лимитированный транспорт
@@ -1555,7 +1563,7 @@ CMD:rvehquan(playerid, const params[])
 	if(PlayerInfo[playerid][pSoska] < 25) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new v = 0; v < MAX_VEHICLE_ALL; v++)
 	{
 		if(VehBuy[v] > 0) 
 		{
@@ -1600,7 +1608,7 @@ CMD:vehgoldall(playerid, const params[])
 	if(params[0] > 10000 || params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Курс не меньше 1 и не больше 10.000");
 
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new v = 0; v < MAX_VEHICLE_ALL; v++)
 	{
 		if(VehGos[v] > 0 && VehGold[v] == 0) 
 		{
@@ -1617,7 +1625,7 @@ CMD:vehgoldall(playerid, const params[])
 	return 1;
 }
 
-CMD:rvgold(playerid, const params[]) return pc_cmd_rvehgold(playerid, params);
+alias:rvehgold("rvgold")
 CMD:rvehgold(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
@@ -1635,6 +1643,30 @@ CMD:rvehgold(playerid, const params[])
 	format(string, sizeof(string), " [ ADM ]: %s сбросил gold стоимость всех кастомных тс", PlayerInfo[playerid][pName]);
  	ABroadCast(COLOR_ADM,string,1);
 	AdminLog("rvehgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Default gold цены на тс");
+	return 1;
+}
+
+alias:rvehprice("rvprice")
+CMD:rvehprice(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	mysql_tquery(pearsq, "START TRANSACTION;");
+	for(new v = 0; v < MAX_VEHICLE_ALL; v++)
+	{
+		if(v <= 211) VehGos[v] = vehSumma[v];
+		else VehGos[v] = vehSummaCustom[v - 212];
+		SaveVehiclePrice(v);
+
+		// Сбрасываем ценники в Бизнесах: Все Аренды Транспорта, Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
+		new vehmodel = CorrectVehicleList(v);
+		ResetPriceVehicleInBusiness(playerid, vehmodel, 5, VehGos[v], false);
+	}
+	mysql_tquery(pearsq, "COMMIT;");
+
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все транспортные средства", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rvehprice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
 

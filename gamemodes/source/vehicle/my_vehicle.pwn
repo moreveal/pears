@@ -4567,6 +4567,13 @@ function LoadCar(playerid, dab, race_check, adminLoad, typeVehicle)
 			cache_get_value_name_int(0, "vHandlingModel", VehInfo[vehid][vHandlingModel]);
 			cache_get_value_name_float(0, "vTunningBPAN", VehInfo[vehid][vTunningBPAN]);
 
+			if(GetVehicleType(VehInfo[vehid][vModel]) != GetVehicleType(VehInfo[vehid][vHandlingModel]) && VehInfo[vehid][vHandlingModel] > 0)
+			{
+				ErrorText(playerid, "{FF6347}* Тип транспорта не совпадает с т/с хакартеристик. Характеристики сброшены до стандартных.");
+				VehInfo[vehid][vHandlingModel] = 0;
+				SetHandlingTotal(vehid);
+			}
+
 			// Загружаем содержимое багажника
 			OnLoadVehicle(vehid);
 

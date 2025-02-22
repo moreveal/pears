@@ -1,1067 +1,853 @@
-
 /*
 Как добавить новый кастомный скин на сервер?
-1. Увеличить define MAX_SKIN_CUSTOM (в базе строки до 600 id скина)
-2. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
-3. Если скин мужской - добавить новый ID в stock GetSkinSex
-4. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
+- Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
 
 Как добавить скин в магазины?
-1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
+- В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 352
+/*
+SampSkinID ID скина заменка на дефолтную (если скин кастомный), если обычный -- 0
+eSkinPrice цена в виртах
+eSkinGoldPrice цена в голде
+eSkinName название скина
+eSkinClass класс скина
+eSkinSex пол скина
+
+name класса пишется: при просмотре подробной инфы о скине в инвентаре, при выпадении из кейса (желательно)
+Внимание! Названия классов прописываются в stock GetSkinClassName
+
+SKINCLASS_SYSTEM класс - любая продажа в магазах одежды оффнута, не сливаемый скупщику, не дропается с кейсов
+name: Системный, цвет #444444
+
+SKINCLASS_COMMON класс - доступен в магазах одежды, выпадает только с кейса одежды, голд ценник: $ / 2500
+name: Обычный, цвет #a2a0a0
+
+SKINCLASS_UNCOMMON класс - доступен в магазах одежды, выпадает с кейса одежды и голд кейса, голд ценник: $ / 2000
+name: Необычный, цвет #66ca55
+
+SKINCLASS_RARE класс - недоступен в магазах одежды за вирты, выпадает только с голд кейса, голд ценник: $ / 1500
+name: Редкий, цвет #6d48e2
+
+SKINCLASS_LEGENDARY класс - недоступен в магазах одежды, выпадает только с голд кейса, голд ценник: $ / 1000 или кастом
+name: Легендарный, цвет #d90763
+*/
+
+#define MAX_SKIN_NAME 64
+
+enum SKINCLASSENUM
+{
+    SKINCLASS_INVALID = -1,
+    SKINCLASS_SYSTEM = 0,
+    SKINCLASS_COMMON = 10,
+    SKINCLASS_UNCOMMON = 20,
+    SKINCLASS_RARE = 30,
+    SKINCLASS_RESERVED1 = 40,
+    SKINCLASS_RESERVED2 = 50,
+    SKINCLASS_RESERVED3 = 60,
+    SKINCLASS_LEGENDARY = 70
+};
+
+enum SKINSEXENUM
+{
+    SKINSEX_UNKNOWN = 0,
+    SKINSEX_MALE = 1,
+    SKINSEX_FEMALE = 2
+};
+
+enum SKINENUM { eSampSkinID, eSkinPrice, eSkinGold, eSkinName[MAX_SKIN_NAME], SKINCLASSENUM:eSkinClass, SKINSEXENUM:eSkinSex }
+new SkinPearsInfo[][SKINENUM] =
+{
+    {0     , 30_000          , 0           , "CJ"                                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 0      | null
+    {0     , 15_000          , 0           , "The Truth"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 1      | TRUTH
+    {0     , 150_000         , 50          , "Maccer"                                                        , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 2      | MACCER
+    {0     , 100_000         , 50          , "Andre"                                                         , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 3      | ANDRE
+    {0     , 150_000         , 75          , "Mini Bear"                                                     , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 4      | BBTHIN
+    {0     , 0               , 0           , "Big Bear"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 5      | BB
+    {0     , 150_000         , 75          , "Emmet"                                                         , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 6      | EMMET
+    {0     , 200_000         , 100         , "Taxi Driver"                                                   , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 7      | male01
+    {0     , 400_000         , 150         , "Janitor"                                                       , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 8      | JANITOR
+    {0     , 75_000          , 50          , "Normal Ped"                                                    , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 9      | BFORI
+    {0     , 0               , 0           , "Old Woman"                                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 10     | BFOST
+    {0     , 0               , 0           , "Casino croupier"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 11     | VBFYCRP
+    {0     , 0               , 0           , "Rich Woman"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 12     | BFYRI
+    {0     , 0               , 0           , "Street Girl"                                                   , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 13     | BFYST
+    {0     , 150_000         , 75          , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 14     | BMORI
+    {0     , 150_000         , 75          , "Mr.Whittaker"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 15     | BMOST
+    {0     , 400_000         , 200         , "Airport Worker"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 16     | BMYAP
+    {0     , 20_000          , 0           , "Businessman"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 17     | BMYBU
+    {0     , 15_000          , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 18     | BMYBE
+    {0     , 0               , 0           , "DJ"                                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 19     | BMYDJ
+    {0     , 500_000         , 250         , "Rich Guy"                                                      , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 20     | BMYRI
+    {0     , 100_000         , 60          , "Normal Ped"                                                    , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 21     | BMYCR
+    {0     , 650_000         , 325         , "Normal Ped"                                                    , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 22     | BMYST
+    {0     , 650_000         , 325         , "BMXer"                                                         , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 23     | WMYBMX
+    {0     , 500_000         , 0           , "M.D. Bodyguard"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 24     | WBDYG1
+    {0     , 1_000_000       , 0           , "M.D. Bodyguard"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 25     | WBDYG2
+    {0     , 0               , 0           , "Backpacker"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 26     | WMYBP
+    {0     , 45_000          , 0           , "Construction Worker"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 27     | WMYCON
+    {0     , 45_000          , 0           , "Drug Dealer"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 28     | BMYDRUG
+    {0     , 2_000_000       , 2_000       , "Drug Dealer"                                                   , SKINCLASS_LEGENDARY     , SKINSEX_MALE      }, // 29     | WMYDRUG
+    {0     , 0               , 0           , "Drug Dealer"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 30     | HMYDRUG
+    {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 31     | DWFOLC
+    {0     , 300_000         , 150         , "Farm Inhabitant"                                               , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 32     | DWMOLC1
+    {0     , 600_000         , 450         , "Farm Inhabitant"                                               , SKINCLASS_RARE          , SKINSEX_MALE      }, // 33     | DWMOLC2
+    {0     , 300_000         , 150         , "Farm Inhabitant"                                               , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 34     | DWMYLC1
+    {0     , 0               , 0           , "Gardener"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 35     | HMOGAR
+    {0     , 200_000         , 100         , "Golfer"                                                        , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 36     | WMYGOL1
+    {0     , 200_000         , 100         , "Golfer"                                                        , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 37     | WMYGOL2
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 38     | HFORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 39     | HFOST
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 40     | HFYRI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 41     | HFYST
+    {0     , 0               , 0           , "Jethro"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 42     | JETHRO
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 43     | HMORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 44     | HMOST
+    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 45     | HMYBE
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 46     | HMYRI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 47     | HMYCR
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 48     | HMYST
+    {0     , 0               , 0           , "Da Nang"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 49     | OMOKUNG
+    {0     , 0               , 0           , "Mechanic"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 50     | WMYMECH
+    {0     , 0               , 0           , "Mountain Biker"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 51     | BMYMOUN
+    {0     , 0               , 0           , "Mountain Biker"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 52     | WMYMOUN
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 53     | OFORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 54     | OFOST
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 55     | OFYRI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 56     | OFYST
+    {0     , 0               , 0           , "Oriental Ped"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 57     | OMORI
+    {0     , 0               , 0           , "Oriental Ped"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 58     | OMOST
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 59     | OMYRI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 60     | OMYST
+    {0     , 0               , 0           , "Pilot"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 61     | WMYPLT
+    {0     , 0               , 0           , "Colonel Fuhrberger"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 62     | WMOPJ
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 63     | BFYPRO
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 64     | HFYPRO
+    {0     , 0               , 0           , "Kendl Johnson"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 65     | KENDL
+    {0     , 0               , 0           , "Pool Player"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 66     | BMYPOL1
+    {0     , 0               , 0           , "Pool Player"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 67     | BMYPOL2
+    {0     , 0               , 0           , "Preacher"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 68     | WMOPREA
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 69     | SBFYST
+    {0     , 0               , 0           , "Scientist"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 70     | WMOSCI
+    {0     , 0               , 0           , "Security Guard"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 71     | WMYSGRD
+    {0     , 0               , 0           , "Hippy"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 72     | SWMYHP1
+    {0     , 0               , 0           , "Hippy"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 73     | SWMYHP2
+    {0     , 0               , 0           , "Unknown"                                                       , SKINCLASS_INVALID       , SKINSEX_MALE      }, // 74     |
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 75     | SWFOPRO
+    {0     , 0               , 0           , "Stewardess"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 76     | WFYSTEW
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 77     | SWMOTR1
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 78     | WMOTR1
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 79     | BMOTR1
+    {0     , 0               , 0           , "Boxer"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 80     | VBMYBOX
+    {0     , 0               , 0           , "Boxer"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 81     | VWMYBOX
+    {0     , 0               , 0           , "Black Elvis"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 82     | VHMYELV
+    {0     , 0               , 0           , "White Elvis"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 83     | VBMYELV
+    {0     , 0               , 0           , "Blue Elvis"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 84     | VIMYELV
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 85     | VWFYPRO
+    {0     , 0               , 0           , "Ryder Mask"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 86     | RYDER3
+    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 87     | VWFYST1
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 88     | WFORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 89     | WFOST
+    {0     , 0               , 0           , "Jogger"                                                        , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 90     | WFYJG
+    {0     , 700_000         , 450         , "Rich Woman"                                                    , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 91     | WFYRI
+    {0     , 0               , 0           , "Rollerskater"                                                  , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 92     | WFYRO
+    {0     , 400_000         , 200         , "Normal Ped"                                                    , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 93     | WFYST
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 94     | WMORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 95     | WMOST
+    {0     , 0               , 0           , "Jogger"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 96     | WMYJG
+    {0     , 0               , 0           , "Lifeguard"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 97     | WMYLG
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 98     | WMYRI
+    {0     , 0               , 0           , "Rollerskater"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 99     | WMYRO
+    {0     , 0               , 0           , "Biker"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 100    | WMYCR
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 101    | WMYST
+    {0     , 0               , 0           , "Balla"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 102    | BALLAS1
+    {0     , 0               , 0           , "Balla"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 103    | BALLAS2
+    {0     , 0               , 0           , "Balla"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 104    | BALLAS3
+    {0     , 0               , 0           , "Grove"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 105    | FAM1
+    {0     , 0               , 0           , "Grove"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 106    | FAM2
+    {0     , 0               , 0           , "Grove"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 107    | FAM3
+    {0     , 0               , 0           , "Vagos"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 108    | LSV1
+    {0     , 0               , 0           , "Vagos"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 109    | LSV2
+    {0     , 0               , 0           , "Vagos"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 110    | LSV3
+    {0     , 0               , 0           , "Russian Mafia"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 111    | MAFFA
+    {0     , 0               , 0           , "Russian Mafia"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 112    | MAFFB
+    {0     , 0               , 0           , "Russian Mafia"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 113    | MAFBOSS
+    {0     , 0               , 0           , "Aztecas"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 114    | VLA1
+    {0     , 0               , 0           , "Aztecas"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 115    | VLA2
+    {0     , 0               , 0           , "Aztecas"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 116    | VLA3
+    {0     , 0               , 0           , "Triad"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 117    | TRIADA
+    {0     , 0               , 0           , "Triad"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 118    | TRIADB
+    {0     , 0               , 0           , "Johhny Sindacco"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 119    | SINDACO
+    {0     , 0               , 0           , "Triad Boss"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 120    | TRIBOSS
+    {0     , 0               , 0           , "Da Nang Boy"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 121    | DNB1
+    {0     , 0               , 0           , "Da Nang Boy"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 122    | DNB2
+    {0     , 0               , 0           , "Da Nang Boy"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 123    | DNB3
+    {0     , 0               , 0           , "The Mafia"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 124    | VMAFF1
+    {0     , 0               , 0           , "The Mafia"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 125    | VMAFF2
+    {0     , 0               , 0           , "The Mafia"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 126    | VMAFF3
+    {0     , 0               , 0           , "The Mafia"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 127    | VMAFF4
+    {0     , 300_000         , 150         , "Farm Inhabitant"                                               , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 128    | DNMYLC
+    {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 129    | DNFOLC1
+    {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 130    | DNFOLC2
+    {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 131    | DNFYLC
+    {0     , 300_000         , 150         , "Farm Inhabitant"                                               , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 132    | DNMOLC1
+    {0     , 0               , 0           , "Farm Inhabitant"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 133    | DNMOLC2
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 134    | SBMOTR2
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 135    | SWMOTR2
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 136    | SBMYTR3
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 137    | SWMOTR3
+    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 138    | WFYBE
+    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 139    | BFYBE
+    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 140    | HFYBE
+    {0     , 0               , 0           , "Businesswoman"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 141    | SOFYBU
+    {0     , 0               , 0           , "Taxi Driver"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 142    | SBMYST
+    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 143    | SBMYCR
+    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 144    | BMYCG
+    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 145    | WFYCRK
+    {0     , 0               , 0           , "Crack Maker"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 146    | HMYCM
+    {0     , 0               , 0           , "Businessman"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 147    | WMYBU
+    {0     , 0               , 0           , "Businesswoman"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 148    | BFYBU
+    {0     , 0               , 0           , "Big Smoke Armored"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 149    | SMOKEV
+    {0     , 0               , 0           , "Businesswoman"                                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 150    | WFYBU
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 151    | DWFYLC1
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 152    | WFYPRO
+    {0     , 0               , 0           , "Construction Worker"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 153    | WMYCONB
+    {0     , 0               , 0           , "Beach Visitor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 154    | WMYBE
+    {0     , 0               , 0           , "Pizza Worker"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 155    | WMYPIZZ
+    {0     , 250_000         , 125         , "Barber"                                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 156    | BMOBAR
+    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 157    | CWFYHB
+    {0     , 300_000         , 150         , "Farmer"                                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 158    | CWMOFR
+    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 159    | CWMOHB1
+    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 160    | CWMOHB2
+    {0     , 300_000         , 150         , "Farmer"                                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 161    | CWMYFR
+    {0     , 300_000         , 150         , "Hillbilly"                                                     , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 162    | CWMYHB1
+    {0     , 0               , 0           , "Black Bouncer"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 163    | BMYBOUN
+    {0     , 0               , 0           , "White Bouncer"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 164    | WMYBOUN
+    {0     , 0               , 0           , "White MIB agent"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 165    | WMOMIB
+    {0     , 0               , 0           , "Black MIB agent"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 166    | BMYMIB
+    {0     , 0               , 0           , "Cluckin' Bell Worker"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 167    | WMYBELL
+    {0     , 0               , 0           , "Chilli Dog Vendor"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 168    | BMOCHIL
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 169    | SOFYRI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 170    | SOMYST
+    {0     , 800_000         , 500         , "Blackjack Dealer"                                              , SKINCLASS_RARE          , SKINSEX_MALE      }, // 171    | VWMYBJD
+    {0     , 800_000         , 500         , "Casino croupier"                                               , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 172    | VWFYCRP
+    {0     , 0               , 0           , "Rifa"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 173    | SFR1
+    {0     , 0               , 0           , "Rifa"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 174    | SFR2
+    {0     , 0               , 0           , "Rifa"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 175    | SFR3
+    {0     , 500_000         , 250         , "Barber"                                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 176    | BMYBAR
+    {0     , 900_000         , 600         , "Barber"                                                        , SKINCLASS_RARE          , SKINSEX_MALE      }, // 177    | WMYBAR
+    {0     , 0               , 0           , "Whore"                                                         , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 178    | WFYSEX
+    {0     , 0               , 0           , "Ammunation"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 179    | WMYAMMO
+    {0     , 500_000         , 250         , "Tattoo Artist"                                                 , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 180    | BMYTATT
+    {0     , 0               , 0           , "Punk"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 181    | VWMYCR
+    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 182    | VBMOCD
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 183    | VBMYCR
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 184    | VHMYCR
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 185    | SBMYRI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 186    | SOMYRI
+    {0     , 0               , 0           , "Businessman"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 187    | SOMYBU
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 188    | SWMYST
+    {0     , 700_000         , 550         , "Valet"                                                         , SKINCLASS_RARE          , SKINSEX_MALE      }, // 189    | WMYVA
+    {0     , 0               , 0           , "Barbara Schternvart"                                           , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 190    | COPGRL3
+    {0     , 0               , 0           , "Helena Wankstein"                                              , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 191    | GUNGRL3
+    {0     , 0               , 0           , "Michelle Cannes"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 192    | MECGRL3
+    {0     , 0               , 0           , "Katie Zhan"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 193    | NURGRL3
+    {0     , 900_000         , 700         , "Millie Perkins"                                                , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 194    | CROGRL3
+    {0     , 0               , 0           , "Denise Robinson"                                               , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 195    | GANGRL3
+    {0     , 0               , 0           , "Farm Inhabitan"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 196    | CWFOFR
+    {0     , 0               , 0           , "Hillbill"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 197    | CWFOHB
+    {0     , 0               , 0           , "Farm Inhabitan"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 198    | CWFYFR1
+    {0     , 0               , 0           , "Farm Inhabitan"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 199    | CWFYFR2
+    {0     , 0               , 0           , "Hillbilly"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 200    | CWMYHB2
+    {0     , 0               , 0           , "Farmer"                                                        , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 201    | DWFYLC2
+    {0     , 0               , 0           , "Farmer"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 202    | DWMYLC2
+    {0     , 0               , 0           , "Karate Teacher"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 203    | OMYKARA
+    {0     , 0               , 0           , "Karate Teacher"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 204    | WMYKARA
+    {0     , 0               , 0           , "Burger Shot Cashier"                                           , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 205    | WFYBURG
+    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 206    | VWMYCD
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 207    | VHFYPRO
+    {0     , 0               , 0           , "Su Xi Mu"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 208    | SUZIE
+    {0     , 0               , 0           , "Noodle Vendor"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 209    | OMONOOD
+    {0     , 0               , 0           , "School Instructor"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 210    | OMOBOAT
+    {0     , 450_000         , 225         , "Shop Staff"                                                    , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 211    | WFYCLOT
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 212    | VWMOTR1
+    {0     , 0               , 0           , "Weird old man"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 213    | VWMOTR2
+    {0     , 0               , 0           , "Maria Latore"                                                  , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 214    | VWFYWAI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 215    | SBFORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 216    | SWFYRI
+    {0     , 0               , 0           , "Shop Staff"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 217    | WMYCLOT
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 218    | SBFOST
+    {0     , 0               , 0           , "Rich Woman"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 219    | SBFYRI
+    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 220    | SBMOCD
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 221    | SBMORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 222    | SBMOST
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 223    | SHMYCR
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 224    | SOFORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 225    | SOFOST
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 226    | SOFYST
+    {0     , 0               , 0           , "Oriental Businessman"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 227    | SOMOBU
+    {0     , 0               , 0           , "Oriental Ped"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 228    | SOMORI
+    {0     , 0               , 0           , "Oriental Ped"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 229    | SOMOST
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 230    | SWMOTR5
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 231    | SWFORI
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 232    | SWFOST
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 233    | SWFYST
+    {0     , 0               , 0           , "Cab Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 234    | SWMOCD
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 235    | SWMORI
+    {0     , 500_000         , 400         , "Normal Ped"                                                    , SKINCLASS_RARE          , SKINSEX_MALE      }, // 236    | SWMOST
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 237    | SHFYPRO
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 238    | SBFYPRO
+    {0     , 0               , 0           , "Homeless"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 239    | SWMOTR4
+    {0     , 0               , 0           , "The D.A"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 240    | SWMYRI
+    {0     , 0               , 0           , "Afro-American"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 241    | SMYST
+    {0     , 0               , 0           , "Mexican"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 242    | SMYST2
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 243    | SFYPRO
+    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 244    | VBFYST2
+    {0     , 0               , 0           , "Prostitute"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 245    | VBFYPRO
+    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 246    | VHFYST3
+    {0     , 0               , 0           , "Biker"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 247    | BIKERA
+    {0     , 0               , 0           , "Biker"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 248    | BIKERB
+    {0     , 1_000_000       , 750         , "Pimp"                                                          , SKINCLASS_RARE          , SKINSEX_MALE      }, // 249    | BMYPIMP
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 250    | SWMYCR
+    {0     , 0               , 0           , "Lifeguard"                                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 251    | WFYLG
+    {0     , 0               , 0           , "Naked Valet"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 252    | WMYVA2
+    {0     , 0               , 0           , "Bus Driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 253    | BMOSEC
+    {0     , 0               , 0           , "Biker Drug Dealer"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 254    | BIKDRUG
+    {0     , 0               , 0           , "Chauffeu"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 255    | WMYCH
+    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 256    | SBFYSTR
+    {0     , 0               , 0           , "Stripper"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 257    | SWFYSTR
+    {0     , 500_000         , 250         , "Heckler"                                                       , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 258    | HECK1
+    {0     , 500_000         , 250         , "Heckler"                                                       , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 259    | HECK2
+    {0     , 0               , 0           , "Construction Worker"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 260    | BMYCON
+    {0     , 0               , 0           , "Cab driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 261    | WMYCD1
+    {0     , 0               , 0           , "Cab driver"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 262    | BMOCD
+    {0     , 0               , 0           , "Normal Ped"                                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 263    | VWFYWA2
+    {0     , 0               , 0           , "Clown"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 264    | WMOICE
+    {0     , 0               , 0           , "Frank Tenpenny"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 265    | TENPEN
+    {0     , 0               , 0           , "Eddie Pulaski"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 266    | PULASKI
+    {0     , 0               , 0           , "Jimmy Hernandez"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 267    | HERN
+    {0     , 0               , 0           , "Dwayne"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 268    | DWAYNE
+    {0     , 0               , 0           , "Big Smoke"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 269    | SMOKE
+    {0     , 0               , 0           , "Sweet"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 270    | SWEET
+    {0     , 0               , 0           , "Ryder"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 271    | RYDER2
+    {0     , 0               , 0           , "Mafia Boss"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 272    | FORELLI
+    {0     , 0               , 0           , "T-Bone Mendez"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 273    | TBONE
+    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 274    | laemt1
+    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 275    | lvemt1
+    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 276    | sfemt1
+    {0     , 0               , 0           , "Firefighter"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 277    | lafd1
+    {0     , 0               , 0           , "Firefighter"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 278    | lvfd1
+    {0     , 0               , 0           , "Firefighter"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 279    | sffd1
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 280    | lapd1
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 281    | sfpd1
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 282    | lvpd1
+    {0     , 0               , 0           , "County Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 283    | csher
+    {0     , 0               , 0           , "Motorbike Cop"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 284    | lapdm1
+    {0     , 0               , 0           , "Special Forces"                                                , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 285    | swat
+    {0     , 0               , 0           , "Federal Agent"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 286    | fbi
+    {0     , 0               , 0           , "Army"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 287    | army
+    {0     , 0               , 0           , "Desert Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 288    | dsher
+    {0     , 0               , 0           , "Zero"                                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 289    | ZERO
+    {0     , 800_000         , 550         , "Ken Rosenberg"                                                 , SKINCLASS_RARE          , SKINSEX_MALE      }, // 290    | ROSE
+    {0     , 600_000         , 450         , "Kent Paul"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 291    | PAUL
+    {0     , 0               , 0           , "Cesar Vialpando"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 292    | CESAR
+    {0     , 0               , 0           , "OG Loc"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 293    | OGLOC
+    {0     , 0               , 0           , "Wu Zi Mu"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 294    | WUZIMU
+    {0     , 0               , 0           , "Michael Toreno"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 295    | TORINO
+    {0     , 0               , 0           , "Jizzy"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 296    | JIZZY
+    {0     , 0               , 0           , "Madd Dogg"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 297    | MADDOGG
+    {0     , 0               , 0           , "Catalina"                                                      , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 298    | CAT
+    {0     , 0               , 0           , "Claude"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 299    | CLAUDE
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 300    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 301    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 302    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 303    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 304    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 305    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 306    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 307    |
+    {0     , 0               , 0           , "Paramedic"                                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 308    |
+    {0     , 0               , 0           , "Police Officer"                                                , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 309    |
+    {0     , 0               , 0           , "Country Sheriff"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 310    |
+    {0     , 0               , 0           , "Desert Sheriff"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 311    |
+    {294   , 300_000         , 120         , "Парень в черном"                                               , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 312    | pearspedcu
+    {60    , 1_000_000       , 660         , "Стильный мужик"                                                , SKINCLASS_RARE          , SKINSEX_MALE      }, // 313    | pearspeda
+    {233   , 350_000         , 140         , "Девушка в белом платье"                                        , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 314    | pearspedb
+    {19    , 500_000         , 250         , "Парень с тату"                                                 , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 315    | pearspedc
+    {59    , 700_000         , 280         , "Парень в кофте с черепами"                                     , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 316    | pearspedd
+    {93    , 700_000         , 280         , "Девушка в костюме Adidas"                                      , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 317    | pearspede
+    {19    , 500_000         , 200         , "Парень с тату в кепке"                                         , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 318    | pearspedf
+    {59    , 1_000_000       , 500         , "Мужчина в подтяжках"                                           , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 319    | pearspedg
+    {125   , 2_900_000       , 2_000       , "МакГрегор"                                                     , SKINCLASS_RARE          , SKINSEX_MALE      }, // 320    | pearspedh
+    {23    , 1               , 1           , "Парень в красных вансах"                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 321    | pearspedi
+    {21    , 1               , 1           , "Мужчина в Одежде Луи Витон"                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 322    | pearspedj
+    {216   , 500_000         , 250         , "Женщина в зеленом платье"                                      , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 323    | pearspedk
+    {55    , 400_000         , 200         , "Женщина в платье скелете"                                      , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 324    | pearspedl
+    {93    , 1_000_000       , 650         , "Женщина в костюме Nike"                                        , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 325    | pearspedm
+    {7     , 1               , 1           , "Мужчина в простой одежде"                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 326    | pearspedn
+    {125   , 500_000         , 250         , "Мужчина с тату"                                                , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 327    | pearspedo
+    {1     , 500_000         , 250         , "Мужчина в майке с тату"                                        , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 328    | pearspedp
+    {248   , 0               , 0           , "Мужчина в джинсовой одежде"                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 329    | pearspedq
+    {29    , 0               , 0           , "Мужчина в капюшоне и джинсовке"                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 330    | pearspedr
+    {121   , 0               , 0           , "Мужчина в джинсовых вещах"                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 331    | pearspeds
+    {125   , 0               , 0           , "Мужчина в джинсовых вещах"                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 332    | pearspedt
+    {240   , 100_000         , 50          , "Мужчина в черной куртке"                                       , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 333    | pearspedu
+    {223   , 3_000_000       , 2_000       , "Мужчина в фирменой одежде"                                     , SKINCLASS_RARE          , SKINSEX_MALE      }, // 334    | pearspedv
+    {28    , 1               , 1           , "Мужчина в белом худи"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 335    | pearspedw
+    {25    , 2_500_000       , 1_650       , "Мужчина в куртке"                                              , SKINCLASS_RARE          , SKINSEX_MALE      }, // 336    | pearspedx
+    {150   , 600_000         , 240         , "Женщина в черном пальто"                                       , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 337    | pearspedy
+    {237   , 500_000         , 250         , "Женщина в черно-белой одежде"                                  , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 338    | pearspedz
+    {131   , 1               , 1           , "Женщина в черной одежде"                                       , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 339    | pearspedaa
+    {12    , 300_000         , 120         , "Девушка в топе с вишенкой"                                     , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 340    | pearspedab
+    {40    , 300_000         , 120         , "Девушка в топе"                                                , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 341    | pearspedac
+    {178   , 0               , 0           , "Сексуальная девушка"                                           , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 342    | pearspedad
+    {233   , 500_000         , 250         , "Девушка в Gucci"                                               , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 343    | pearspedae
+    {93    , 1               , 1           , "Девушка в черной одежде"                                       , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 344    | pearspedaf
+    {157   , 1               , 1           , "Девушка в зеленом"                                             , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 345    | pearspedag
+    {223   , 500_000         , 200         , "Девушка в белой одежде"                                        , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 346    | pearspedah
+    {233   , 600_000         , 240         , "Девушка в клетчатой рубашке"                                   , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 347    | pearspedai
+    {233   , 500_000         , 250         , "Девушка в розовой одежде"                                      , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 348    | pearspedaj
+    {233   , 400_000         , 160         , "Девушка в светлой одежде"                                      , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 349    | pearspedak
+    {93    , 2_500_000       , 1_650       , "Девушка гот"                                                   , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 350    | pearspedal
+    {233   , 250_000         , 100         , "Девушка в топе с бабочкой"                                     , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 351    | pearspedam
+    {223   , 1               , 1           , "Мужчина в коричневом худи"                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 352    | pearspedan
+    {240   , 1_500_000       , 1_000       , "Мужчина в сером бомбере"                                       , SKINCLASS_RARE          , SKINSEX_MALE      }, // 353    | pearspedao
+    {126   , 1_000_000       , 700         , "Мужчина в свитшоте"                                            , SKINCLASS_RARE          , SKINSEX_MALE      }, // 354    | pearspedap
+    {93    , 900_000         , 600         , "Девушка в бомбере"                                             , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 355    | pearspedaq
+    {240   , 400_000         , 200         , "Мужчина в черной футболке"                                     , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 356    | pearspedar
+    {93    , 2_500_000       , 1_700       , "Девушка в черной одежде"                                       , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 357    | pearspedas
+    {93    , 500_000         , 200         , "Девушка в черной одежде"                                       , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 358    | pearspedat
+    {91    , 3_000_000       , 3_000       , "Девушка в свадебном платье"                                    , SKINCLASS_LEGENDARY     , SKINSEX_FEMALE    }, // 359    | pearspedau
+    {233   , 1_500_000       , 1_000       , "Беловолосая девушка в полушубе"                                , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 360    | pearspedav
+    {216   , 600_000         , 300         , "Девушка в зеленом"                                             , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 361    | pearspedaw
+    {216   , 0               , 0           , "Девушка в полотенце"                                           , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 362    | pearspedax
+    {93    , 2_300_000       , 1_500       , "Девушка в белой куртке"                                        , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 363    | pearspeday
+    {240   , 0               , 0           , "Парень в рубахе"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 364    | pearspedaz
+    {180   , 200_000         , 80          , "Парень в свитшоте с сердцем"                                   , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 365    | pearspedba
+    {226   , 1               , 1           , "Девушка в футболке"                                            , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 366    | pearspedbb
+    {60    , 1               , 1           , "Парень в черном"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 367    | pearspedbc
+    {257   , 700_000         , 350         , "Девушка в топе в сеточку"                                      , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 368    | pearspedbd
+    {257   , 0               , 0           , "Проститутка"                                                   , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 369    | pearspedbe
+    {41    , 1               , 1           , "Девушка в белой куртке"                                        , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 370    | pearspedbf
+    {40    , 1               , 1           , "Девушка в черном платье"                                       , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 371    | pearspedbg
+    {233   , 0               , 0           , "Девушка в купальнике"                                          , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 372    | pearspedbh
+    {233   , 0               , 0           , "Девушка в купальнике"                                          , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 373    | pearspedbi
+    {93    , 800_000         , 400         , "Девушка в черном платье"                                       , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 374    | pearspedbj
+    {233   , 1_000_000       , 500         , "Девушка в розовой кофте"                                       , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 375    | pearspedbk
+    {98    , 900_000         , 450         , "Мужчина в пиджаке"                                             , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 376    | pearspedbl
+    {98    , 900_000         , 450         , "Мужчина в синем костюме"                                       , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 377    | pearspedbm
+    {98    , 1_500_000       , 1_000       , "Мужчина в черной куртке"                                       , SKINCLASS_RARE          , SKINSEX_MALE      }, // 378    | pearspedbn
+    {98    , 1_200_000       , 800         , "Мужчина в черном костюме"                                      , SKINCLASS_RARE          , SKINSEX_MALE      }, // 379    | pearspedbo
+    {112   , 800_000         , 400         , "Лысый хрен в красных спортах"                                  , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 380    | pearspedbp
+    {127   , 600_000         , 300         , "Мужчина в белом костюме"                                       , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 381    | pearspedbq
+    {127   , 500_000         , 250         , "Мужчина в черном костюме"                                      , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 382    | pearspedbr
+    {240   , 300_000         , 120         , "Парень в кофте"                                                , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 383    | pearspedbs
+    {240   , 300_000         , 120         , "Парень в куртке"                                               , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 384    | pearspedbt
+    {240   , 400_000         , 200         , "Парень в кофте"                                                , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 385    | pearspedbu
+    {45    , 250_000         , 100         , "Парень с голым торсом"                                         , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 386    | pearspedbv
+    {91    , 400_000         , 200         , "Девушка в топе и юбке"                                         , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 387    | pearspedbw
+    {98    , 1_000_000       , 500         , "Мужчина в костюме"                                             , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 388    | pearspedbx
+    {216   , 1_500_000       , 1_000       , "Девушка в розовой кофте"                                       , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 389    | pearspedby
+    {25    , 1_100_000       , 720         , "Мужчина в белой одежде"                                        , SKINCLASS_RARE          , SKINSEX_MALE      }, // 390    | pearspedbz
+    {120   , 1_000_000       , 750         , "Мужчина в черной одежде"                                       , SKINCLASS_RARE          , SKINSEX_MALE      }, // 391    | pearspedca
+    {179   , 0               , 0           , "Мужчина в камуфляжной форме"                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 392    | pearspedcb
+    {233   , 1               , 1           , "Девушка в спортивном стиле"                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 393    | pearspedcc
+    {12    , 700_000         , 350         , "Девушка в голубой блузке"                                      , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 394    | pearspedcd
+    {40    , 800_000         , 400         , "Девушка в красном топе"                                        , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 395    | pearspedce
+    {85    , 2_000_000       , 1_300       , "Девушка в шубе"                                                , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 396    | pearspedcf
+    {233   , 700_000         , 350         , "Девушка в белом топе"                                          , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 397    | pearspedcg
+    {233   , 800_000         , 400         , "Девушка в розовой одежде"                                      , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 398    | pearspedct
+    {233   , 700_000         , 350         , "Девушка в белом топе"                                          , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 399    | pearspedch
+    {12    , 900_000         , 450         , "Девушка в черном пальто"                                       , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 400    | pearspedci
+    {217   , 800_000         , 400         , "Мужчина в черно-белой одежде"                                  , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 401    | pearspedcj
+    {12    , 2_200_000       , 2_200       , "Ким Кардашьян"                                                 , SKINCLASS_LEGENDARY     , SKINSEX_FEMALE    }, // 402    | pearspedck
+    {59    , 1               , 1           , "Парень в простой одежде"                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 403    | pearspedcl
+    {93    , 1_500_000       , 1_000       , "Девушка в черных легинсах"                                     , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 404    | pearspedcm
+    {98    , 2_100_000       , 1_400       , "Парень в жилетке"                                              , SKINCLASS_RARE          , SKINSEX_MALE      }, // 405    | pearspedcn
+    {143   , 800_000         , 400         , "Мужчина в куртке"                                              , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 406    | pearspedco
+    {93    , 1_000_000       , 500         , "Девушка в белых штанах"                                        , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 407    | pearspedcp
+    {91    , 1_100_000       , 550         , "Девушка в красной куртке"                                      , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 408    | pearspedcq
+    {40    , 1_600_000       , 1_050       , "Девушка в Nike"                                                , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 409    | pearspedcr
+    {46    , 2_000_000       , 2_000       , "Мужчина в костюме"                                             , SKINCLASS_LEGENDARY     , SKINSEX_MALE      }, // 410    | pearspedcs
+    {40    , 0               , 0           , "Девушка в парандже"                                            , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 411    | pedaraba
+    {221   , 0               , 0           , "Мужчина в парандже"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 412    | pedarabb
+    {142   , 0               , 0           , "Мужчина в маске"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 413    | pedarabc
+    {42    , 0               , 0           , "Мужчина бандит"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 414    | prisonmex
+    {311   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 415    | pearscop
+    {287   , 0               , 0           , "Военный"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 416    | pearsarmy1
+    {287   , 0               , 0           , "Военный"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 417    | pearsarmy2
+    {5     , 0               , 0           , "Мужчина толстый"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 418    | pearsswat1
+    {285   , 0               , 0           , "Полицейский в броне"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 419    | pearsswat2
+    {300   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 420    | pearscop2
+    {301   , 0               , 0           , "Полицейский в броне"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 421    | pearsswat4
+    {300   , 0               , 0           , "Полицейский в броне"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 422    | pearsswat5
+    {300   , 0               , 0           , "Полицейский с кепкой"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 423    | pearscop3
+    {305   , 1_200_000       , 600         , "Мужчина в красной рубашке"                                     , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 424    | pearscop4
+    {303   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 425    | pearscop5
+    {142   , 2_000_000       , 12_000      , "Неизвестный в маске"                                           , SKINCLASS_LEGENDARY     , SKINSEX_UNKNOWN   }, // 426    | pearspedcv
+    {221   , 0               , 0           , "Неизвестный в белом"                                           , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 427    | pearspedcw
+    {277   , 0               , 0           , "Космонавт"                                                     , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 428    | astronaut
+    {6     , 0               , 0           , "Маньяк Джейсон"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 429    | jason
+    {21    , 0               , 0           , "Парень в оранжевом комбинизоне"                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 430    | prisonblack
+    {141   , 1_800_000       , 1_800       , "Монахиня"                                                      , SKINCLASS_LEGENDARY     , SKINSEX_FEMALE    }, // 431    | pearspedcx
+    {144   , 1_500_000       , 1_000       , "Спортик"                                                       , SKINCLASS_RARE          , SKINSEX_MALE      }, // 432    | pearspedcy
+    {287   , 0               , 0           , "Военный"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 433    | pearspedcz
+    {146   , 1_600_000       , 1_050       , "Качок в майке"                                                 , SKINCLASS_RARE          , SKINSEX_MALE      }, // 434    | pearspedda
+    {42    , 600_000         , 300         , "Мужчина в спортивном костюме"                                  , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 435    | pearspeddb
+    {287   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 436    | pearspeddc
+    {307   , 0               , 0           , "Полицейский (жен.)"                                            , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 437    | pearspeddd
+    {310   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 438    | pearspedde
+    {306   , 0               , 0           , "Полицейский (жен.)"                                            , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 439    | pearscop6
+    {281   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 440    | pearspeddf
+    {280   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 441    | pearspeddg
+    {265   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 442    | pearspeddh
+    {310   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 443    | pearspeddi
+    {306   , 0               , 0           , "Полицейский (жен.)"                                            , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 444    | pearspeddj
+    {306   , 0               , 0           , "Полицейский в шлеме (жен.)"                                    , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 445    | pearspeddk
+    {282   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 446    | pearspeddl
+    {282   , 0               , 0           , "Полицейский в очках"                                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 447    | pearspeddm
+    {282   , 0               , 0           , "Полицейский (галстук)"                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 448    | pearspeddn
+    {282   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 449    | pearspeddo
+    {282   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 450    | pearspeddp
+    {282   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 451    | pearspeddq
+    {306   , 0               , 0           , "Полицейский (жен.)"                                            , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 452    | pearspeddr
+    {121   , 0               , 0           , "Доминик"                                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 453    | pearspedds
+    {165   , 0               , 0           , "Агент ФБР в бронежилете"                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 454    | pearspeddt
+    {286   , 0               , 0           , "Агент ФБР"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 455    | pearspeddu
+    {286   , 0               , 0           , "Агент ФБР"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 456    | pearspeddv
+    {295   , 0               , 0           , "Агент ФБР"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 457    | pearspeddw
+    {286   , 0               , 0           , "Агент ФБР"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 458    | pearspeddx
+    {286   , 0               , 0           , "Агент ФБР"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 459    | pearspeddy
+    {285   , 0               , 0           , "Спецназ ФБР"                                                   , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 460    | pearspeddz
+    {285   , 0               , 0           , "Спецназ ФБР"                                                   , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 461    | pearspedea
+    {165   , 0               , 0           , "Спец.агент ФБР"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 462    | pearspedeb
+    {286   , 0               , 0           , "Агент ФБР"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 463    | pearspedec
+    {286   , 0               , 0           , "Агент ФБР"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 464    | pearspeded
+    {150   , 0               , 0           , "Агент ФБР (жен.)"                                              , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 465    | pearspedee
+    {286   , 0               , 0           , "Агент ФБР"                                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 466    | pearspedef
+    {29    , 1_300_000       , 850         , "Мужчина в красном анараке"                                     , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 467    | zverworks
+    {121   , 0               , 0           , "Азиат с татуировками"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 468    | pearspedeg
+    {118   , 0               , 0           , "Азиат в пиджаке"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 469    | pearspedeh
+    {123   , 0               , 0           , "Мужчина в спортивках"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 470    | pearspedei
+    {118   , 0               , 0           , "Мужчина в японском костюме"                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 471    | pearspedej
+    {119   , 0               , 0           , "Русский в куртке"                                              , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 472    | pearspedek
+    {66    , 800_000         , 400         , "Мужчина в открытой рубашке"                                    , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 473    | pearspedel
+    {60    , 0               , 0           , "Русский с фингалом"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 474    | pearspedem
+    {113   , 0               , 0           , "Русский с крестом"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 475    | pearspeden
+    {68    , 1_500_000       , 1_000       , "Дед в куртке"                                                  , SKINCLASS_RARE          , SKINSEX_MALE      }, // 476    | pearspedeo
+    {68    , 2_000_000       , 2_000       , "Дед в смокинге"                                                , SKINCLASS_LEGENDARY     , SKINSEX_MALE      }, // 477    | pearspedep
+    {113   , 1_400_000       , 950         , "Мужчина в тёмном"                                              , SKINCLASS_RARE          , SKINSEX_MALE      }, // 478    | pearspedeq
+    {66    , 800_000         , 400         , "Парень в веселой футболке"                                     , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 479    | pearspeder
+    {111   , 0               , 0           , "Русский в темной куртке"                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 480    | pearspedes
+    {247   , 1_600_000       , 1_050       , "Мужчина с бородой"                                             , SKINCLASS_RARE          , SKINSEX_MALE      }, // 481    | pearspedet
+    {46    , 0               , 0           , "Русский в открытой рубашке"                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 482    | pearspedeu
+    {223   , 2_000_000       , 1_300       , "Мужчина в розовом пиджаке"                                     , SKINCLASS_RARE          , SKINSEX_MALE      }, // 483    | pearspedev
+    {111   , 0               , 0           , "Русский в кожаной куртке"                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 484    | pearspedew
+    {46    , 0               , 0           , "Русский с татуировками"                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 485    | pearspedex
+    {60    , 900_000         , 450         , "Парень в балаклаве и очках"                                    , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 486    | pearspedey
+    {29    , 800_000         , 400         , "Парень в майке"                                                , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 487    | pearspedez
+    {117   , 0               , 0           , "Азиат в костюме"                                               , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 488    | pearspedfa
+    {121   , 2_200_000       , 1_450       , "Грозный мужчина"                                               , SKINCLASS_RARE          , SKINSEX_MALE      }, // 489    | pearspedfb
+    {272   , 0               , 0           , "Серьёзный русский"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 490    | pearspedfc
+    {126   , 0               , 0           , "Русский в костюме"                                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 491    | pearspedfd
+    {125   , 3_000_000       , 2_000       , "Мужчина в белом костюме"                                       , SKINCLASS_RARE          , SKINSEX_MALE      }, // 492    | pearspedfe
+    {294   , 4_000_000       , 4_000       , "Золотой Вузи"                                                  , SKINCLASS_LEGENDARY     , SKINSEX_MALE      }, // 493    | pearspedff
+    {285   , 0               , 0           , "Армейский лётчик"                                              , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 494    | pearsvvs
+    {70    , 0               , 0           , "Доктор в очках"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 495    | pearsdoctor
+    {308   , 0               , 0           , "Сотрудник больницы (жен.)"                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 496    | pearsmedg1
+    {308   , 0               , 0           , "Сотрудник больницы (жен.)"                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 497    | pearsmedg2
+    {308   , 0               , 0           , "Сотрудник больницы (жен.)"                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 498    | pearsmedg3
+    {308   , 0               , 0           , "Сотрудник больницы (жен.)"                                     , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 499    | pearsmedg4
+    {275   , 0               , 0           , "Сотрудник больницы"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 500    | pearsmedm1
+    {276   , 0               , 0           , "Сотрудник больницы"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 501    | pearsmedm2
+    {275   , 0               , 0           , "Сотрудник больницы"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 502    | pearsmedm3
+    {276   , 0               , 0           , "Сотрудник больницы"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 503    | pearsmedm4
+    {274   , 0               , 0           , "Сотрудник больницы"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 504    | pearsmedm5
+    {146   , 0               , 0           , "Скромник"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 505    | pearsebalai
+    {264   , 0               , 0           , "Воплощенный вампир"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 506    | pearsvampir
+    {168   , 0               , 0           , "Маньяк"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 507    | pearsbenzop
+    {130   , 0               , 0           , "Овца"                                                          , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 508    | pearsovechka
+    {31    , 0               , 0           , "Корова"                                                        , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 509    | pearskorova
+    {153   , 0               , 0           , "Крик"                                                          , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 510    | pearsscream
+    {264   , 0               , 0           , "Пенисвайз"                                                     , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 511    | pearsclown
+    {82    , 0               , 0           , "Зомби"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 512    | pearszombie1
+    {83    , 0               , 0           , "Зомби"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 513    | pearszombie2
+    {84    , 0               , 0           , "Зомби"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 514    | pearszombie3
+    {82    , 0               , 0           , "Зомби"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 515    | pearszombie4
+    {83    , 0               , 0           , "Зомби"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 516    | pearszombie5
+    {75    , 0               , 0           , "Зомби (жен.)"                                                  , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 517    | pearszombie6
+    {77    , 0               , 0           , "Зомби (жен.)"                                                  , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 518    | pearszombie7
+    {82    , 0               , 0           , "Зомби"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 519    | pearszombie8
+    {83    , 0               , 0           , "Зомби"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 520    | pearszombie9
+    {59    , 400_000         , 160         , "Парень с челкой"                                               , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 521    | pearskortu
+    {60    , 600_000         , 240         , "Парень в темной одежде"                                        , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 522    | pearsmajodin
+    {98    , 650_000         , 260         , "Парень в белой футболке"                                       , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 523    | pearsmajdva
+    {23    , 700_000         , 280         , "Парень в белом с цепью"                                        , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 524    | pearsmajtri
+    {248   , 1_800_000       , 1_200       , "Мужчина в веселой жилетке"                                     , SKINCLASS_RARE          , SKINSEX_MALE      }, // 525    | pearsjil
+    {247   , 0               , 0           , "Парень в веселой жилетке"                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 526    | pearsjildva
+    {187   , 1_400_000       , 950         , "Мужчина в пижаме"                                              , SKINCLASS_RARE          , SKINSEX_MALE      }, // 527    | pearskosb
+    {91    , 1_200_000       , 800         , "Девушка в платье"                                              , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 528    | pearsmegno
+    {19    , 1_000_000       , 650         , "Парень с полотенцем"                                           , SKINCLASS_RARE          , SKINSEX_MALE      }, // 529    | pearsgheze
+    {93    , 750_000         , 375         , "Девушка в джинсах"                                             , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 530    | pearswjns
+    {184   , 700_000         , 350         , "Пожилой в спортивном"                                          , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 531    | pearsdedsp
+    {223   , 1_200_000       , 800         , "Пожилой в костюме"                                             , SKINCLASS_RARE          , SKINSEX_MALE      }, // 532    | pearssuitold
+    {186   , 1_350_000       , 900         , "Пожилой в темном наряде"                                       , SKINCLASS_RARE          , SKINSEX_MALE      }, // 533    | pearssuoldv
+    {208   , 1_000_000       , 500         , "Мужчина в темном"                                              , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 534    | pearsdetsu
+    {66    , 600_000         , 300         , "Парень в куртке"                                               , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 535    | pearskurng
+    {80    , 1_400_000       , 950         , "Боец UFC"                                                      , SKINCLASS_RARE          , SKINSEX_MALE      }, // 536    | pearsufcng
+    {109   , 0               , 0           , "Бандит Vagos в темном"                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 537    | pearsvago
+    {110   , 0               , 0           , "Бандит Vagos в кепке"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 538    | pearsvagtr
+    {106   , 0               , 0           , "Бандит Grove в кепке"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 539    | pearsgroveo
+    {107   , 0               , 0           , "Бандит Grove в куртке"                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 540    | pearsgrovet
+    {195   , 0               , 0           , "Бандит Grove (жен.)"                                           , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 541    | pearsgroveg
+    {102   , 0               , 0           , "Бандит Ballas"                                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 542    | pearsballo
+    {102   , 0               , 0           , "Бандит Ballas в жилетке"                                       , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 543    | pearsballt
+    {13    , 0               , 0           , "Бандит Ballas (жен.)"                                          , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 544    | pearsballg
+    {104   , 0               , 0           , "Бандит Ballas в темном"                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 545    | pearsballtr
+    {91    , 900_000         , 600         , "Девушка в белом поло"                                          , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 546    | pearsbecky
+    {42    , 0               , 0           , "Неизв. в желтом комбинизоне"                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 547    | pearsorm
+    {42    , 0               , 0           , "Неизв. в противогазе"                                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 548    | pearsorgm
+    {258   , 1_250_000       , 830         , "Мужчина со шрамом"                                             , SKINCLASS_RARE          , SKINSEX_MALE      }, // 549    | pearsamkr
+    {30    , 900_000         , 450         , "Парень в футболке с цепью"                                     , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 550    | pearsrcep
+    {56    , 500_000         , 200         , "Женщина в зеленой блузке"                                      , SKINCLASS_COMMON        , SKINSEX_FEMALE    }, // 551    | pearsgigre
+    {259   , 700_000         , 300         , "Пожилой с весом в футболке"                                    , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 552    | pearsolbat
+    {258   , 800_000         , 320         , "Пожилой в синей куртке"                                        , SKINCLASS_COMMON        , SKINSEX_MALE      }, // 553    | pearssimsui
+    {259   , 800_000         , 400         , "Пожилой в темно-синей рубашке"                                 , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 554    | pearssimpol
+    {252   , 850_000         , 425         , "Пожилой в трусах"                                              , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 555    | pearssimnud
+    {217   , 1_200_000       , 600         , "Мужчина в темном"                                              , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 556    | pearsardbl
+    {171   , 1_500_000       , 1_000       , "Мужчина в синем костюме"                                       , SKINCLASS_RARE          , SKINSEX_MALE      }, // 557    | pearsardsui
+    {208   , 1_800_000       , 1_200       , "Мужчина в темно-полосатом костюме"                             , SKINCLASS_RARE          , SKINSEX_MALE      }, // 558    | pearsardsuib
+    {240   , 1_600_000       , 1_050       , "Мужчина в темно-полосатой жилетке"                             , SKINCLASS_RARE          , SKINSEX_MALE      }, // 559    | pearsardjil
+    {46    , 3_000_000       , 2_000       , "Мужчина в белом костюме с розой"                               , SKINCLASS_RARE          , SKINSEX_MALE      }, // 560    | pearsardjen
+    {223   , 1_100_000       , 750         , "Мужчина в джинсовке"                                           , SKINCLASS_RARE          , SKINSEX_MALE      }, // 561    | pearsardjens
+    {211   , 1_200_000       , 800         , "Девушка в темно-короткой кофте"                                , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 562    | pearsgibl
+    {216   , 1_000_000       , 650         , "Девушка в топе и шортах сердечки"                              , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 563    | pearsgipink
+    {247   , 1_200_000       , 800         , "Байкер в огненной футболке и жилетке"                          , SKINCLASS_RARE          , SKINSEX_MALE      }, // 564    | pearsgjo
+    {248   , 1_500_000       , 1_000       , "Байкер в поло и шортах-трико"                                  , SKINCLASS_RARE          , SKINSEX_MALE      }, // 565    | pearsgjt
+    {254   , 900_000         , 450         , "Байкер в жилетке и белой футболке"                             , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 566    | pearsgjtr
+    {100   , 1_500_000       , 1_000       , "Байкер в жилетке и джинсах"                                    , SKINCLASS_RARE          , SKINSEX_MALE      }, // 567    | pearsgjf
+    {113   , 1_800_000       , 1_200       , "Пожилой в темном костюме и цепью-крест"                        , SKINCLASS_RARE          , SKINSEX_MALE      }, // 568    | pearsvicbs
+    {111   , 800_000         , 400         , "Мужчина в болотной кофте"                                      , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 569    | pearsvicsrg
+    {125   , 1_000_000       , 500         , "Мужчина в куртке и спортивках"                                 , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 570    | pearsvicrm
+    {144   , 0               , 0           , "Террорист с камуфляжной шляпой"                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 571    | pearsterro
+    {143   , 0               , 0           , "Террорист в бандане со шлемом"                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 572    | pearsterrt
+    {176   , 0               , 0           , "Террорист в тюрбане и бронежилете"                             , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 573    | pearsterrtr
+    {177   , 0               , 0           , "Террорист в камуфляжном бронежилете"                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 574    | pearsterrf
+    {177   , 0               , 0           , "Террорист в тюрбане и камуфляжном бронежилете"                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 575    | pearsterrfm
+    {183   , 0               , 0           , "Террорист в балаклаве и бронежилете"                           , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 576    | pearsterrfi
+    {241   , 0               , 0           , "Террорист с зарядами РПГ"                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 577    | pearsterrs
+    {273   , 1_500_000       , 750         , "Мужчина с голым торсом в татуировках"                          , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 578    | pearsmono
+    {184   , 1_600_000       , 800         , "Мужчина в футболке череп с татуировками"                       , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 579    | pearsmont
+    {119   , 1_200_000       , 600         , "Байкер в темном с жилеткой"                                    , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 580    | pearsmontr
+    {47    , 1_300_000       , 650         , "Парень в белой футболке с цепью"                               , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 581    | pearsmonf
+    {45    , 1_400_000       , 900         , "Татуированный мужчина с усами и голым торсом"                  , SKINCLASS_RARE          , SKINSEX_MALE      }, // 582    | pearsnudta
+    {300   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 583    | pearsguo
+    {300   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 584    | pearsgut
+    {301   , 0               , 0           , "Полицейский"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 585    | pearsgutr
+    {178   , 2_500_000       , 2_500       , "Кибер-женщина"                                                 , SKINCLASS_LEGENDARY     , SKINSEX_FEMALE    }, // 586    | fpearshall1
+    {178   , 2_500_000       , 2_500       , "Женщина в кошачьей маске с кнутом"                             , SKINCLASS_LEGENDARY     , SKINSEX_FEMALE    }, // 587    | fpearshall2
+    {152   , 1_500_000       , 1_000       , "Девушка в хэллоуинском костюме"                                , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 588    | fpearshall3
+    {90    , 800_000         , 400         , "Девушка в боди хэллоуин"                                       , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 589    | fpearshall4
+    {195   , 1_300_000       , 850         , "Девушка в футболке котик"                                      , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 590    | fpearshall5
+    {90    , 700_000         , 350         , "Девушка в топе с летучими мышами"                              , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 591    | fpearshall6
+    {137   , 1_000_000       , 1_000       , "Бомж-убийца"                                                   , SKINCLASS_LEGENDARY     , SKINSEX_MALE      }, // 592    | mpearshall1
+    {252   , 1_200_000       , 800         , "Садамаза мужик"                                                , SKINCLASS_RARE          , SKINSEX_MALE      }, // 593    | mpearshall2
+    {264   , 5_000_000       , 900         , "Карлик"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 594    | mpearshall3
+    {258   , 1_200_000       , 120         , "Франкенштейн"                                                  , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 595    | mpearshall4
+    {222   , 7_000_000       , 1_000       , "Мумия"                                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 596    | mpearshall5
+    {212   , 1_000_000       , 650         , "Бешенный деревенский"                                          , SKINCLASS_RARE          , SKINSEX_MALE      }, // 597    | mpearshall6
+    {211   , 750_000         , 350         , "Девушка в черном"                                              , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 598    | pearsranfem1
+    {214   , 1_100_000       , 750         , "Девушка в белом"                                               , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 599    | pearsranfem2
+    {101   , 0               , 0           , "Мужчина в серой куртке"                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 600    | pearsranma1
+    {171   , 0               , 0           , "Мужчина в черном с перчатками"                                 , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 601    | pearsranma2
+    {167   , 0               , 0           , "Анубис"                                                        , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 602    | pearsanubis
+    {1     , 0               , 0           , "Скелет"                                                        , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 603    | pearsbfost
+    {7     , 0               , 0           , "Призрак"                                                       , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 604    | pearsbmori
+    {162   , 0               , 0           , "Медведь"                                                       , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 605    | pearsbear
+    {157   , 0               , 0           , "Олень"                                                         , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 606    | pearsdeer
+    {157   , 0               , 0           , "Лиса"                                                          , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 607    | pearsfox
+    {157   , 0               , 0           , "Заяц"                                                          , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 608    | pearsrabbit
+    {162   , 0               , 0           , "Волк"                                                          , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 609    | pearswolf
+    {145   , 1_500_000       , 7_000       , "Женщина в жёлтом комбинизоне"                                  , SKINCLASS_LEGENDARY     , SKINSEX_FEMALE    }, // 610    | pearsfhaz
+    {146   , 1_500_000       , 7_000       , "Мужчина в жёлтом комбинизоне"                                  , SKINCLASS_LEGENDARY     , SKINSEX_MALE      }, // 611    | pearsmhaz1
+    {144   , 0               , 0           , "Мужчина в белом комбинизоне"                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 612    | pearsmhaz2
+    {146   , 0               , 0           , "Парень в сером комбинизоне"                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 613    | pearsmhaz3
+    {30    , 0               , 0           , "Уолтер Уайт"                                                   , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 614    | pearshaizenberg
+    {60    , 0               , 0           , "Азиат в белой рубашке"                                         , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 615    | pearskitaec
+    {111   , 0               , 0           , "Мужчина в темном костюме"                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 616    | pearsruski1
+    {25    , 0               , 0           , "Мужчина в пуховике с белой футболкой"                          , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 617    | pearswinneg
+    {191   , 0               , 0           , "Девушка в зеленом комбинизоне"                                 , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 618    | pearswarm1
+    {287   , 0               , 0           , "Военный зимняя"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 619    | pearswinarm1
+    {287   , 0               , 0           , "Военный зимняя"                                                , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 620    | pearswinarm2
+    {191   , 0               , 0           , "Военный зимняя (жен.)"                                         , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 621    | pearswinarw1
+    {216   , 0               , 0           , "Девушка в оранжевой полушубе"                                  , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 622    | pearswinw1
+    {150   , 0               , 0           , "Женщина-врач"                                                  , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 623    | pearsdocw1
+    {193   , 0               , 0           , "Девушка в новогоднем"                                          , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 624    | pearswinw2
+    {179   , 2_000_000       , 10_000      , "Маскхалат"                                                     , SKINCLASS_LEGENDARY     , SKINSEX_MALE      }, // 625    | pearswinarm3
+    {152   , 0               , 0           , "Белая кошка"                                                   , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 626    | pearscat1
+    {152   , 0               , 0           , "Рыжая кошка"                                                   , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 627    | pearscat2
+    {152   , 0               , 0           , "Серая кошка"                                                   , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 628    | pearscat3
+    {152   , 0               , 0           , "Сиамская кошка"                                                , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 629    | pearscat4
+    {152   , 0               , 0           , "Пятнистая кошка"                                               , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 630    | pearscat5
+    {152   , 0               , 0           , "Черная кошка"                                                  , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 631    | pearscat6
+    {153   , 0               , 0           , "Полосатый ротвейлер"                                           , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 632    | pearsdog1
+    {153   , 0               , 0           , "Рыжий ротвейлер"                                               , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 633    | pearsdog2
+    {153   , 0               , 0           , "Черный ротвейлер"                                              , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 634    | pearsdog3
+    {153   , 0               , 0           , "Белый бостон терьер"                                           , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 635    | pearsdog4
+    {153   , 0               , 0           , "Ротвейлер с зеленым ошейником"                                 , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 636    | pearsdog5
+    {153   , 0               , 0           , "Черный бостон терьер"                                          , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 637    | pearsdog6
+    {153   , 0               , 0           , "Рыжий стаффорд терьер"                                         , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 638    | pearsdog7
+    {153   , 0               , 0           , "Черный доберман"                                               , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 639    | pearsdog8
+    {153   , 0               , 0           , "Коричнево-белый бультерьер"                                    , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 640    | pearsdog9
+    {153   , 0               , 0           , "Серо-белый бультерьер "                                        , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 641    | pearsdog10
+    {153   , 0               , 0           , "Светло-коричневый шиба ину"                                    , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 642    | pearsdog11
+    {153   , 0               , 0           , "Серая немецкая овчарка"                                        , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 643    | pearsdog12
+    {153   , 0               , 0           , "Белый бультерьер"                                              , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 644    | pearsdog13
+    {153   , 0               , 0           , "Сибирский хаски"                                               , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 645    | pearsdog14
+    {153   , 0               , 0           , "Золотистый ретривер"                                           , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 646    | pearsdog15
+    {153   , 0               , 0           , "Коричнево-белый пойнтер"                                       , SKINCLASS_SYSTEM        , SKINSEX_UNKNOWN   }, // 647    | pearsdog16
+    {153   , 0               , 0           , "Далматин"                                                      , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 648    | pearsdog17
+    {1     , 0               , 0           , "Санта Клаус"                                                   , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 649    | pearssanta
+    {40    , 2_000_000       , 2_000       , "Женщина в розовом с шляпой"                                    , SKINCLASS_LEGENDARY     , SKINSEX_FEMALE    }, // 650    | pearsfwint1
+    {55    , 1_300_000       , 850         , "Женщина-байкер"                                                , SKINCLASS_RARE          , SKINSEX_FEMALE    }, // 651    | pearsfwint2
+    {56    , 700_000         , 350         , "Женщина в пуховике"                                            , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 652    | pearsfwint3
+    {55    , 600_000         , 300         , "Девушка в красной толстовке"                                   , SKINCLASS_UNCOMMON      , SKINSEX_FEMALE    }, // 653    | pearsfwint4
+    {60    , 800_000         , 400         , "Парень в синей зимней куртке"                                  , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 654    | pearsmwint1
+    {25    , 600_000         , 300         , "Парень в темном пуховике"                                      , SKINCLASS_UNCOMMON      , SKINSEX_MALE      }, // 655    | pearsmwint2
+    {46    , 1_400_000       , 950         , "Мужчина в шубе"                                                , SKINCLASS_RARE          , SKINSEX_MALE      }, // 656    | pearsmwint3
+    {78    , 0               , 0           , "Бомж Клаус"                                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 657    | pearsmwint4
+    {93    , 0               , 0           , "Женщина в спец. костюме"                                       , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }, // 658    | pearsfwp1
+    {265   , 0               , 0           , "Полицейский зимняя"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 659    | pearsmwp1
+    {280   , 0               , 0           , "Полицейский зимняя"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 660    | pearsmwp2
+    {281   , 0               , 0           , "Полицейский в кепке зимняя"                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 661    | pearsmwp3
+    {280   , 0               , 0           , "Полицейский в шапке зимняя"                                    , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 662    | pearsmwp4
+    {266   , 0               , 0           , "Полицейский зимняя"                                            , SKINCLASS_SYSTEM        , SKINSEX_MALE      }, // 663    | pearsmwp5
+    {12    , 0               , 0           , "Девушка в розовых рюшах"                                       , SKINCLASS_SYSTEM        , SKINSEX_FEMALE    }  // 664    | pearswdjp
+};
+
+#define MAX_MODELS_SKIN (sizeof(SkinPearsInfo))
+
+forward SKINCLASSENUM:GetRandomSkinClass(CASE_TYPE_ENUM:caseType);
+
+stock bool:IsValidSkinId(skinid)
+{
+    return skinid >= 0 && skinid < sizeof(SkinPearsInfo) && SkinPearsInfo[skinid][eSkinClass] != SKINCLASS_INVALID;
+}
+
+stock bool:IsCustomSkin(skinid)
+{
+    return IsValidSkinId(skinid) && skinid > 311;
+}
+
+stock GetSkinPlaceholderId(skinid)
+{
+	if (!IsValidSkinId(skinid)) return 0;
+	return SkinPearsInfo[skinid][eSampSkinID];
+}
+
+stock GetSkinDefaultPrice(skinid)
+{
+    if (!IsValidSkinId(skinid)) return 0;
+    return max(0, SkinPearsInfo[skinid][eSkinPrice]);
+}
+
+stock GetSkinDefaultGoldPrice(skinid)
+{
+    if (!IsValidSkinId(skinid)) return 0;
+    return max(0, SkinPearsInfo[skinid][eSkinGoldPrice]);
+}
+
+stock GetSkinName(skinid)
+{
+	new result[MAX_SKIN_NAME];
+	result[0] = '\0';
+    if (IsValidSkinId(skinid))
+	{
+		strcopy(result, SkinPearsInfo[skinid][eSkinName]);
+	}
+    return result;
+}
+
+stock SKINSEXENUM:GetSkinSex_New(skinid)
+{
+    if (!IsValidSkinId(skinid)) return SKINSEX_UNKNOWN;
+    return SkinPearsInfo[skinid][eSkinSex];
+}
+
+stock GetSkinSex(skinid)
+{
+    return _:GetSkinSex_New(skinid);
+}
+
+stock SKINCLASSENUM:GetSkinClass(skinid)
+{
+    if (!IsValidSkinId(skinid)) return SKINCLASS_INVALID;
+    return SkinPearsInfo[skinid][eSkinClass];
+}
+
+stock bool:IsSkinMale(skinid)
+{
+    return GetSkinSex(skinid) == SKINSEX_MALE;
+}
+
+stock bool:IsSkinFemale(skinid)
+{
+    return GetSkinSex(skinid) == SKINSEX_FEMALE;
+}
+
+stock bool:IsSpecialSystemSkin(skinid)
+{
+    if (!IsValidSkinId(skinid)) return false;
+    // Скромник (SCP)
+	if (skinid == 505) return true;
+	// Горилла, Маньяк, Овца, Корова, Крик, Пеннивайз
+	if (skinid >= 506 && skinid <= 511) return true;
+	// Хеллоуин
+	if (skinid >= 594 && skinid <= 596) return true;
+	// Зомби
+	if (skinid >= 512 && skinid <= 520) return true;
+	// Раскопка могил и гробница
+	if (skinid >= 602 && skinid <= 604) return true;
+	// Звери
+	if (skinid >= 605 && skinid <= 609) return true;
+	// Домашние животные + Санта
+	if (skinid >= 626 && skinid <= 649) return true;
+	return false;
+}
+
+stock bool:CanSkinBeAvailableForSaleInShops(skinid)
+{
+	if (!IsValidSkinId(skinid)) return false;
+    if (GetSkinDefaultPrice(skinid) <= 0) return false;
+    if (IsSpecialSystemSkin(skinid)) return false;
+    switch (GetSkinClass(skinid))
+    {
+    case SKINCLASS_COMMON, SKINCLASS_UNCOMMON:
+        return true;
+    }
+    return false;
+}
+
+stock bool:CanSkinBeAvailableForSaleForGoldInShops(skinid)
+{
+	if (!IsValidSkinId(skinid)) return false;
+    if (GetSkinDefaultGoldPrice(skinid) <= 0) return false;
+    if (IsSpecialSystemSkin(skinid)) return false;
+    switch (GetSkinClass(skinid))
+    {
+    case SKINCLASS_COMMON, SKINCLASS_UNCOMMON, SKINCLASS_RARE:
+        return true;
+    }
+    return false;
+}
 
 stock AddCustomSkins()
 {
-	// AddCharSyncModel(Оригинальный, Новый) ID в сборке с 15500 до 15999
-	// Plus 15188
-
-	// В целом добавить ещё скинов
-	AddCharSyncModel(294, 312); // 15500, pearspedcu (Значит не 312, а 15500) male
-	AddCharSyncModel(60, 313); // pearspeda (Значит не 313, а 15501) male
-	AddCharSyncModel(233, 314); // pearspedb (Значит не 314, а 15502)
-	AddCharSyncModel(19, 315); // 15503 pearspedc male
-	AddCharSyncModel(59, 316); // 15504 pearspedd male
-	AddCharSyncModel(93, 317); // 15505, pearspede
-	AddCharSyncModel(19, 318); // 15506, pearspedf male
-	AddCharSyncModel(59, 319); // 15507, pearspedg male
-	AddCharSyncModel(125, 320); // 15508, pearspedh male
-	AddCharSyncModel(23, 321); // 15509, pearspedi male
-	AddCharSyncModel(21, 322); // 15510, pearspedj male
-	AddCharSyncModel(216, 323); // 15511, pearspedk
-	AddCharSyncModel(55, 324); // 15512, pearspedl
-	AddCharSyncModel(93, 325); // 15513, pearspedm
-	AddCharSyncModel(7, 326); // 15514, pearspedn male
-	AddCharSyncModel(125, 327); // 15515, pearspedo male
-	AddCharSyncModel(1, 328); // 15516, pearspedp male
-	AddCharSyncModel(248, 329); // 15517, pearspedq male
-	AddCharSyncModel(29, 330); // 15518, pearspedr male
-	AddCharSyncModel(121, 331); // 15519, pearspeds male
-	AddCharSyncModel(125, 332); // 15520, pearspedt male
-	AddCharSyncModel(240, 333); // 15521, pearspedu male
-	AddCharSyncModel(223, 334); // 15522, pearspedv male
-	AddCharSyncModel(28, 335); // 15523, pearspedw male
-	AddCharSyncModel(25, 336); // 15524, pearspedx male
-	AddCharSyncModel(150, 337); // 15525, pearspedy
-	AddCharSyncModel(237, 338); // 15526, pearspedz
-	AddCharSyncModel(131, 339); // 15527, pearspedaa
-	AddCharSyncModel(12, 340); // 15528, pearspedab
-	AddCharSyncModel(40, 341); // 15529, pearspedac
-	AddCharSyncModel(178, 342); // 15530, pearspedad
-	AddCharSyncModel(233, 343); // 15531, pearspedae
-	AddCharSyncModel(93, 344); // 15532, pearspedaf
-	AddCharSyncModel(157, 345); // 15533, pearspedag 
-	AddCharSyncModel(223, 346); // 15534, pearspedah
-	AddCharSyncModel(233, 347); // 15535, pearspedai
-	AddCharSyncModel(233, 348); // 15536, pearspedaj
-	AddCharSyncModel(233, 349); // 15537, pearspedak
-	AddCharSyncModel(93, 350); // 15538, pearspedal
-	AddCharSyncModel(233, 351); // 15539, pearspedam
-	AddCharSyncModel(223, 352); // 15540, pearspedan male
-	AddCharSyncModel(240, 353); // 15541, pearspedao male
-	AddCharSyncModel(126, 354); // 15542, pearspedap male
-	AddCharSyncModel(93, 355); // 15543, pearspedaq
-	AddCharSyncModel(240, 356); // 15544, pearspedar male
-	AddCharSyncModel(93, 357); // 15545, pearspedas
-	AddCharSyncModel(93, 358); // 15546, pearspedat
-	AddCharSyncModel(91, 359); // 15547, pearspedau
-	AddCharSyncModel(233, 360); // 15548, pearspedav
-	AddCharSyncModel(216, 361); // 15549, pearspedaw
-	AddCharSyncModel(216, 362); // 15550, pearspedax
-	AddCharSyncModel(93, 363); // 15551, pearspeday
-	AddCharSyncModel(240, 364); // 15552, pearspedaz male
-	AddCharSyncModel(180, 365); // 15553, pearspedba male
-	AddCharSyncModel(226, 366); // 15554, pearspedbb
-	AddCharSyncModel(60, 367); // 15555, pearspedbc male
-	AddCharSyncModel(257, 368); // 15556, pearspedbd
-	AddCharSyncModel(257, 369); // 15557, pearspedbe
-	AddCharSyncModel(41, 370); // 15558, pearspedbf
-	AddCharSyncModel(40, 371); // 15559, pearspedbg
-	AddCharSyncModel(233, 372); // 15560, pearspedbh
-	AddCharSyncModel(233, 373); // 15561, pearspedbi
-	AddCharSyncModel(93, 374); // 15562, pearspedbj
-	AddCharSyncModel(233, 375); // 15563, pearspedbk
-	AddCharSyncModel(98, 376); // 15564, pearspedbl male
-	AddCharSyncModel(98, 377); // 15565, pearspedbm male
-	AddCharSyncModel(98, 378); // 15566, pearspedbn male
-	AddCharSyncModel(98, 379); // 15567, pearspedbo male
-	AddCharSyncModel(112, 380); // 15568, pearspedbp male
-	AddCharSyncModel(127, 381); // 15569, pearspedbq male
-	AddCharSyncModel(127, 382); // 15570, pearspedbr male
-	AddCharSyncModel(240, 383); // 15571, pearspedbs male
-	AddCharSyncModel(240, 384); // 15572, pearspedbt male
-	AddCharSyncModel(240, 385); // 15573, pearspedbu male
-	AddCharSyncModel(45, 386); // 15574, pearspedbv male
-	AddCharSyncModel(91, 387); // 15575, pearspedbw
-	AddCharSyncModel(98, 388); // 15576, pearspedbx male
-	AddCharSyncModel(216, 389); // 15577, pearspedby
-	AddCharSyncModel(25, 390); // 15578, pearspedbz male
-	AddCharSyncModel(120, 391); // 15579, pearspedca male
-	AddCharSyncModel(179, 392); // 15580, pearspedcb male
-	AddCharSyncModel(233, 393); // 15581, pearspedcc
-	AddCharSyncModel(12, 394); // 15582, pearspedcd
-	AddCharSyncModel(40, 395); // 15583, pearspedce
-	AddCharSyncModel(85, 396); // 15584, pearspedcf
-	AddCharSyncModel(233, 397); // 15585, pearspedcg
-	AddCharSyncModel(233, 398); // 15586, pearspedct
-	AddCharSyncModel(233, 399); // 15587, pearspedch
-	AddCharSyncModel(12, 400); // 15588, pearspedci
-	AddCharSyncModel(217, 401); // 15589, pearspedcj male
-	AddCharSyncModel(12, 402); // 15590, pearspedck
-	AddCharSyncModel(59, 403); // 15591, pearspedcl male
-	AddCharSyncModel(93, 404); // 15592, pearspedcm
-	AddCharSyncModel(98, 405); // 15593, pearspedcn male
-	AddCharSyncModel(143, 406); // 15594, pearspedco male
-	AddCharSyncModel(93, 407); // 15595, pearspedcp
-	AddCharSyncModel(91, 408); // 15596, pearspedcq
-	AddCharSyncModel(40, 409); // 15597, pearspedcr
-	AddCharSyncModel(46, 410); // 15598, pearspedcs male
-	AddCharSyncModel(40, 411); // 15599, pedaraba
-	AddCharSyncModel(221, 412); // 15600, pedarabb male
-	AddCharSyncModel(142, 413); // 15601, pedarabc male
-	AddCharSyncModel(42, 414); // 15602, prisonmex male
-	AddCharSyncModel(311, 415); // 15603, pearscop male
-	AddCharSyncModel(287, 416); // 15604, pearsarmy1 male
-	AddCharSyncModel(287, 417); // 15605, pearsarmy2 male
-	AddCharSyncModel(5, 418); // 15606, pearsswat1 male (жирный араб)
-	AddCharSyncModel(285, 419); // 15607, pearsswat2 male
-	AddCharSyncModel(300, 420); // 15608, pearscop2 male
-	AddCharSyncModel(301, 421); // 15609, pearsswat4 male
-	AddCharSyncModel(300, 422); // 15610, pearsswat5 male
-	AddCharSyncModel(300, 423); // 15611, pearscop3 male
-	AddCharSyncModel(305, 424); // 15612, pearscop4 male
-	AddCharSyncModel(303, 425); // 15613, pearscop5 male
-	AddCharSyncModel(142, 426); // 15614, pearspedcv male
-	AddCharSyncModel(221, 427); // 15615, pearspedcw male
-	AddCharSyncModel(277, 428); // 15616, astronaut all
-	AddCharSyncModel(6, 429); // 15617, jason male
-	AddCharSyncModel(21, 430); // 15618, prisonblack male
-	AddCharSyncModel(141, 431); // 15619, pearspedcx female
-	AddCharSyncModel(144, 432); // 15620, pearspedcy male
-	AddCharSyncModel(287, 433); // 15621, pearspedcz male
-	AddCharSyncModel(146, 434); // 15622, pearspedda male
-	AddCharSyncModel(42, 435); // 15623, pearspeddb male
-	AddCharSyncModel(287, 436); // 15624, pearspeddc male
-	AddCharSyncModel(307, 437); // 15625, pearspeddd female
-	AddCharSyncModel(310, 438); // 15626, pearspedde male
-	AddCharSyncModel(306, 439); // 15627, pearscop6 female
-	AddCharSyncModel(281, 440); // 15628, pearspeddf male
-	AddCharSyncModel(280, 441); // 15629, pearspeddg male
-	AddCharSyncModel(265, 442); // 15630, pearspeddh male
-	AddCharSyncModel(310, 443); // 15631, pearspeddi male
-	AddCharSyncModel(306, 444); // 15632, pearspeddj female
-	AddCharSyncModel(306, 445); // 15633, pearspeddk female
-	AddCharSyncModel(282, 446); // 15634, pearspeddl male
-	AddCharSyncModel(282, 447); // 15635, pearspeddm male
-	AddCharSyncModel(282, 448); // 15636, pearspeddn male
-	AddCharSyncModel(282, 449); // 15637, pearspeddo male
-	AddCharSyncModel(282, 450); // 15638, pearspeddp male
-	AddCharSyncModel(282, 451); // 15639, pearspeddq male
-	AddCharSyncModel(306, 452); // 15640, pearspeddr female
-	AddCharSyncModel(121, 453); // 15641, pearspedds male
-    AddCharSyncModel(165, 454); // 15642, pearspeddt male
-    AddCharSyncModel(286, 455); // 15643, pearspeddu male
-    AddCharSyncModel(286, 456); // 15644, pearspeddv male
-    AddCharSyncModel(295, 457); // 15645, pearspeddw male
-    AddCharSyncModel(286, 458); // 15646, pearspeddx male
-    AddCharSyncModel(286, 459); // 15647, pearspeddy male
-    AddCharSyncModel(285, 460); // 15648, pearspeddz all
-    AddCharSyncModel(285, 461); // 15649, pearspedea all
-    AddCharSyncModel(165, 462); // 15650, pearspedeb male
-    AddCharSyncModel(286, 463); // 15651, pearspedec male
-    AddCharSyncModel(286, 464); // 15652, pearspeded male
-    AddCharSyncModel(150, 465); // 15653, pearspedee female
-    AddCharSyncModel(286, 466); // 15654, pearspedef male
-	AddCharSyncModel(29, 467); // 15655, zverworks male
-	AddCharSyncModel(121, 468); // 15656, pearspedeg male Yakuza
-	AddCharSyncModel(118, 469); // 15657, pearspedeh male Yakuza
-	AddCharSyncModel(123, 470); // 15658, pearspedei male Yakuza
-	AddCharSyncModel(118, 471); // 15659, pearspedej male Yakuza
-	AddCharSyncModel(119, 472); // 15660, pearspedek male RM
-	AddCharSyncModel(66, 473); // 15661, pearspedel male
-	AddCharSyncModel(60, 474); // 15662, pearspedem male RM
-	AddCharSyncModel(113, 475); // 15663, pearspeden male RM
-	AddCharSyncModel(68, 476); // 15664, pearspedeo male
-	AddCharSyncModel(68, 477); // 15665, pearspedep male
-	AddCharSyncModel(113, 478); // 15666, pearspedeq male
-	AddCharSyncModel(66, 479); // 15667, pearspeder male
-	AddCharSyncModel(111, 480); // 15668, pearspedes male RM
-	AddCharSyncModel(247, 481); // 15669, pearspedet male
-	AddCharSyncModel(46, 482); // 15670, pearspedeu male RM
-	AddCharSyncModel(223, 483); // 15671, pearspedev male
-	AddCharSyncModel(111, 484); // 15672, pearspedew male RM
-	AddCharSyncModel(46, 485); // 15673, pearspedex male RM
-	AddCharSyncModel(60, 486); // 15674, pearspedey male
-	AddCharSyncModel(29, 487); // 15675, pearspedfz male
-	AddCharSyncModel(117, 488); // 15676, pearspedfa male Yakuza
-	AddCharSyncModel(121, 489); // 15677, pearspedfb male
-	AddCharSyncModel(272, 490); // 15678, pearspedfc male RM
-	AddCharSyncModel(126, 491); // 15679, pearspedfd male RM
-	AddCharSyncModel(125, 492); // 15680, pearspedfe male
-	AddCharSyncModel(294, 493); // 15681, pearspedff male
-	AddCharSyncModel(285, 494); // 15682, pearsvvs male
-	AddCharSyncModel(70, 495); // 15683, pearsdoctor male
-	AddCharSyncModel(308, 496); // 15684, pearsmedg1 famale
-	AddCharSyncModel(308, 497); // 15685, pearsmedg2 famale
-	AddCharSyncModel(308, 498); // 15686, pearsmedg3 famale
-	AddCharSyncModel(308, 499); // 15687, pearsmedg4 famale
-	AddCharSyncModel(275, 500); // 15688, pearsmedm1 male
-	AddCharSyncModel(276, 501); // 15689, pearsmedm2 male
-	AddCharSyncModel(275, 502); // 15690, pearsmedm3 male
-	AddCharSyncModel(276, 503); // 15691, pearsmedm4 male
-	AddCharSyncModel(274, 504); // 15692, pearsmedm5 male
-	AddCharSyncModel(146, 505); // 15693, pearsebalai male
-	AddCharSyncModel(264, 506); // 15694, pearsvampir male
-	AddCharSyncModel(168, 507); // 15695, pearsbenzop male
-	AddCharSyncModel(130, 508); // 15696, pearsovechka -
-	AddCharSyncModel(31, 509); //  15697, pearskorova -
-	AddCharSyncModel(153, 510); //  15698, pearsscream -
-	AddCharSyncModel(264, 511); //  15699, pearsclown -
-	AddCharSyncModel(82, 512); //  15700, pearszombie1 male
-	AddCharSyncModel(83, 513); //  15701, pearszombie2 male
-	AddCharSyncModel(84, 514); //  15702, pearszombie3 male
-	AddCharSyncModel(82, 515); //  15703, pearszombie4 male
-	AddCharSyncModel(83, 516); //  15704, pearszombie5 male
-	AddCharSyncModel(75, 517); //  15705, pearszombie6 famale
-	AddCharSyncModel(77, 518); //  15706, pearszombie7 famale
-	AddCharSyncModel(82, 519); //  15707, pearszombie8 male
-	AddCharSyncModel(83, 520); //  15708, pearszombie9 male
-	AddCharSyncModel(59, 521); // pearskortu
-	AddCharSyncModel(60, 522); // pearsmajodin
-	AddCharSyncModel(98, 523); // pearsmajodva
-	AddCharSyncModel(23, 524); // pearsmajotri
-	AddCharSyncModel(248, 525); // pearsjil
-	AddCharSyncModel(247, 526); // pearsjildva
-	AddCharSyncModel(187, 527); // pearskosb
-	AddCharSyncModel(91, 528); // pearsmegno woman
-	AddCharSyncModel(19, 529); // pearsgheze
-	AddCharSyncModel(93, 530); // pearswjns woman
-	AddCharSyncModel(184, 531); // pearsdedsp
-	AddCharSyncModel(223, 532); // pearssuitold
-	AddCharSyncModel(186, 533); // pearssuoldv
-	AddCharSyncModel(208, 534); // pearsdetsu
-	AddCharSyncModel(66, 535); // pearskurng
-	AddCharSyncModel(80, 536); // pearsufcng
-	AddCharSyncModel(109, 537); // pearsvago vagos 
-	AddCharSyncModel(110, 538); // pearsvagtr vagos
-	AddCharSyncModel(106, 539); // pearsgroveo Grove
-	AddCharSyncModel(107, 540); // pearsgrovet Grove
-	AddCharSyncModel(195, 541); // pearsgroveg grove woman
-	AddCharSyncModel(102, 542); // pearsballo ballas
-	AddCharSyncModel(102, 543); // pearsballt ballas
-	AddCharSyncModel(13, 544); // pearsballg ballas woman
-	AddCharSyncModel(104, 545); // pearsballtr ballas 
-	AddCharSyncModel(91, 546); // pearsbecky woman
-	AddCharSyncModel(42, 547); // pearsorm 
-	AddCharSyncModel(42, 548); // pearsorgm
-	AddCharSyncModel(258, 549); // pearsamkr
-	AddCharSyncModel(30, 550); // pearsrcep
-	AddCharSyncModel(56, 551); // pearsgigre woman
-	AddCharSyncModel(259, 552); // pearsolbat
-	AddCharSyncModel(258, 553); // pearssimsui
-	AddCharSyncModel(259, 554); // pearssimpol
-	AddCharSyncModel(252, 555); // pearssimnud
-	AddCharSyncModel(217, 556); // pearsardbl
-	AddCharSyncModel(171, 557); // pearsardsui
-	AddCharSyncModel(208, 558); // pearsardsuib
-	AddCharSyncModel(240, 559); // pearsardjil
-	AddCharSyncModel(46, 560); // pearsardjen
-	AddCharSyncModel(223, 561); // pearsardjens
-	AddCharSyncModel(211, 562); // pearsgibl woman
-	AddCharSyncModel(216, 563); // pearsgipink woman 
-	AddCharSyncModel(247, 564); // pearsgjo
-	AddCharSyncModel(248, 565); // pearsgjt
-	AddCharSyncModel(254, 566); // pearsgjtr
-	AddCharSyncModel(100, 567); // pearsgjf
-	AddCharSyncModel(113, 568); // pearsvicbs
-	AddCharSyncModel(111, 569); // pearsvicsrg
-	AddCharSyncModel(125, 570); // pearsvicrm
-	AddCharSyncModel(144, 571); // pearsterro
-	AddCharSyncModel(143, 572); // pearsterrt
-	AddCharSyncModel(176, 573); // pearsterrtr
-	AddCharSyncModel(177, 574); // pearsterrf
-	AddCharSyncModel(177, 575); // pearsterrfm
-	AddCharSyncModel(183, 576); // pearsterrfi
-	AddCharSyncModel(241, 577); // pearsterrs
-	AddCharSyncModel(273, 578); // pearsmono
-	AddCharSyncModel(184, 579); // pearsmont 
-	AddCharSyncModel(119, 580); // pearsmontr
-	AddCharSyncModel(47, 581); // pearsmonf
-	AddCharSyncModel(45, 582); // pearsnudta
-	AddCharSyncModel(300, 583); // pearsguo
-	AddCharSyncModel(300, 584); // pearsgut
-	AddCharSyncModel(301, 585); // pearsgutr
-	AddCharSyncModel(178, 586); // fpearshall1
-	AddCharSyncModel(178, 587); // fpearshall2
-	AddCharSyncModel(152, 588); // fpearshall3
-	AddCharSyncModel(90, 589); // fpearshall4
-	AddCharSyncModel(195, 590); // fpearshall5
-	AddCharSyncModel(90, 591); // fpearshall6
-	AddCharSyncModel(137, 592); // mpearshall1
-	AddCharSyncModel(252, 593); // mpearshall2
-	AddCharSyncModel(264, 594); // mpearshall3
-	AddCharSyncModel(258, 595); // mpearshall4
-	AddCharSyncModel(222, 596); // mpearshall5
-	AddCharSyncModel(212, 597); // mpearshall6
-	AddCharSyncModel(211, 598); // pearsranfem1
-	AddCharSyncModel(214, 599); // pearsranfem2
-	AddCharSyncModel(101, 600); // pearsranma1
-	AddCharSyncModel(171, 601); // pearsranma2
-	AddCharSyncModel(167, 602); // pearsanubis
-	AddCharSyncModel(1, 603); // pearsbfost
-	AddCharSyncModel(7, 604); // pearsbmori
-	AddCharSyncModel(162, 605); // pearsbear
-	AddCharSyncModel(157, 606); // pearsdeer
-	AddCharSyncModel(157, 607); // pearsfox
-	AddCharSyncModel(157, 608); // pearsrabbit
-	AddCharSyncModel(162, 609); // pearswolf
-	AddCharSyncModel(145, 610); // pearsfhaz
-	AddCharSyncModel(146, 611); // pearsmhaz1
-	AddCharSyncModel(144, 612); // pearsmhaz2
-	AddCharSyncModel(146, 613); // pearsmhaz3
-	//
-	AddCharSyncModel(30, 614); // pearshaizenberg
-	AddCharSyncModel(60, 615); // pearskitaec
-	AddCharSyncModel(111, 616); // pearsruski1
-	AddCharSyncModel(25, 617); // pearswinneg
-	AddCharSyncModel(191, 618); // pearswarm1
-	AddCharSyncModel(287, 619); // pearswinarm1
-	AddCharSyncModel(287, 620); // pearswinarm2
-	AddCharSyncModel(191, 621); // pearswinarw1
-	AddCharSyncModel(216, 622); // pearswinw1
-	AddCharSyncModel(150, 623); // pearsdocw1
-	AddCharSyncModel(193, 624); // pearswinw2
-	AddCharSyncModel(179, 625); // pearswinarm3
-	// КОШКИ
-	AddCharSyncModel(152, 626); //  pearscat1,
-	AddCharSyncModel(152, 627); //  pearscat2,
-	AddCharSyncModel(152, 628); //  pearscat3,
-	AddCharSyncModel(152, 629); //  pearscat4,
-	AddCharSyncModel(152, 630); //  pearscat5,
-	AddCharSyncModel(152, 631); //  pearscat6,
-	// СОБАКИ
-	AddCharSyncModel(153, 632); // pearsdog1,
-	AddCharSyncModel(153, 633); // pearsdog2,
-	AddCharSyncModel(153, 634); // pearsdog3,
-	AddCharSyncModel(153, 635); // pearsdog4,
-	AddCharSyncModel(153, 636); // pearsdog5,
-	AddCharSyncModel(153, 637); // pearsdog6,
-	AddCharSyncModel(153, 638); // pearsdog7,
-	AddCharSyncModel(153, 639); // pearsdog8,
-	AddCharSyncModel(153, 640); // pearsdog9,
-	AddCharSyncModel(153, 641); // pearsdog10
-	AddCharSyncModel(153, 642); // pearsdog11
-	AddCharSyncModel(153, 643); // pearsdog12
-	AddCharSyncModel(153, 644); // pearsdog13
-	AddCharSyncModel(153, 645); // pearsdog14
-	AddCharSyncModel(153, 646); // pearsdog15
-	AddCharSyncModel(153, 647); // pearsdog16
-	AddCharSyncModel(153, 648); // pearsdog17
-	//Зимние скины
-	AddCharSyncModel(1, 649); // pearssanta
-	AddCharSyncModel(40, 650); // pearsfwint1 
-	AddCharSyncModel(55, 651); // pearsfwint2 
-	AddCharSyncModel(56, 652); // pearsfwint3 
-	AddCharSyncModel(55, 653); // pearsfwint4 
-	AddCharSyncModel(60, 654); // pearsmwint1 
-	AddCharSyncModel(25, 655); // pearsmwint2 
-	AddCharSyncModel(46, 656); // pearsmwint3 
-	AddCharSyncModel(78, 657); // pearsmwint4 
-	AddCharSyncModel(93, 658); // pearsfwp1   
-	AddCharSyncModel(265, 659); // pearsmwp1   
-	AddCharSyncModel(280, 660); // pearsmwp2   
-	AddCharSyncModel(281, 661); // pearsmwp3   
-	AddCharSyncModel(280, 662); // pearsmwp4   
-	AddCharSyncModel(266, 663); // pearsmwp5   
-    return 1;
-}
-
-new skinGoldCustom[] = 
-{
-    0, // 0
-    0, // 1
-    0, // 2
-    0, // 3
-    0, // 4
-    0, // 5
-    0, // 6
-    0, // 7
-    0, // 8
-    0, // 9
-    0, // 10
-    0, // 11
-    0, // 12
-    0, // 13
-    0, // 14
-    0, // 15
-    0, // 16
-    0, // 17
-    0, // 18
-    0, // 19
-    0, // 20
-    0, // 21
-    0, // 22
-    0, // 23
-    0, // 24
-    0, // 25
-    0, // 26
-    0, // 27
-    0, // 28
-    0, // 29
-    0, // 30
-    0, // 31
-    0, // 32
-    0, // 33
-    0, // 34
-    0, // 35
-    0, // 36
-    0, // 37
-    0, // 38
-    0, // 39
-    0, // 40
-    0, // 41
-    0, // 42
-    0, // 43
-    0, // 44
-    0, // 45
-    0, // 46
-    0, // 47
-    0, // 48
-    0, // 49
-    0, // 50
-    0, // 51
-    0, // 52
-    0, // 53
-    0, // 54
-    0, // 55
-    0, // 56
-    0, // 57
-    0, // 58
-    0, // 59
-    0, // 60
-    0, // 61
-    0, // 62
-    0, // 63
-    0, // 64
-    0, // 65
-    0, // 66
-    0, // 67
-    0, // 68
-    0, // 69
-    0, // 70
-    0, // 71
-    0, // 72
-    0, // 73
-    0, // 74
-    0, // 75
-    0, // 76
-    0, // 77
-    0, // 78
-    0, // 79
-    0, // 80
-    0, // 81
-    0, // 82
-    0, // 83
-    0, // 84
-    0, // 85
-    0, // 86
-    0, // 87
-    0, // 88
-    0, // 89
-    0, // 90
-    0, // 91
-    0, // 92
-    0, // 93
-    0, // 94
-    0, // 95
-    0, // 96
-    0, // 97
-    0, // 98
-    0, // 99
-    0, // 100
-    0, // 101
-    0, // 102
-    0, // 103
-    0, // 104
-    0, // 105
-    0, // 106
-    0, // 107
-    0, // 108
-    0, // 109
-    0, // 110
-    0, // 111
-    0, // 112
-    0, // 113
-    0, // 114
-    0, // 115
-    0, // 116
-    0, // 117
-    0, // 118
-    0, // 119
-    0, // 120
-    0, // 121
-    0, // 122
-    0, // 123
-    0, // 124
-    0, // 125
-    0, // 126
-    0, // 127
-    0, // 128
-    0, // 129
-    0, // 130
-    0, // 131
-    0, // 132
-    0, // 133
-    0, // 134
-    0, // 135
-    0, // 136
-    0, // 137
-    0, // 138
-    0, // 139
-    0, // 140
-    0, // 141
-    0, // 142
-    0, // 143
-    0, // 144
-    0, // 145
-    0, // 146
-    0, // 147
-    0, // 148
-    0, // 149
-    0, // 150
-    0, // 151
-    0, // 152
-    0, // 153
-    0, // 154
-    0, // 155
-    0, // 156
-    0, // 157
-    0, // 158
-    0, // 159
-    0, // 160
-    0, // 161
-    0, // 162
-    0, // 163
-    0, // 164
-    0, // 165
-    0, // 166
-    0, // 167
-    0, // 168
-    0, // 169
-    0, // 170
-    0, // 171
-    0, // 172
-    0, // 173
-    0, // 174
-    0, // 175
-    0, // 176
-    0, // 177
-    0, // 178
-    0, // 179
-    0, // 180
-    0, // 181
-    0, // 182
-    0, // 183
-    0, // 184
-    0, // 185
-    0, // 186
-    0, // 187
-    0, // 188
-    0, // 189
-    0, // 190
-    0, // 191
-    0, // 192
-	0, // 193
-	0, // 194
-	0, // 195
-	0, // 196
-	0, // 197
-	0, // 198
-	0, // 199
-	0, // 200
-    0, // 201
-    0, // 202
-    0, // 203
-    0, // 204
-    0, // 205
-    0, // 206
-    0, // 207
-    0, // 208
-    0, // 209
-    0, // 210
-    0, // 211
-    0, // 212
-    0, // 213
-    0, // 214
-    0, // 215
-    0, // 216
-    0, // 217
-    0, // 218
-    0, // 219
-    0, // 220
-    0, // 221
-    0, // 222
-    0, // 223
-    0, // 224
-    0, // 225
-    0, // 226
-    0, // 227
-    0, // 228
-    0, // 229
-    0, // 230
-    0, // 231
-    0, // 232
-    0, // 233
-    0, // 234
-    0, // 235
-    0, // 236
-    0, // 237
-    0, // 238
-    0, // 239
-    0, // 240
-    0, // 241
-    0, // 242
-    0, // 243
-    0, // 244
-    0, // 245
-    0, // 246
-    0, // 247
-    0, // 248
-    0, // 249
-    0, // 250
-    0, // 251
-    0, // 252
-    0, // 253
-    0, // 254
-    0, // 255
-    0, // 256
-    0, // 257
-    0, // 258
-    0, // 259
-    0, // 260
-    0, // 261
-    0, // 262
-    0, // 263
-    0, // 264
-    0, // 265
-    0, // 266
-    0, // 267
-    0, // 268
-    0, // 269
-    0, // 270
-    0, // 271
-    0, // 272
-    0, // 273
-    0, // 274
-    0, // 275
-    0, // 276
-    0, // 277
-    0, // 278
-    0, // 279
-    0, // 280
-    0, // 281
-    0, // 282
-    0, // 283
-    0, // 284
-    0, // 285
-    0, // 286
-    0, // 287
-    0, // 288
-    0, // 289
-    0, // 290
-    0, // 291
-    0, // 292
-    0, // 293
-    0, // 294
-    0, // 295
-    0, // 296
-    0, // 297
-    0, // 298
-    0, // 299
-    0, // 300
-    0, // 301
-    0, // 302
-    0, // 303
-    0, // 304
-    0, // 305
-    0, // 306
-    0, // 307
-    0, // 308
-    0, // 309
-    0, // 310
-    0, // 311
-    0, // 312
-    0, // 313
-    0, // 314
-    0, // 315
-    0, // 316
-    0, // 317
-    0, // 318
-    0, // 319
-    0, // 320
-    0, // 321
-    0, // 322
-    0, // 323
-    0, // 324
-    0, // 325
-    0, // 326
-    0, // 327
-    0, // 328
-    0, // 329
-    0, // 330
-    0, // 331
-    0, // 332
-    0, // 333
-    0, // 334
-    0, // 335
-    0, // 336
-    0, // 337
-    0, // 338
-    0, // 339
-    0, // 340
-    0, // 341
-    0, // 342
-    0, // 343
-    0, // 344
-    0, // 345
-    0, // 346
-    0, // 347
-    0, // 348
-    0, // 349
-    0, // 350
-    0, // 351
-    0, // 352
-    0, // 353
-    0, // 354
-    0, // 355
-    0, // 356
-    0, // 357
-    0, // 358
-    0, // 359
-    0, // 360
-    0, // 361
-    0, // 362
-    0, // 363
-    0, // 364
-    0, // 365
-    0, // 366
-    0, // 367
-    0, // 368
-    0, // 369
-    0, // 370
-    0, // 371
-    0, // 372
-    0, // 373
-    0, // 374
-    0, // 375
-    0, // 376
-    0, // 377
-    0, // 378
-    0, // 379
-    0, // 380
-    0, // 381
-    0, // 382
-    0, // 383
-    0, // 384
-    0, // 385
-    0, // 386
-    0, // 387
-    0, // 388
-    0, // 389
-    0, // 390
-    0, // 391
-    0, // 392
-	0, // 393
-	0, // 394
-	0, // 395
-	0, // 396
-	0, // 397
-	0, // 398
-	0, // 399
-	0, // 400
-    0, // 401
-    0, // 402
-    0, // 403
-    0, // 404
-    0, // 405
-    0, // 406
-    0, // 407
-    0, // 408
-    0, // 409
-    0, // 410
-    0, // 411
-    0, // 412
-    0, // 413
-    0, // 414
-    0, // 415
-    0, // 416
-    0, // 417
-    0, // 418
-    0, // 419
-    0, // 420
-    0, // 421
-    0, // 422
-    0, // 423
-    0, // 424
-    0, // 425
-    0, // 426
-    0, // 427
-    0, // 428
-    0, // 429
-    0, // 430
-    0, // 431
-    0, // 432
-    0, // 433
-    0, // 434
-    0, // 435
-    0, // 436
-    0, // 437
-    0, // 438
-    0, // 439
-    0, // 440
-    0, // 441
-    0, // 442
-    0, // 443
-    0, // 444
-    0, // 445
-    0, // 446
-    0, // 447
-    0, // 448
-    0, // 449
-    0, // 450
-    0, // 451
-    0, // 452
-    0, // 453
-    0, // 454
-    0, // 455
-    0, // 456
-    0, // 457
-    0, // 458
-    0, // 459
-    0, // 460
-    0, // 461
-    0, // 462
-    0, // 463
-    0, // 464
-    0, // 465
-    0, // 466
-    0, // 467
-    0, // 468
-    0, // 469
-    0, // 470
-    0, // 471
-    0, // 472
-    0, // 473
-    0, // 474
-    0, // 475
-    0, // 476
-    0, // 477
-    0, // 478
-    0, // 479
-    0, // 480
-    0, // 481
-    0, // 482
-    0, // 483
-    0, // 484
-    0, // 485
-    0, // 486
-    0, // 487
-    0, // 488
-    0, // 489
-    0, // 490
-    0, // 491
-    0, // 492
-	0, // 493
-	0, // 494
-	0, // 495
-	0, // 496
-	0, // 497
-	0, // 498
-	0, // 499
-	0, // 500
-    0, // 501
-    0, // 502
-    0, // 503
-    0, // 504
-    0, // 505
-    0, // 506
-    0, // 507
-    0, // 508
-    0, // 509
-    0, // 510
-    0, // 511
-    0, // 512
-    0, // 513
-    0, // 514
-    0, // 515
-    0, // 516
-    0, // 517
-    0, // 518
-    0, // 519
-    0, // 520
-    0, // 521
-    0, // 522
-    0, // 523
-    0, // 524
-    0, // 525
-    0, // 526
-    0, // 527
-    0, // 528
-    0, // 529
-    0, // 530
-    0, // 531
-    0, // 532
-    0, // 533
-    0, // 534
-    0, // 535
-    0, // 536
-    0, // 537
-    0, // 538
-    0, // 539
-    0, // 540
-    0, // 541
-    0, // 542
-    0, // 543
-    0, // 544
-    0, // 545
-    0, // 546
-    0, // 547
-    0, // 548
-    0, // 549
-    0, // 550
-    0, // 551
-    0, // 552
-    0, // 553
-    0, // 554
-    0, // 555
-    0, // 556
-    0, // 557
-    0, // 558
-    0, // 559
-    0, // 560
-    0, // 561
-    0, // 562
-    0, // 563
-    0, // 564
-    0, // 565
-    0, // 566
-    0, // 567
-    0, // 568
-    0, // 569
-    0, // 570
-    0, // 571
-    0, // 572
-    0, // 573
-    0, // 574
-    0, // 575
-    0, // 576
-    0, // 577
-    0, // 578
-    0, // 579
-    0, // 580
-    0, // 581
-    0, // 582
-    0, // 583
-    0, // 584
-    0, // 585
-    0, // 586
-    0, // 587
-    0, // 588
-    0, // 589
-    0, // 590
-    0, // 591
-    0, // 592
-    0, // 593
-    0, // 594
-    0, // 595
-    0, // 596
-    0, // 597
-    0, // 598
-    0, // 599
-    0, // 600
-    0, // 601
-    0, // 602
-    0, // 603
-    0, // 604
-    0, // 605
-    0, // 606
-    0, // 607
-    0, // 608
-    0, // 609
-    0, // 610
-    0, // 611
-    0, // 612
-    0, // 613
-    0, // 614
-    0, // 615
-    0, // 616
-    0, // 617
-    0, // 618
-    0, // 619
-    0, // 620
-    0, // 621
-    0, // 622
-    0, // 623
-    0, // 624
-    0, // 625
-    0, // 626
-    0, // 627
-    0, // 628
-    0, // 629
-    0, // 630
-    0, // 631
-    0, // 632
-    0, // 633
-    0, // 634
-    0, // 635
-    0, // 636
-    0, // 637
-    0, // 638
-    0, // 639
-    0, // 640
-    0, // 641
-    0, // 642
-    0, // 643
-    0, // 644
-    0, // 645
-    0, // 646
-    0, // 647
-    0, // 648
-    0, // 649
-    0, // 650
-    0, // 651
-    0, // 652
-    0, // 653
-    0, // 654
-    0, // 655
-    0, // 656
-    0, // 657
-    0, // 658
-    0, // 659
-    0, // 660
-    0, // 661
-    0, // 662
-    0 // 663
-};
-
-stock IsSpecialSystemSkin(skinid)
-{
-	// Скромник (SCP)
-	if (skinid == 505) return 1;
-	// Горилла, Маньяк, Овца, Корова, Крик, Пеннивайз
-	if (skinid >= 506 && skinid <= 511) return 1;
-	// Хеллоуин
-	if (skinid >= 594 && skinid <= 596) return 1;
-	// Зомби
-	if (skinid >= 512 && skinid <= 520) return 1;
-	// Раскопка могил и гробница
-	if (skinid >= 602 && skinid <= 604) return 1;
-	// Звери
-	if (skinid >= 605 && skinid <= 609) return 1;
-	// Домашние животные + Санта
-	if (skinid >= 626 && skinid <= 649) return 1;
-	return 0;
+    for (new i = 0; i < sizeof(SkinPearsInfo); i++)
+    {
+        if (SkinPearsInfo[i][eSampSkinID] == 0) continue;
+        AddCharSyncModel(SkinPearsInfo[i][eSampSkinID], i);
+    }
 }
 
 stock DeleteSpecialSystemSkins(playerid)
@@ -1084,34 +870,23 @@ stock DeleteSpecialSystemSkins(playerid)
 	return 1;
 }
 
-// Получаем пол по скину
-stock GetSkinSex(s)
+stock GetSkinClassName(s)
 {
-	if(s >= 0 && s <= 8 || s >= 14 && s <= 30 || s >= 32 && s <= 37
-	|| s >= 42 && s <= 52 || s >= 57 && s <= 62 || s >= 66 && s <= 68 || s >= 42 && s <= 52 || s >= 70 && s <= 74
-	|| s >= 78 && s <= 84 || s == 86 || s >= 94 && s <= 128 || s >= 132 && s <= 137 || s >= 142 && s <= 144 || s == 146 || s == 147 || s == 149
-	|| s >= 153 && s <= 156 || s >= 158 && s <= 168 || s == 170 || s == 171 || s >= 173 && s <= 177 || s >= 179 && s <= 189 || s == 200
-	|| s >= 202 && s <= 204 || s == 206 || s >= 208 && s <= 210 || s == 212 || s == 213 || s == 217 || s >= 220 && s <= 223 || s >= 227 && s <= 230
- 	|| s >= 234 && s <= 236 || s >= 239 && s <= 242 || s >= 247 && s <= 250 || s >= 252 && s <= 255 || s >= 258 && s <= 262 || s >= 264 && s <= 297
- 	|| s >= 299 && s <= 305 || s >= 310 && s <= 311
-
-	// Кастомные -15188
-	|| s == 312
-	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 336
-	|| s == 352 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
-	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
-	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425 || s == 429
-	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451
-	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 495 || s >= 500 && s <= 507
-	|| s >= 512 && s <= 516 || s >= 519 && s <= 527 || s == 529 || s >= 531 && s <= 540 || s >= 542 && s <= 543
-	|| s == 545 || s >= 547 && s <= 550 || s >= 552 && s <= 561 || s >= 564 && s <= 585 || s >= 592 && s <= 597
-	|| s >= 600 && s <= 602 || s >= 611 && s <= 617 || s >= 619 && s <= 620 || s == 625 || s == 648
-	|| s >= 654 && s <= 657 || s >= 659 && s <= 663) return 1; // 1 - мужской скин
-
-	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461 || s == 508 || s == 509 ||
-	s == 510 || s == 511 || s >= 603 && s <= 609 || s >= 626 && s <= 648) return 0; // Не имеет пола (подходит для мужчин и женщин)
-
- 	else return 2; // Все остальные 2, значит женские
+    new atext[44];
+    switch(SkinPearsInfo[s][eSkinClass])
+    {
+        case SKINCLASS_INVALID: atext = "Инвалид";
+        case SKINCLASS_SYSTEM: atext = "{444444}Системный";
+        case SKINCLASS_COMMON: atext = "{a2a0a0}Обычный";
+        case SKINCLASS_UNCOMMON: atext = "{66ca55}Необычный";
+        case SKINCLASS_RARE: atext = "{6d48e2}Редкий";
+        case SKINCLASS_RESERVED1: atext = "Зарезервированный (1)";
+        case SKINCLASS_RESERVED2: atext = "Зарезервированный (2)";
+        case SKINCLASS_RESERVED3: atext = "Зарезервированный (3)";
+        case SKINCLASS_LEGENDARY: atext = "{d90763}Легендарный";
+        default: atext = "Неизвестный";
+    }
+    return atext;
 }
 
 // Сюда добавляются скины для организаций (Максимально 50 слотов, значит 49 ПОСЛЕДНИЙ)
@@ -1273,7 +1048,7 @@ public ReloadSkin(playerid, g)
 		OrganInfo[g][gSkin][2] = 470, OrganInfo[g][gSkinPrice][2] = 90000, OrganInfo[g][gSkinRank][2] = 5;
 		OrganInfo[g][gSkin][3] = 471, OrganInfo[g][gSkinPrice][3] = 90000, OrganInfo[g][gSkinRank][3] = 6;
 		OrganInfo[g][gSkin][4] = 488, OrganInfo[g][gSkinPrice][4] = 70000, OrganInfo[g][gSkinRank][4] = 6;
-		
+
 		OrganInfo[g][gSkin][5] = 122, OrganInfo[g][gSkinPrice][5] = 0, OrganInfo[g][gSkinRank][5] = 1;
 		OrganInfo[g][gSkin][6] = 123, OrganInfo[g][gSkinPrice][6] = 40000, OrganInfo[g][gSkinRank][6] = 4;
 		OrganInfo[g][gSkin][7] = 203, OrganInfo[g][gSkinPrice][7] = 50000, OrganInfo[g][gSkinRank][7] = 5;

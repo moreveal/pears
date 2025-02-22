@@ -380,6 +380,9 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
     // Урон по союзникам на МП
     if(MPGO[playerid] != 0 && MPGO[damagedid] != 0 && !GameInfo[gamTeamKill] && Pognalinamp && (MPSpawn[playerid] == MPSpawn[damagedid])) return false;
 
+    // Игроки участвуют в Zombie Game
+    if(IsPlayerZombieGame(playerid, damagedid)) return false;
+
     // Защита для новичков
     if(BeginnerDamage(playerid, damagedid)) return false;
 

@@ -249,7 +249,7 @@ cars
 15089, 	fordgt,		fordgt,		car, 		FORDGT,		FORDGT, 	null,	executive,	4, 0, 0, -1, 0.8, 0.8, 0
 15090, 	lambacen, 	lambacen, 	car, 		LAMBACEN,	LAMBACEN, 	null,	executive,	4, 	0,	0,		-1, 0.76, 0.76,		0
 15091, 	mersw124, 	mersw124, 	car, 		MERSW124, 	MERSW124,	null,	richfamily,		10,	0,	0,		-1, 0.69, 0.69,		0
-15092,	mersslsf,	mersslsf,	car, 		MERSSLSF,	MERSSLSF, 	null,	executive, 	10, 	0,	0,		-1, 0.7, 0.7,		0
+15092,	mersslsf,	mersslsf,	car, 		MERSSLSF,	MERSSLSF, 	null,	executive, 	10, 	0,	0,		-1, 0.8, 0.8,		0
 15093,	nisstsx,	nisstsx,	car, 		NISSTSX,	NISSTSX, 	null,	richfamily, 	7, 	0,	0,		-1, 0.68, 0.68,		1
 15094,	porshnit,	porshnit,	car, 		PORSHNIT,	PORSHNIT, 	null,	executive, 	5, 	0,	2ff0,		-1, 0.7, 0.7,		0
 15095, 	shelby, 	shelby, 	car, 		SHELBY, 	SHELBY, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
@@ -402,12 +402,13 @@ cars
 15345,	g636x6,     g636x6,     car,		G636X6,     G636X6,     null,	richfamily,		6,	7,	0,	1, 0.97, 0.97,		0
 15346,	lamurus,    lamurus,    car,		LAMURUS,    LAMURUS,    null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
 15347,	crownkill, 	crownkill, 	car, 		CROWNKILL, 	CROWNKILL, 	null,	ignore, 	    1,	0,	0,	-1, 0.82, 0.82,		-1
-15348, 	countach, 	countach, 	car, 		COUNTACH, 	COUNTACH, 	null,	executive, 	    4, 	0,	0,	-1, 0.7, 0.75,		0
+15348, 	countach, 	countach, 	car, 		COUNTACH, 	COUNTACH, 	null,	executive, 	    4, 	0,	0,	-1, 0.75, 0.80,		0
 15349,	bmwxm,      bmwxm,     car,		    BMWXM,      BMWXM,     null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
 15350,	golf7gti, 	golf7gti, 	car, 		GOLF7GTI,	GOLF7GTI, 	null,	normal, 	    8,	0,	0,	-1, 0.74, 0.74,		0
 15351, 	bugbolid, 	bugbolid, 	car, 		BUGBOLID, 	BUGBOLID, 	null,	executive,  	5, 	0,	0,	-1, 0.81, 0.81,		0
 15352, 	imppriv, 	imppriv, 	car, 		IMPPRIV, 	IMPPRIV, 	null,	richfamily, 	10,	0,	0,	-1, 0.70, 0.70,		0
 15353, 	xpengx2,	xpengx2, 	heli, 		XPENGX2,	XPENGX2,	null,	ignore,		    10,	0,	0,	-1, 0.7, 0.7,		-1
+15354,	gtrold,		gtrold,		car, 		GTROLD,	 	GTROLD, 	null,	richfamily, 	7, 	0,	0,		-1, 0.68, 0.68,		1
 #15499 LAST
 end
 

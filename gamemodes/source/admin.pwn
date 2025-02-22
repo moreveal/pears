@@ -420,7 +420,7 @@ CMD:pricevehup(playerid, const params[])
 	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
 	
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new v = 0; v < MAX_VEHICLE_ALL; v++)
 	{
 		VehGos[v] += params[0];
 		SaveVehiclePrice(v);
@@ -439,7 +439,7 @@ CMD:pricevehdown(playerid, const params[])
 	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
 
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new v = 0; v < MAX_VEHICLE_ALL; v++)
 	{
 		if(VehGos[v]-params[0] >= 1000) VehGos[v] -= params[0], SaveVehiclePrice(v);
 	}
@@ -450,48 +450,48 @@ CMD:pricevehdown(playerid, const params[])
 	AdminLog("pricevehdown", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Понизил Цены");
 	return 1;
 }
-CMD:reloadpricefrisk(playerid)
-{
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	for(new s = 0; s < sizeof(friskName); s++)
-	{
-		friskPrice[s] = friskDefault[s];
-		SavePriceFrisk(s);
-	}
-	new string[120];
-	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все предметы", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
-	AdminLog("reloadpricefrisk", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
-	return 1;
-}
-CMD:reloadpricegun(playerid)
-{
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	for(new g = 1; g < 48; g++)
-	{
-		gunPrice[g] = gunDefault[g];
-		SavePriceGun(g);
-	}
-	new string[120];
-	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на всё оружие", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
-	AdminLog("reloadpricegun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
-	return 1;
-}
-CMD:reloadpriceveh(playerid)
+
+alias:rfriskprice("rfprice")
+CMD:rfriskprice(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new s = 0; s < sizeof(friskName); s++)
 	{
-		if(v <= 211) VehGos[v] = vehSumma[v];
-		else VehGos[v] = vehSummaCustom[v - 212];
-		SaveVehiclePrice(v);
+		friskPrice[s] = friskDefault[s];
+		SavePriceFrisk(s);
+
+		// Сбрасываем ценники в Магазинах: Заправки, Супермаркеты, Оружейный Магазин, Аптеки, Техника
+		ResetPriceThingInBusiness(playerid, s, 0, friskPrice[s], false);
 	}
 	mysql_tquery(pearsq, "COMMIT;");
 
 	new string[120];
-	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все транспортные средства", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
-	AdminLog("reloadveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все предметы", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rfriskprice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
+	return 1;
+}
+
+alias:rgunprice("rgprice")
+CMD:rgunprice(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	mysql_tquery(pearsq, "START TRANSACTION;");
+	for(new g = 1; g < 48; g++)
+	{
+		gunPrice[g] = gunDefault[g];
+		SavePriceGun(g);
+
+		// Сбрасываем ценники в Магазинах: Заправки, Супермаркеты, Оружейный Магазин, Аптеки, Техника
+		ResetPriceThingInBusiness(playerid, g, 1, gunPrice[g], false);
+	}
+	mysql_tquery(pearsq, "COMMIT;");
+
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на всё оружие", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rgunprice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
 
@@ -1642,6 +1642,82 @@ CMD:tag(playerid)
 	return true;
 }
 
+CMD:fullpotreb(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 1) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я не могу это сделать..");
+	PlayerInfo[playerid][pCap] = 100; // Нужда
+	PlayerInfo[playerid][pMechSkill] = 1000; // Бодрость
+	UpdateHunger(playerid, 1000); // Сытость 
+	PlayerInfo[playerid][pInfoload] = 1000; // Гигиена
+	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: Потребности пополнены");
+	return 1;
+}
+
+CMD:fuel(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выполнить это действие");
+	new vehid, string[124];
+	if(!sscanf(params, "i", vehid))
+	{
+		if(!IsValidVehicle(vehid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Неверный ID транспорта");
+		if(VehInfo[vehid][vModel] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этого транспорта не существует");
+	}
+	else
+	{
+		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Полностью заправить авто [ /fuel VehID ]");
+		vehid = GetPlayerVehicleID(playerid);
+	}
+	if(vehid == train || vehid == train + 1 || vehid == train + 2 || vehid == train + 3
+		|| IsAVehicleNPC(vehid)) return ErrorMessage(playerid, "{FF6347}Этот транспорт нельзя заправить");
+	VehInfo[vehid][vGas] = GasMax - VehInfo[vehid][vGelium];
+	format(string, sizeof(string), "[ Мысли ADM ]: %s [ID: %d] заправлен.", GetVehicleName(VehInfo[vehid][vModel]), vehid);
+	new driverplayer = GetVehicleDriver(vehid);
+	if (driverplayer == INVALID_PLAYER_ID)
+	{
+		AdminLog("fuel", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 
+		0, "", "", VehInfo[vehid][vModel], "Моментально заправил авто");
+	}
+	else
+	{
+		AdminLog("fuel", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 
+		PlayerInfo[driverplayer][pID], PlayerInfo[driverplayer][pName], PlayerInfo[driverplayer][pPlaIP], VehInfo[vehid][vModel], "Моментально заправил авто");
+	}
+	SendClientMessage(playerid, COLOR_GREY, string);
+	return 1;
+}
+
+CMD:delrname(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	new nick[24];
+	if(sscanf(params, "s[24]", nick)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить зарезервированный ник-нейм [ /delrname Nickname ]");
+	if(!CheckRP_Nickname(nick)) return ErrorMessage(playerid, "{FF6347}Неверный формат никнейма.");
+	new f_str[144];
+	mysql_format(pearsq, f_str, sizeof(f_str), "SELECT pp_name.acc, pp_igroki.name FROM pp_name LEFT JOIN pp_igroki ON pp_igroki.user_id = pp_name.acc WHERE pp_name.name = '%e'", nick);
+	mysql_tquery(pearsq, f_str, "Call_delrname", "ds", playerid, nick);
+
+	return 1;
+}
+
+function Call_delrname(playerid, const str_name[])
+{
+	new rows, f_str[144];
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		new datad1, datad2[24], str[64];
+		cache_get_value_name_int(0, "acc", datad1);
+		cache_get_value_name(0, "name", datad2);
+		format(str, sizeof(str), "Удалил %s", str_name);
+		mysql_format(pearsq, f_str,sizeof(f_str), "DELETE FROM `pp_name` WHERE `name` = '%e'", str_name);
+		query_empty(pearsq, f_str);
+		AdminLog("delrname", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], datad1, datad2, "", 0, str);
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, " Вы удалили зарезервированный ник %s у игрока %s", str_name, datad2);
+	}
+	else ErrorMessage(playerid, "{FF6347}Указанный никнейм не найден!");
+	return 1;
+}
+
 alias:ahelp("ah")
 CMD:ahelp(playerid)
 {
@@ -1674,7 +1750,7 @@ CMD:ahelp(playerid)
 		format(string,sizeof(string),"\n\n{007a08}Админ 4:"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/armgro /dynamiczz /areav /delareav /gotoareav /gomp /kickmp /offmp /freezeall /unfreezeall /flycam /flyveh /mc /weathergro /gotomap /rgungro"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/gototo /givegungro /vehhp /vehhpgro /setarm /animbot /bottext /botid /bot /delbot /cobject /eobject /dobject /veh /delveh /delvehgro /rvc"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/fixcam /snowall /freeze /unfreeze /fuelgro /map /setskingro /setskinmp /makeparty /fixvehgro /toearth"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/fixcam /snowall /freeze /unfreeze /fuel /fuelgro /map /setskingro /setskinmp /makeparty /fixvehgro /toearth /zombie"), strcat(str,string);
 	}
 	if(PlayerInfo[playerid][pSoska] >= 5)
 	{
@@ -1748,10 +1824,10 @@ stock AHelpList(playerid)
 	if(PlayerInfo[playerid][pSoska] >= 20)
 	{
 		format(string,sizeof(string),"\n\n{FF0000}Специальный Администратор:"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/pricevehup /pricevehdown /takegold /reloadpriceveh /fuelcars /unfuelcars /reloadbiz /reloadbizpos /herfam /setbiz /setdom /setroom"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/takegold /fuelcars /unfuelcars /reloadbiz /reloadbizpos /herfam /setbiz /setdom /setroom"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/setfam /agiverankfam /block /delmail /delgoogle /rslot /asellbiz /abizlvl /bizcity /abizdep /aselldom /dompos /rdomobject /domclass"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/domup /domdown /domupgold /domdowngold /dp /dg /domgoldall /vehgoldall /domfam /famdom /asellroom /delfam /setpas /setmail /setstat /setability /takemoneybank"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/takemoney /givecase /restart /dellave /reloadlog /givedrugs /idinahyi /delaccs /readsit /takechips /rkasino /clearorder /cleargraffity"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/takemoney /givecase /restart /dellave /reloadlog /givedrugs /idinahyi /delaccs /readsit /takechips /rkasino /clearorder /cleargraffity /delrname"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/gthinginfo /gthing /gthingunix /spoil /reloadbizparthner /ikea /settrailer /trailerpos /deletetrailer /setvote /createapartments /mapartments /ecapartments /efapartments /dapartments"), strcat(str,string);
 	}
    	if(PlayerInfo[playerid][pSoska] >= 22)
@@ -1759,7 +1835,7 @@ stock AHelpList(playerid)
 		format(string,sizeof(string),"\n\n{444444}Основатель:"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/reloadchs /relpla /test5 /slapper /veloc /checkas /giveinvest /animer /sm /speech /givemoneybiz /relsliv /ds /protect"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/servtime /ptime /checkgun /givepayday /givegold /unfill /weather /plweather /givemoneybank /givemoney /givechips /antieblo - сдвиг транспорта (античит)"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/players /famrefundcar /deletethingall"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/players /famrefundcar /deletethingall /rskinall /rvehgold /rvehprice /pricevehup /pricevehdown /rfriskprice /rgunprice"), strcat(str,string);
 	}
 	ShowDialog(playerid, 176, DIALOG_STYLE_MSGBOX,"{FFFFFF}Команды {FF9000}Администрации {FFFFFF}2 страница", str, "Назад", "Выход");
 	return 1;
