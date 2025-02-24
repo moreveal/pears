@@ -1,6 +1,7 @@
 
 #include "../gamemodes/source/custom/vehicle_custom.pwn" // pwn для добавления новых тс в мод
 
+#define MAX_VEHICLE_CUSTOM (sizeof(vehNameCustom)) // Количество кастомных тс
 #define MAX_MODELS_VEHICLE 212 + MAX_VEHICLE_CUSTOM // Количество моделей транспорта на сервере
 
 new VehGos[MAX_MODELS_VEHICLE]; // Стоимости транспорта

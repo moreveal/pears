@@ -408,7 +408,10 @@ cars
 15351, 	bugbolid, 	bugbolid, 	car, 		BUGBOLID, 	BUGBOLID, 	null,	executive,  	5, 	0,	0,	-1, 0.81, 0.81,		0
 15352, 	imppriv, 	imppriv, 	car, 		IMPPRIV, 	IMPPRIV, 	null,	richfamily, 	10,	0,	0,	-1, 0.70, 0.70,		0
 15353, 	xpengx2,	xpengx2, 	heli, 		XPENGX2,	XPENGX2,	null,	ignore,		    10,	0,	0,	-1, 0.7, 0.7,		-1
-15354,	gtrold,		gtrold,		car, 		GTROLD,	 	GTROLD, 	null,	richfamily, 	7, 	0,	0,		-1, 0.68, 0.68,		1
+15354,	gtrold,		gtrold,		car, 		GTROLD,	 	GTROLD, 	null,	richfamily, 	7, 	0,	0,	-1, 0.68, 0.68,		1
+15355,	rs6c7,		rs6c7,		car, 		RS6C7, 	    RS6C7, 	    null,	richfamily, 	7, 	0,	0,	-1, 0.78, 0.78,		1
+15356, 	mbw210, 	mbw210, 	car, 		MBW210,	 	MBW210, 	null,	richfamily,	    10, 0,	0,	-1, 0.8, 0.8,		0
+15357, 	lexls500, 	lexls500, 	car, 		LEXLS500,	LEXLS500, 	null,	richfamily,	    10, 0,	0,	-1, 0.83, 0.83,		0
 #15499 LAST
 end
 
