@@ -4,6 +4,7 @@
 #define MAX_PETS 2000 // Общие кол-во питомцев на сервере
 #define MAX_PETS_FEATURES 10 // Сколько максимально способностей может быть у питомца
 #define PRICE_RESURRECT 100000 // Стоимость воскрешения питомца
+#define PRICE_FEATURES_PET 90 // Стоимость предмета питомца
 
 
 new PlayingWithPetProcessTime[MAX_REALPLAYERS];
@@ -684,7 +685,7 @@ stock IsAFarNpcToPlayer(pet, bool:FollowMe = false)
 
 stock IsAPetType(pet)
 {
-    new id = PetInfo[pet][petType];
+    new id = FindPet(PetInfo[pet][petType]);
     new skin = PetsParam[id][2];
     if(skin == 609 || skin >= 632 && skin <= 648) return 1; // Собака
     if(skin >= 626 && skin <= 631) return 2; // Кошки
@@ -731,6 +732,8 @@ stock dialogPetsListZoo(playerid)
 
 stock dialogPetsList(playerid)
 {
+    i_resetveshi(playerid);
+
     if(OnlineInfo[playerid][oPetLoad] == 1) return ErrorMessage(playerid,"{ff6347}В данный момент у вас загружается питомец!");
 	new line[100],lines[4000];
 	format(line,sizeof(line),"{ffcc00}Название \t {444444}ID"), strcat(lines,line);
@@ -770,7 +773,7 @@ stock dialogPetMenagment(playerid,slot)
 	new lines[600], string[60];
 	format(lines,sizeof(lines),"{ff9000}Питомец: %s [ %s ]\t Голод: %d\t HP: %.0f"\
                                 "\n{ff9000}Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/100 ]\t "\
-                                "\n{0088ff}Выгрузить питомца\t \t "\
+                                "\n{ff6347}Выгрузить питомца\t \t "\
                                 "\n{0088ff}Команды питомцу\t \t "\
 								"\n{0088ff}Автоматизация действий %s\t \t ",
                                 PetInfo[pet][petName], GetSkinName(PetsParam[type][2]), PetInfo[pet][petHunger], PetInfo[pet][petHealth],
@@ -787,10 +790,14 @@ stock dialogPetZooShop(playerid)
 	format(lines,sizeof(lines),"\n{0088ff}Воскрестить питомца\t{444444}Воскрешает мертвого питомца\t{44ff99}%d$"\
                                 "\n{0088ff}%s\t{444444}Предмет пополняющий здоровье питомцу\t{44ff99}%d$"\
                                 "\n{0088ff}%s\t{444444}Пополняет голод питомцу (только для кошек)\t{44ff99}%d$"\
-                                "\n{0088ff}%s\t{444444}Пополняет голод питомцу (только для собак)\t{44ff99}%d$",
+                                "\n{0088ff}%s\t{444444}Пополняет голод питомцу (только для собак)\t{44ff99}%d$"\
+                                "\n{0088ff}%s\t{444444}Дает один случайный особый навык\t{ffcc00}%d Gold"\
+                                "\n{0088ff}Кейс с питомцами\t{444444}В кейсе находится питомец, которого нет на улицах\t{ffcc00}%d Gold",
                                 PRICE_RESURRECT, friskName[283],friskPrice[283],
                                 friskName[280],friskPrice[280],
-                                friskName[281],friskPrice[281]);
+                                friskName[281],friskPrice[281],
+                                friskName[282],PRICE_FEATURES_PET,
+                                donatePrice[19]);
 	format(string,sizeof(string),"{ff9000}Зоомагазин");
 	ShowDialog(playerid,PETS_ZOOSHOP,DIALOG_STYLE_TABLIST, string, lines, "Принять", "Отмена");
 	return true;
@@ -804,8 +811,8 @@ stock dialogPetInformation(playerid,pet)
                                 "\n{0088ff}Сила\t \t{cccccc}%d"\
                                 "\n{0088ff}Ловкость\t \t{cccccc}%d"\
                                 "\n{0088ff}Выносливость\t \t{cccccc}%d"\
-								"\n{0088ff}Прокачка команд питомца\t \t "\
-                                "\n{0088ff}Изменить клику питомцу\t \t ",
+								"\n{ff9000}Прокачка команд питомца\t \t "\
+                                "\n{ffcc00}Изменить кличку питомцу\t \t ",
                                 PetInfo[pet][petLevel],PetInfo[pet][petExp], PetInfo[pet][petPoint],
                                 PetInfo[pet][petPower],PetInfo[pet][petAgility], PetInfo[pet][petEndurance]);
 	format(string,sizeof(string),"{ff9000}Управление питомцем");
@@ -897,8 +904,8 @@ stock PetUpdateCharacteristic(playerid,pet, charactreristic)
 
 stock PetUpdateSkill(playerid, pet, skill)
 {
-    if(PetInfo[pet][petPoint] < 1) return dialogPetUpdateSkill(playerid, pet), SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: У питомца недостаточно очков для прокачки");
     if(PetInfo[pet][petSkills][pet_Skills:skill] == 10) return dialogPetUpdateSkill(playerid, pet), SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Этот скилл и так максимального уровня");
+    if(PetInfo[pet][petPoint] < 1) return dialogPetUpdateSkill(playerid, pet), SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: У питомца недостаточно очков для прокачки");
     PetInfo[pet][petSkills][pet_Skills:skill]++;
     PetInfo[pet][petPoint]--;
     return dialogPetUpdateSkill(playerid, pet);
@@ -1175,6 +1182,7 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem, const inputtext[])
                         SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я купил лекарство для питомца за %d$",friskPrice[280]);
                         MoneyLog("ZooShop", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", friskPrice[283], "Купил предмет");
                         dialogPetZooShop(playerid);
+                        PlayerPlaySound(playerid,6401,0,0,0);
                     }
                     case 2: {
                         if(oGetPlayerMoney(playerid) < friskPrice[280]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
@@ -1183,6 +1191,7 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem, const inputtext[])
                         SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я купил корм для питомца за %d$",friskPrice[280]);
                         MoneyLog("ZooShop", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", friskPrice[280], "Купил предмет");
                         dialogPetZooShop(playerid);
+                        PlayerPlaySound(playerid,6401,0,0,0);
                     }
                     case 3: {
                         if(oGetPlayerMoney(playerid) < friskPrice[281]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
@@ -1191,6 +1200,27 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem, const inputtext[])
                         SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я купил корм для питомца за %d$",friskPrice[281]);
                         MoneyLog("ZooShop", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", friskPrice[281], "Купил предмет");
                         dialogPetZooShop(playerid);
+                        PlayerPlaySound(playerid,6401,0,0,0);
+                    }
+                    case 4:{
+                        if(PlayerInfo[playerid][pDonateMoney] < PRICE_FEATURES_PET) return pc_cmd_donate(playerid), ErrorText(playerid, "[ Мысли ]: Мне не хватает золота");
+                        PlayerInfo[playerid][pDonateMoney] -= PRICE_FEATURES_PET;
+                        tclArifmetikAllGold -= PRICE_FEATURES_PET;
+                        mysql_save(playerid, 4);
+                        GiveThingPlayer(playerid, 282, 1, 0, 0, 0, 0, 9999);
+                        SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я купил корм для питомца за %d GOLD",PRICE_FEATURES_PET);
+                        MoneyLog("ZooShop", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PRICE_FEATURES_PET, "Купил предмет за GOLD");
+                        dialogPetZooShop(playerid);
+                        PlayerPlaySound(playerid,6401,0,0,0);
+                    }
+                    case 5:{
+                        DP[0][playerid] = 3;
+                        new line[214],lines[4096];
+                        format(line,sizeof(line),"{ff9000}Вы хотите приобрести {ff9000}Питомцев {cccccc}шкатулку?"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{cccccc}Стоимость: {ffcc00}%dG", donatePrice[19]), strcat(lines,line);
+                        format(line,sizeof(line),"\n\n{ffcc66}Что может выпасть в шкатулке?"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}- Только редкие питомцы которых нельзя приручить с улицы"), strcat(lines,line);
+                        ShowDialog(playerid,440,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",lines,"Да","Нет");
                     }
                 }
             }
@@ -1346,14 +1376,13 @@ stock dialogInformationPets(playerid)
                                 "\n{cccccc}голос, играть. Этот список будет пополняться с будущими обновлениями!\n"\
                                 "\n{cccccc}- У питомцев так же есть несколько способностей, разных уровней: %sБазовые, %sРедкие, %sЛегендарные"\
 								"\n{cccccc}Примеры способностей можно посмотреть в /help > Питомцы > Особенности питомцев"\
-                                "\n{cccccc}Получить способность можно покормив питомца 'Лакомством для питомца'(выпадает из кейса Питомцев)"\
-                                "\n{cccccc}- Можно иметь только одного загруженного питомца. А с раширением только двух загружаемыех питомцев"\
-                                "\n{cccccc}- В данный момент на сервере есть %s разных видов питомцев.\n"\
+                                "\n{cccccc}Получить способность можно покормив питомца 'Лакомством для питомца'(Покупается в магазине 4 Лапы)"\
+                                "\n{cccccc}- Можно иметь только двух загруженных питомцев."\
+                                "\n{cccccc}- В данный момент на сервере есть %d разных видов питомцев.\n"\
                                 "\n{ff6347}ВНИМАНИЕ!!"\
                                 "\n{cccccc}- Если питомца не кормить, то он умрет. Не совершайте ошибок, ухаживайте за братьями нашими меньшими!"\
-                                "\n{cccccc}- Если питомец умрет с голода, или его кто-то убьет, то его можно будет вылечить специальным лекарством."\
-                                "\n{cccccc}Лекарство можно купить в вет.клинике, либо же вылечить питомца прям там."\
-                                "\n{cccccc}- Вет.клиника это место где можно будет сдать своего питомца или приобрести нового, а так же вылечить его",PetsFeaturesColor[0],PetsFeaturesColor[1],PetsFeaturesColor[2], MAX_PETS_TYPE - 1);
+                                "\n{cccccc}- Если питомец потерял хп, то его можно будет вылечить специальным лекарством."\
+                                "\n{cccccc}Лекарство можно купить в магазине 4 Лапы, там же можно воскрестить мертвого питомца!",PetsFeaturesColor[0],PetsFeaturesColor[1],PetsFeaturesColor[2], MAX_PETS_TYPE - 1);
 	format(string,sizeof(string),"{ff9000}Что дают питомцы?");
 	ShowDialog(playerid,PETS_HELP_LIST,DIALOG_STYLE_MSGBOX, string, lines, "Назад", "");
 	return true;
@@ -1758,12 +1787,15 @@ stock PetPlaySound(pet, pet_Sound: typesound)
     PetInfo[pet][petSoundUnix] = gettime()+10;
     new Float:PetX, Float:PetY, Float:PetZ;
     GetNpcPosition(PetInfo[pet][petID],PetX,PetY,PetZ);
+    new npcworld = GetNpcVirtualWorld(PetInfo[pet][petID]);
     new type = IsAPetType(pet);
     foreach(Player,playerid)
     {
         if(!IsPlayerConnected(playerid)) continue;
         if(OnlineInfo[playerid][oListenRadioPears] != 0) continue;
         if(!IsPlayerInRangeOfPoint(playerid,30.0,PetX,PetY,PetZ)) continue;
+        if(GetPlayerVirtualWorld(playerid) != npcworld) continue;
+        if(IsPlayerAfk(playerid)) continue;
         if(typesound == PET_SOUND_ANGRY)
         {
             if(type == 1) // Собаки
@@ -1976,14 +2008,14 @@ stock OnPlayerLoadPet(playerid,slot, pet, inva)
         if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
         {
             JSON_GetInt(node, "PET_SKILL_VOICE", PetInfo[pet][petSkills][PET_SKILL_VOICE]);
-            JSON_GetInt(node, "PET_SKILL_ATTAC", PetInfo[pet][petFeatures][PET_SKILL_ATTAC]);
-            JSON_GetInt(node, "PET_SKILL_FOLLOWME", PetInfo[pet][petFeatures][PET_SKILL_FOLLOWME]);
-            JSON_GetInt(node, "PET_SKILL_SNIFF", PetInfo[pet][petFeatures][PET_SKILL_SNIFF]);
-            JSON_GetInt(node, "PET_SKILL_SIT", PetInfo[pet][petFeatures][PET_SKILL_SIT]);
-            JSON_GetInt(node, "PET_SKILL_SITCAR", PetInfo[pet][petFeatures][PET_SKILL_SITCAR]);
+            JSON_GetInt(node, "PET_SKILL_ATTAC", PetInfo[pet][petSkills][PET_SKILL_ATTAC]);
+            JSON_GetInt(node, "PET_SKILL_FOLLOWME", PetInfo[pet][petSkills][PET_SKILL_FOLLOWME]);
+            JSON_GetInt(node, "PET_SKILL_SNIFF", PetInfo[pet][petSkills][PET_SKILL_SNIFF]);
+            JSON_GetInt(node, "PET_SKILL_SIT", PetInfo[pet][petSkills][PET_SKILL_SIT]);
+            JSON_GetInt(node, "PET_SKILL_SITCAR", PetInfo[pet][petSkills][PET_SKILL_SITCAR]);
         }
     }
-    if(PetInfo[pet][petFeatures][PET_SKILL_FOLLOWME] == 0) PetInfo[pet][petFeatures][PET_SKILL_FOLLOWME] = 10;
+    if(PetInfo[pet][petSkills][PET_SKILL_FOLLOWME] == 0) PetInfo[pet][petSkills][PET_SKILL_FOLLOWME] = 10;
     CreatePet(playerid,pet);
 	return 1;
 }

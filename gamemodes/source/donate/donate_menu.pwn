@@ -1,6 +1,6 @@
 
 #define REFERAL_PROCENT_DONATE 10
-#define MAX_DONATE_SERVICE 19
+#define MAX_DONATE_SERVICE 20
 
 new donatePrice[MAX_DONATE_SERVICE];
 
@@ -38,6 +38,7 @@ stock defaultPriceDonate()
     donatePrice[16] = 3900; // Увеличенный лимит мебели в доме
     donatePrice[17] = 290; // Слот для архива интерьеров
     donatePrice[18] = 890; // 5 слотов архивов для интерьеров
+    donatePrice[19] = 490; // Стоимость шкатулки питомцев
 }
 
 stock GetPriceGoldDonateMenu(donateid)
@@ -71,7 +72,7 @@ stock showDialogDonateMenu(playerid)
                             \n{666666}Где купить Машину? {99ff66}>>\
                             \n{666666}Где купить Дом? {99ff66}>>\
                             \n{666666}Где купить Бизнес? {99ff66}>>", 
-                            donatePrice[2], donatePrice[15],donatePrice[15],donatePrice[15], donatePrice[13]);
+                            donatePrice[2], donatePrice[15],donatePrice[19],donatePrice[19], donatePrice[13]);
 	ShowDialog(playerid,455,DIALOG_STYLE_TABLIST,"{cccccc}Меню {ff9000}Donate",lines,"Выбор","Отмена");
 	return true;
 }
