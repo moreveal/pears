@@ -391,7 +391,7 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
 
     // Блочим урон во время подготовки к битве за наркоферму на её территории
     new farmid = NarcoFarmGetNearest(damagedid);
-    if (NarcoFarmGetNearest(damagedid))
+    if (farmid != INVALID_NARCOFARM_ID)
     {
         if(NarcoFarmIsPrepareBattleActive(farmid)) return false;
     }

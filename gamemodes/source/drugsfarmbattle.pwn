@@ -112,7 +112,7 @@ stock NarcoFarmIsBattleActive(farmid)
 
 stock NarcoFarmIsPrepareBattleActive(farmid)
 {
-    return IsValidTimer(NarcoFarmBattleInfo[farmid][dfbiPrepareTime]);
+    return NarcoFarmBattleInfo[farmid][dfbiPrepareTime] != 0;
 }
 
 stock NarcoFarmIsMafiaBattleActive(fractionid)
@@ -143,8 +143,6 @@ stock NarcoFarmFinishBattle(farmid, fraction, bool: defenderwin = true)
         NarcoFarmInfo[farmid][dfiFraction] = fraction;
         NarcoFarmCreatePickup(farmid);
         NarcoFarmSave(farmid);
-        for(new e_NarcoFarmBattleInfo:i; i < e_NarcoFarmBattleInfo; ++i) NarcoFarmBattleInfo[farmid][i] = 0;
-        for(new i; i < MAX_REALPLAYERS; i++) NarcoFarmBattleInfo[farmid][dfbiAttackers][i] = 0, NarcoFarmBattleInfo[farmid][dfbiDefenders][i] = 0;
     }
     if(NarcoFarmBattleInfo[farmid][dfbiDefendFraction] == 0)
     {
@@ -153,6 +151,8 @@ stock NarcoFarmFinishBattle(farmid, fraction, bool: defenderwin = true)
             if(IsValidNpc(NarcoFarmNPC[farmid][npc])) DestroyNpc(NarcoFarmNPC[farmid][npc]);
         }
     }
+    for(new e_NarcoFarmBattleInfo:i; i < e_NarcoFarmBattleInfo; ++i) NarcoFarmBattleInfo[farmid][i] = 0;
+    for(new i; i < MAX_REALPLAYERS; i++) NarcoFarmBattleInfo[farmid][dfbiAttackers][i] = 0, NarcoFarmBattleInfo[farmid][dfbiDefenders][i] = 0;
     NarcoFarmBattleInfo[farmid][dfbiEndTime] = gettime();
     foreach(Player,i)
     {
@@ -444,6 +444,7 @@ stock NarcoFarmBattle_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, 
     {
         new Float:tempHealt = 0.0;
         GetNpcHealth(NarcoFarmNPC[farmid][npc_id], tempHealt);
+        SetNpcHealth(NarcoFarmNPC[farmid][npc_id], tempHealt - amount);
         if(tempHealt - amount <= 0.0 && NarcoFarmNpcDeath[farmid][npc_id] == false) 
         {
             NarcoFarmBattleInfo[farmid][dfbiAttackScore]++;
@@ -502,7 +503,7 @@ DIALOG_GENERATOR:mafiafarm(playerid)
     if (farmid == INVALID_NARCOFARM_ID) return ErrorMessage(playerid, "{FF6347}Вы не находитесь на территории фермы мафии");
     if(NarcoFarmBattleInfo[farmid][dfbiEndTime]+KD_FARM_BATTLE > gettime())
     {
-        return ErrorMessage(playerid, "{FF6347}За данную ферму недавно была битва. Нужно подождать!\nСледующая битва станет доступна через {ff9000}%s",fine_time(NarcoFarmBattleInfo[farmid][dfbiEndTime]+KD_FARM_BATTLE));
+        return ErrorMessage(playerid, "{FF6347}За данную ферму недавно была битва. Нужно подождать!\nСледующая битва станет доступна через {ff9000}%s",fine_time((NarcoFarmBattleInfo[farmid][dfbiEndTime]+KD_FARM_BATTLE)-gettime()));
     }
 
     new dialog_text[1024];
