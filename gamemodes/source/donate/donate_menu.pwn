@@ -38,7 +38,7 @@ stock defaultPriceDonate()
     donatePrice[16] = 3900; // Увеличенный лимит мебели в доме
     donatePrice[17] = 290; // Слот для архива интерьеров
     donatePrice[18] = 890; // 5 слотов архивов для интерьеров
-    donatePrice[19] = 490; // Стоимость шкатулки питомцев
+    donatePrice[19] = 790; // Стоимость шкатулки питомцев
 }
 
 stock GetPriceGoldDonateMenu(donateid)
