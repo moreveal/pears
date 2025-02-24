@@ -196,18 +196,20 @@ stock StartZombie(playerid)
     new eligiblePlayers[MAX_REALPLAYERS], count = 0;
     PeopleQuan = 0;
 
+    GetPlayerPos(playerid, ZombieGamePosition[0], ZombieGamePosition[1], ZombieGamePosition[2]);
+    ZombieGameWorld = GetPlayerVirtualWorld(playerid);
+    ZombieGameInterior = GetPlayerInterior(playerid);
+
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1 && !IsPlayerAfk(i) && !IsPlayerNPC(i) && ADUTY[i] == 0 && GetPlayerState(i) != PLAYER_STATE_SPECTATING)
+        if(OnlineInfo[i][oLogged] == 1 && !IsPlayerAfk(i) && !IsPlayerNPC(i) && ADUTY[i] == 0 && GetPlayerState(i) != PLAYER_STATE_SPECTATING
+            && GetPlayerVirtualWorld(i) == ZombieGameWorld && GetPlayerInterior(i) == ZombieGameInterior
+            && GetPlayerDistanceFromPoint(i, ZombieGamePosition[0], ZombieGamePosition[1], ZombieGamePosition[2]) < 500.0)
         {
             eligiblePlayers[count++] = i;
         }
     }
     if(count <= 2) return ErrorMessage(playerid, "{FF6347}Минимум 3 игрока для начала игры в Zombie");
-
-    GetPlayerPos(playerid, ZombieGamePosition[0], ZombieGamePosition[1], ZombieGamePosition[2]);
-    ZombieGameWorld = GetPlayerVirtualWorld(playerid);
-    ZombieGameInterior = GetPlayerInterior(playerid);
 
     // Выбираем случайного зомби
     new zombieId = eligiblePlayers[random(count)];
