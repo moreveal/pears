@@ -460,6 +460,9 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
             format(string, sizeof string, "-%.1f HP", damage);
             SetPlayerChatBubble(damagedid, string, COLOR_RED, 45.0, 4000);
 
+            // Дамаг информер (звук попадания)
+            if(IsShootingWeapon(weaponid) && PlayerInfo[playerid][pDamagInf] == true) PlayerPlaySound(playerid,6401,0,0,0);
+
             // Считаем урон на капте
             if(IsAZoneCapt(playerid) && IsAZoneCapt(damagedid)) CaptTakeHealth(playerid, damagedid, damage);
 
