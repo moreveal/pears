@@ -628,27 +628,31 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
-        if((BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0) && stat == 1)
+        if(BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0)
         {
-			SetBizPriceItem(b,i);
+			// if(stat == 1) - Это означает, что количество товара можно добавить
+			// Если 0, то мы ничего не добавляем
             
 			// Выставляем количество
 			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
 			{
-				BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]) / 4;
+				if(stat == 1) BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]) / 4;
 			}
 			else if(b >= 77 && b <= 81 || b >= 82 && b <= 86 || b >= 87 && b <= 89 || b >= 90 && b <= 92) // Автосалоны, Мотосалоны, Авиасалоны, Салоны катеров
 			{
-				BizzInfo[b][bItem][i] = 10;
+				SetBizPriceItem(b,i);
+				if(stat == 1) BizzInfo[b][bItem][i] = 10; // Количество выставляем только при /rbizforce
 			}
 			else if(b >= 42 && b <= 52 || b >= 53 && b <= 56 || b >= 57 && b <= 61 || b >= 62 && b <= 66 || b >= 67 && b <= 76) // Аренды Все
 			{
-				BizzInfo[b][bItem][i] = 40;
+				if(stat == 1) BizzInfo[b][bItem][i] = 40;
 			}
-			else BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]) / 4;
+			else 
+			{
+				if(stat == 1) BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]) / 4;
+			}
 			yesUpdate = true;
         }
-		else if(b >= 77 && b <= 92 && stat == 0) SetBizPriceItem(b,i);
     }
     if(yesUpdate)
 	{
@@ -659,40 +663,40 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 	return 1;
 }
 
-stock SetBizPriceItem(b,i)
+// Сток для поиска id транспорта при перезагрузке набора в салона с транспорта
+stock SearchResetThingBiz(b, thingID)
 {
-	if(b >= 77 && b <= 92 && BizCarSlotId[b][i] != BizzInfo[b][bProduct][i]) // Хуйня для автоматической настройки цен ибо там сортировка ебанутая
+	for(new z; z < MAX_BIZ_ITEM; z++)
 	{
-		for(new z; z < MAX_BIZ_ITEM; z++)
+		if(BizCarSlotId[b][z] == thingID)
 		{
-			if(BizCarSlotId[b][z] != BizzInfo[b][bProduct][i]) continue;
-			else 
-			{
-				BizzInfo[b][bPrice][i] = BizCarSlotPrice[b][z];
-				BizzInfo[b][bItem][i] = BizCarSlotItem[b][z];
-				return 1;
-			}
+			return z;
 		}
 	}
-	new priceAdded = floatround(float(getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])) * 1.5);
+	return -1;
+}
 
-	if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = priceAdded;
-	else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = priceAdded;
-	else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = priceAdded;
-	else if(BizzInfo[b][bTypeProduct][i] == 5)
+// Хуйня для автоматической настройки цен ибо там сортировка ебанутая
+stock SetBizPriceItem(b, i)
+{
+	if(b >= 77 && b <= 92)
 	{
-		if(b >= 77 && b <= 92) BizzInfo[b][bPrice][i] = priceAdded; // Продажа транспорта
-		else // Аренда транспорта
+		if(BizCarSlotId[b][i] != BizzInfo[b][bProduct][i]) // В слоте оказался другой транспорт
 		{
-			if(b >= 53 && b <= 56 || b >= 57 && b <= 61) // Аренда Авиатранспорта, Аренда Катеров
+			new findSlot = SearchResetThingBiz(b, BizzInfo[b][bProduct][i]); // Ищем в какой слот мы его временно записали
+
+			if(findSlot > -1) // Нашли, значит записываем новые данные
 			{
-				BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])/400;
+				BizzInfo[b][bProduct][i] = BizCarSlotId[b][findSlot];
+				BizzInfo[b][bPrice][i] = BizCarSlotPrice[b][findSlot];
+				BizzInfo[b][bItem][i] = BizCarSlotItem[b][findSlot];
 			}
-			else BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])/40;
 		}
 	}
 	return 1;
 }
+
+
 stock getThingPriceGos(thingId, thingType)
 {
 	new price;
