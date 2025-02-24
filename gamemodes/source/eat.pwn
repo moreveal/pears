@@ -250,7 +250,7 @@ stock godrink(playerid)
 		{
 		    if(HoldStat[playerid] == 121)
 			{
-			    coffe = 20;
+			    coffe = 200;
 				if(PlayerInfo[playerid][pMechSkill]+coffe <= 1000) PlayerInfo[playerid][pMechSkill] += coffe;
 				else PlayerInfo[playerid][pMechSkill] = 1000;
 			}
@@ -360,7 +360,7 @@ stock goeat_podnos(playerid)
 		 // Если поднос с кофе
 		if(fpick == 134 || fpick == 135 || fpick == 136)
 		{
-			if(PlayerInfo[playerid][pMechSkill]+20 <= 1000) PlayerInfo[playerid][pMechSkill] += 20;
+			if(PlayerInfo[playerid][pMechSkill]+50 <= 1000) PlayerInfo[playerid][pMechSkill] += 50;
 			else PlayerInfo[playerid][pMechSkill] = 1000;
 		}
 
