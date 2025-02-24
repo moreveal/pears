@@ -736,6 +736,7 @@ GetRandomVehicleByClass(vehicleClass, CASE_TYPE_ENUM:caseType)
             case CASE_TYPE_NORMAL:
             {
                 if(vehicleClass < 2 || vehicleClass > 4) continue;
+                if(VehCaseOff[i] == 1) continue;
             }
             case CASE_TYPE_GOLD:
             {
