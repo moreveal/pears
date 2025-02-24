@@ -177,6 +177,9 @@ stock CreateMysqlTable()
     // Создание недостающих строк в pp_priceskin
     mysql_tquery(pearsq, "SELECT skin FROM `pp_priceskin` ORDER BY skin DESC LIMIT 1", "PriceSkinPad");
 
+
+    // Возможность заблокировать транспорт в доступе из обычного авто кейса
+    AddColumnIfNotExists("pp_priceveh", "VehCaseOff", "INT NOT NULL DEFAULT '0'");
 	return true;
 }
 
