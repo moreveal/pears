@@ -453,7 +453,7 @@ CMD:givecaserandom(playerid, const params[])
         // Собираем всех залогиненных игроков в массив
         foreach(Player, i)
         {
-            if (OnlineInfo[i][oLogged] == 1)
+            if (OnlineInfo[i][oLogged] == 1 && !IsPlayerNPC(i))
             {
                 PlayerForCase[quanPlayers] = i;
                 quanPlayers++;
