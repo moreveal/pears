@@ -1717,6 +1717,53 @@ function Call_delrname(playerid, const str_name[])
 	return 1;
 }
 
+
+CMD:disband(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 15) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	new orgid;
+	if(sscanf(params, "d", orgid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Расформировать организацию [ /disband ID орг. ]");
+	if(orgid > 22 || orgid < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер организации не меньше 1 и не больше 22");
+	if(AntiPidor(playerid, 4)) return 1;
+	new f_str[144];
+	mysql_format(pearsq, f_str, sizeof(f_str), "SELECT * FROM pp_igroki WHERE `Member` = '%d'", orgid);
+	mysql_tquery(pearsq, f_str, "Call_disband", "dd", playerid, orgid);
+	return 1;
+}
+
+function Call_disband(playerid, orgid)
+{
+	new rows, f_str[144], string[144];
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		for(new i = 0; i < rows; i++)
+		{
+			new nickname[32], admin, leader;
+			cache_get_value_name(i, "Name", nickname, sizeof(nickname));
+			cache_get_value_int(i, "Soska", admin);
+			cache_get_value_int(i, "Leader", leader);
+			new giveplayerid = ReturnUser(nickname, 1);
+			if(!admin && !leader && (giveplayerid != playerid))
+			{	
+				if(IsOnline(giveplayerid))
+				{
+					AUninvitePlayer(playerid, giveplayerid, 1);
+				}
+				else
+				{
+					mysql_format(pearsq, f_str, sizeof(f_str),"SELECT * FROM `pp_igroki` WHERE `Name` = '%e'", nickname);
+	  				mysql_tquery(pearsq, f_str, "Call_Offline", "dssdd", playerid, nickname, "", 36, 1);
+				}
+			}
+		}
+		format(string, sizeof(string), " [ ADM ]: %s расформировал организацию %s",PlayerInfo[playerid][pName], frakName[orgid]);
+		ABroadCast(COLOR_ADM, string, 1);
+		AdminLog("disband", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", orgid, "Расформировал организацию");
+	} else ErrorMessage(playerid, "{FF6347}Организация пустая");
+	return 1;
+}
+
 alias:ahelp("ah")
 CMD:ahelp(playerid)
 {
@@ -1811,7 +1858,7 @@ stock AHelpList(playerid)
 	if(PlayerInfo[playerid][pSoska] >= 15)
 	{
 		format(string,sizeof(string),"\n\n{ff9000}Кураторы:"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/giveeditorder /orderweapons /voteclose /sharpvoteclose /stoprally /rdom /rdomgun /rmarket /rinvent"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/giveeditorder /orderweapons /voteclose /sharpvoteclose /stoprally /rdom /rdomgun /rmarket /rinvent /disband"), strcat(str,string);
 	}
 	if(PlayerInfo[playerid][pSoska] >= 19)
 	{
