@@ -205,7 +205,7 @@ new friskDefault[] = // Гос. стоимости предметов
 	10000,-1,-1,-1,-1,-1,-1,-1,-1,-1, // 260
 	-1, -1,2000,2000,2000,-1,-1,-1,-1,-1, // 270
 	-1,-1,50000,1000,1000,1000,-1,-1,10000, // 279
-	10000,10000,500000,50000 // 283
+	5000,5000,500000,3000 // 283
 };
 new friskPrice[sizeof(friskName)];
 //==================================
@@ -2248,8 +2248,8 @@ stock ThingParameters(playerid, thingId, &quan, &para)
 	else if(thingId == 239 && para == 0) para = unix + 604800; // Пропуск Годжо
 	else if(thingId == 261 && para == 0) SetSatiety(thingId, quan), para = unix + 172800; // Скирк
 	else if(thingId == 262 && para == 0) SetSatiety(thingId, quan), para = unix + 172800; // Колбаса
-	else if(thingId == 263 && para == 0) SetSatiety(thingId, quan), para = unix + 172800; // Консервы для котов
-	else if(thingId == 264 && para == 0) SetSatiety(thingId, quan), para = unix + 172800; // Консервы для собак
+	else if(thingId == 280 && para == 0) SetSatiety(thingId, quan), para = unix + 172800; // Консервы для котов
+	else if(thingId == 281 && para == 0) SetSatiety(thingId, quan), para = unix + 172800; // Консервы для собак
 
 	else
 	{
@@ -2620,7 +2620,7 @@ stock PerishableThing(i, type) //  Проверка на портящиеся п
     if(type == 0 && (i == 1 || i == 6 || i == 18 || i == 20 || i == 22 || i == 54 || i == 55 || i == 96 || i == 98 || i == 99 || i == 100 || i == 101 || i == 102
  	|| i == 103 || i == 104 || i == 105 || i == 107 || i == 14 || i == 117 || i == 118 || i == 119 || i == 120 || i == 121 || i == 124 || i == 125
   	|| i == 126 || i == 127 || IsANaborsEdoi(i) || i == 139 || i == 141 || i == 163 || i == 164 || i == 165 || i == 166 || i == 167
-	|| i == 168 || i == 169 || i == 170 || i == 171 || i == 172 || i == 173 || i == 174 || i == 233 || i == 236 || i == 261 || i >= 262 && i <= 264 )) return 1;
+	|| i == 168 || i == 169 || i == 170 || i == 171 || i == 172 || i == 173 || i == 174 || i == 233 || i == 236 || i == 261 || i == 262 || i >= 280 && i <= 281 )) return 1;
 	return 0;
 }
 
@@ -3716,7 +3716,7 @@ stock UseItem(playerid,inva, fpick,fquan,fpara,thingType,thingPack)
 		else if(fpick == 250) return format(string, sizeof(string), "%d", inva), pc_cmd_campfire(playerid, string), i_resetveshi(playerid); // Котелок
 		else if(fpick == 251) return format(string, sizeof(string), "%d", inva), pc_cmd_campfire(playerid, string), i_resetveshi(playerid); // Котелок
 		else if(fpick >= 252 && fpick <= 255) return format(string, sizeof(string), "%d", inva), UseCoupon(playerid, string), i_resetveshi(playerid); // Купоны
-		else if(fpick >= 262 && fpick <= 266) return UsePetItem(playerid,inva); // Предметы для питомцев
+		else if(fpick == 262 || (fpick >= 280 && fpick <= 283)) return UsePetItem(playerid,inva); // Предметы для питомцев
 		
 		else if(Graves_IsArtifact(fpick)) return pc_cmd_thing(playerid), i_resetveshi(playerid); // Артефакты (Раскопка могил)
 

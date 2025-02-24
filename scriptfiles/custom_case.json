@@ -892,5 +892,140 @@
             "chance": 25,
             "para": 0
         }
+    ],
+    "pet": [
+        {
+            "thing": 626,
+            "type": 6,
+            "amount": 1,
+            "chance": 20,
+            "para": 0
+        },
+        {
+            "thing": 629,
+            "type": 6,
+            "amount": 1,
+            "chance": 20,
+            "para": 0
+        },
+        {
+            "thing": 631,
+            "type": 6,
+            "amount": 1,
+            "chance": 20,
+            "para": 0
+        },
+        {
+            "thing": 632,
+            "type": 6,
+            "amount": 1,
+            "chance": 40,
+            "para": 0
+        },
+        {
+            "thing": 633,
+            "type": 6,
+            "amount": 1,
+            "chance": 40,
+            "para": 0
+        },
+        {
+            "thing": 634,
+            "type": 6,
+            "amount": 1,
+            "chance": 40,
+            "para": 0
+        },
+        {
+            "thing": 635,
+            "type": 6,
+            "amount": 1,
+            "chance": 20,
+            "para": 0
+        },
+        {
+            "thing": 636,
+            "type": 6,
+            "amount": 1,
+            "chance": 20,
+            "para": 0
+        },
+        {
+            "thing": 637,
+            "type": 6,
+            "amount": 1,
+            "chance": 20,
+            "para": 0
+        },
+        {
+            "thing": 638,
+            "type": 6,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 639,
+            "type": 6,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 640,
+            "type": 6,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 642,
+            "type": 6,
+            "amount": 1,
+            "chance": 10,
+            "para": 0
+        },
+        {
+            "thing": 644,
+            "type": 6,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 645,
+            "type": 6,
+            "amount": 1,
+            "chance": 10,
+            "para": 0
+        },
+        {
+            "thing": 646,
+            "type": 6,
+            "amount": 1,
+            "chance": 20,
+            "para": 0
+        },
+        {
+            "thing": 647,
+            "type": 6,
+            "amount": 1,
+            "chance": 20,
+            "para": 0
+        },
+        {
+            "thing": 648,
+            "type": 6,
+            "amount": 1,
+            "chance": 10,
+            "para": 0
+        },
+        {
+            "thing": 609,
+            "type": 6,
+            "amount": 1,
+            "chance": 1,
+            "para": 0
+        }
     ]
 }

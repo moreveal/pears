@@ -401,6 +401,7 @@ stock LoadBot()
     BotPears[521] = CreateDynamicActor(443,1569.3571,-1649.6467,21.2318,269.8762, .worldid = 256); // LSPD Bot 12
     BotPears[522] = CreateDynamicActor(422,1580.5566,-1694.6251,6.2187,306.7073); // LSPD Bot 13
     BotPears[523] = CreateDynamicActor(419,1581.6965,-1693.7367,6.2187,123.5138); // LSPD Bot 14
+    BotPears[527] = CreateDynamicActor(70,1581.6965,-1693.7367,6.2187,123.5138, .worldid = WORLD_ZOOPET); // ZooBot
     
     if(IsANewYear())
     {
