@@ -15,6 +15,7 @@ eSkinClass класс скина
 eSkinSex пол скина
 
 name класса пишется: при просмотре подробной инфы о скине в инвентаре, при выпадении из кейса (желательно)
+Внимание! Названия классов прописываются в stock GetSkinClassName
 
 SKINCLASS_SYSTEM класс - любая продажа в магазах одежды оффнута, не сливаемый скупщику, не дропается с кейсов
 name: Системный, цвет #444444
@@ -726,6 +727,8 @@ new SkinPearsInfo[][SKINENUM] =
 
 #define MAX_MODELS_SKIN (sizeof(SkinPearsInfo))
 
+forward SKINCLASSENUM:GetRandomSkinClass(CASE_TYPE_ENUM:caseType);
+
 stock bool:IsValidSkinId(skinid)
 {
     return skinid >= 0 && skinid < sizeof(SkinPearsInfo) && SkinPearsInfo[skinid][eSkinClass] != SKINCLASS_INVALID;
@@ -865,6 +868,25 @@ stock DeleteSpecialSystemSkins(playerid)
 		}
 	}
 	return 1;
+}
+
+stock GetSkinClassName(s)
+{
+    new atext[44];
+    switch(SkinPearsInfo[s][eSkinClass])
+    {
+        case SKINCLASS_INVALID: atext = "Инвалид";
+        case SKINCLASS_SYSTEM: atext = "{444444}Системный";
+        case SKINCLASS_COMMON: atext = "{a2a0a0}Обычный";
+        case SKINCLASS_UNCOMMON: atext = "{66ca55}Необычный";
+        case SKINCLASS_RARE: atext = "{6d48e2}Редкий";
+        case SKINCLASS_RESERVED1: atext = "Зарезервированный (1)";
+        case SKINCLASS_RESERVED2: atext = "Зарезервированный (2)";
+        case SKINCLASS_RESERVED3: atext = "Зарезервированный (3)";
+        case SKINCLASS_LEGENDARY: atext = "{d90763}Легендарный";
+        default: atext = "Неизвестный";
+    }
+    return atext;
 }
 
 // Сюда добавляются скины для организаций (Максимально 50 слотов, значит 49 ПОСЛЕДНИЙ)

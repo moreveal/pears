@@ -14,13 +14,16 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 621 удалённых объектов
+ 	// 519 удалённых объектов
 
 	RemoveBuildingForPlayer(playerid, 1525, 1687.2266, -1239.1250, 15.8125, 0.25); // Удаляем лишнее граффити на Пирс Тауэр Джапан
 	RemoveBuildingForPlayer(playerid, 4717, 1666.4922, -1246.1797, 123.0859, 0.25); // Удаляем ночные окна Пирс Тауэр Джапан
 	RemoveBuildingForPlayer(playerid, 4747, 1671.5078, -1343.3359, 87.5391, 0.25); // Удаляем ночные окна Пирс Тауэр
 	
 	RemoveBuildingForPlayer(playerid, 16135, -326.2891, 1851.4141, 41.7344, 0.25); // удаляем гейзер у Археологии
+
+	// Наркоферма
+	RemoveBuildingForPlayer(playerid, -1, -1109.040, -1621.099, 75.265, 0.250);
 
 	// Заброшенная шахта
 	RemoveBuildingForPlayer(playerid, 3414, 2351.830, -652.921, 129.188, 0.250);
@@ -567,13 +570,19 @@ stock DeleteObject(playerid)
     RemoveBuildingForPlayer(playerid, 1413, 2824.0938, -2131.1719, 11.0469, 0.25);
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
-//-------------------------[ Оружейный Завод Удалённые ]--------------------
+//-------------------------[ Химический завод Удалённые ]--------------------
 //--------------------------------------------------------------------------
-    RemoveBuildingForPlayer(playerid, 4719, 1760.1641, -1127.2734, 43.6641, 0.25);
-    RemoveBuildingForPlayer(playerid, 4748, 1760.1641, -1127.2734, 43.6641, 0.25);
-    RemoveBuildingForPlayer(playerid, 1215, 1755.3047, -1142.8438, 23.6094, 0.25);
-    RemoveBuildingForPlayer(playerid, 4718, 1760.1641, -1127.2734, 43.6641, 0.25);
-    RemoveBuildingForPlayer(playerid, 1227, 1789.9063, -1112.6406, 23.8906, 0.25);
+    RemoveBuildingForPlayer(playerid, 4719, 1760.164, -1127.273, 43.664, 0.250);
+	RemoveBuildingForPlayer(playerid, 4748, 1760.164, -1127.273, 43.664, 0.250);
+	RemoveBuildingForPlayer(playerid, 4718, 1760.164, -1127.273, 43.664, 0.250);
+	RemoveBuildingForPlayer(playerid, 1227, 1789.906, -1112.640, 23.890, 0.250);
+	RemoveBuildingForPlayer(playerid, 1227, 1830.569, -1097.300, 23.679, 0.250);
+	RemoveBuildingForPlayer(playerid, 1265, 1830.839, -1112.209, 23.304, 0.250);
+	RemoveBuildingForPlayer(playerid, 1227, 1830.569, -1113.930, 23.679, 0.250);
+	RemoveBuildingForPlayer(playerid, 1264, 1829.829, -1112.390, 23.414, 0.250);
+	RemoveBuildingForPlayer(playerid, 1215, 1807.082397, -1143.172363, 24.053110, 50.000);
+	RemoveBuildingForPlayer(playerid, 1215, 1755.7582, -1142.4282, 24.0905, 5.000);
+	RemoveBuildingForPlayer(playerid, 1215, 1721.119, -1142.839, 23.609, 0.250);
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 //-------------------------[ Grove Street Удалённые ]-----------------------

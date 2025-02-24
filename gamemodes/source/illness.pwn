@@ -719,9 +719,36 @@ stock create_infect(playerid, stat, prog, i)
 		}
 	}
 }
-stock infect(playerid, stat, prog)
+
+// TODO: убрать
+CMD:testprotect(playerid)
+{
+	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Текущая степень защиты: %d", GetPlayerInfectProtectionType(playerid));
+	return 1;
+}
+
+stock infect(playerid, stat, prog, bool: force = false)
 {
 	new yes = -1;
+
+	if (!force)
+	{
+		// Скипаем попытку заражения с некоторым шансом, если на нас есть элементы защиты (маска и прочее)
+		new Float: skip_chance = 0.0;
+		switch (GetPlayerInfectProtectionType(playerid))
+		{
+			case INFECT_PROTECTION_SUPER_LOW: skip_chance = 3.0;
+			case INFECT_PROTECTION_VERY_LOW: skip_chance = 5.0;
+			case INFECT_PROTECTION_LOW: skip_chance = 10.0;
+			case INFECT_PROTECTION_MEDIUM: skip_chance = 25.0;
+			case INFECT_PROTECTION_HIGH: skip_chance = 35.0;
+			case INFECT_PROTECTION_VERY_HIGH: skip_chance = 50.0;
+			case INFECT_PROTECTION_EXTREME: skip_chance = 80.0;
+			case INFECT_PROTECTION_ULTIMATE: skip_chance = 95.0;
+			default: {}
+		}
+		if (frand(0.0, 100.0) < skip_chance) return -1;
+	}
 
     if(getillness(playerid, 18) >= 0 && PlayerInfo[playerid][pNeon] > 100) yes = -2;
 	else

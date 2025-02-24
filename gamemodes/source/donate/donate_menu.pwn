@@ -65,12 +65,13 @@ stock showDialogDonateMenu(playerid)
 	                        \n{cccccc}Создать Семью {ffcc00}[%d G]\
                             \n{cccccc}Купить {FF9000}GOLD {cccccc}Шкатулку {ffcc00}[%d G]\
                             \n{cccccc}Купить {FF9000}Аксессуарную {cccccc}Шкатулку {ffcc00}[%d G]\
+                            \n{cccccc}Купить {FF9000}Питомцы {cccccc}Шкатулку {ffcc00}[%d G]\
                             \n{cccccc}Ремонт Транспорта {ffcc00}[%d G]\
                             \n{666666}Где купить Скин/Одежду? {99ff66}>>\
                             \n{666666}Где купить Машину? {99ff66}>>\
                             \n{666666}Где купить Дом? {99ff66}>>\
                             \n{666666}Где купить Бизнес? {99ff66}>>", 
-                            donatePrice[2], donatePrice[15],donatePrice[15], donatePrice[13]);
+                            donatePrice[2], donatePrice[15],donatePrice[15],donatePrice[15], donatePrice[13]);
 	ShowDialog(playerid,455,DIALOG_STYLE_TABLIST,"{cccccc}Меню {ff9000}Donate",lines,"Выбор","Отмена");
 	return true;
 }

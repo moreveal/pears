@@ -13,14 +13,14 @@
 // Идентификатор кастомных Шкатулок
 new customCaseNameID[][] =
 {
-    "maniac", "village", "yakuza", "gold", "graves","halloween24","craftaks","clothes","accessory","car","crypto","newyear25"
+    "maniac", "village", "yakuza", "gold", "graves","halloween24","craftaks","clothes","accessory","car","crypto","newyear25","pet"
 };
 
 // Названия кастомных Шкатулок
 new customCaseName[][] =
 {
     "Шкатулка Маньяка", "Шкатулка Деревенских", "Шкатулка Yakuza", "Gold Шкатулка", "Похоронная Шкатулка", "Halloween Шкатулка 2024", "Шкатулка Аксессуарная(крафтовая)",
-    "Шкатулка Одежды", "Шкатулка Аксессуаров", "Шкатулка Автомобильная", "Крипто Шкатулка","Новогодняя Шкатулка 2025"
+    "Шкатулка Одежды", "Шкатулка Аксессуаров", "Шкатулка Автомобильная", "Крипто Шкатулка","Новогодняя Шкатулка 2025","Шкатулка Питомцев"
 };
 
 // Упаковки, которые относятся к Шкатулке
@@ -45,6 +45,7 @@ stock GetModelCustomCase(thingPack)
     else if(thingPack == 15) model = 12448; // авто
     else if(thingPack == 16) model = 12452; // Крипта
     else if(thingPack == 17) model = 12403; // Новогодний
+    else if(thingPack == 18) model = 12735; // Питомцы
     else model = 19918;
     return model;
 }
@@ -64,7 +65,8 @@ stock GetCustomCaseInventoryPack(caseID)
     else if(caseID == 8) thingPack = 14; // Акс
     else if(caseID == 9) thingPack = 15; // Авто
     else if(caseID == 10) thingPack = 16; // Крипта
-    else if(caseID == 11) thingPack = 17; // Крипта
+    else if(caseID == 11) thingPack = 17; // НГ
+    else if(caseID == 12) thingPack = 18; // Питомцы
     return thingPack;
 }
 

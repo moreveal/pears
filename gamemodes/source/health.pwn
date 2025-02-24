@@ -45,7 +45,7 @@ stock ProcessHealthPlayer(playerid)
             }
 
             //  Лечим порошком
-            else if(OnlineInfo[playerid][oHealthThing] == 7)
+            else if(OnlineInfo[playerid][oHealthThing] == 7 || OnlineInfo[playerid][oHealthThing] == 263 || OnlineInfo[playerid][oHealthThing] == 264)
             {
                 // Старая система кровотечения off
                 PlayerInfo[playerid][pRanentors] = 0;

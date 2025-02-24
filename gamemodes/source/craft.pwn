@@ -20,120 +20,212 @@ new CraftInvent[MAX_REALPLAYERS]; // Слот предмета в инвента
 new ThingNeed[MAX_REALPLAYERS]; // Какой id предмета требуется
 new CreateThingID[MAX_REALPLAYERS]; // Какой предмет создаём
 new CreateThingType[MAX_REALPLAYERS]; // Какой тип предмета создаём
+new CreateThingAmount[MAX_REALPLAYERS]; // Какое количество предмета создаём
 new InvaCraft[MAX_REALPLAYERS][MAX_CRAFT_ITEM]; // Из какого слота лежат предметы в ячейках для крафта
 new InvaCraftQuan[MAX_REALPLAYERS][MAX_CRAFT_ITEM][MAX_CRAFT_ITEM_QUAN]; // Из какого слота лежат предметы в ячейках для крафта
 
 // Зависимости для создания новых предметов (Крафт)
-stock GetThingForCraft(thingId,thingType, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3, &q3, &t3, &i4, &q4, &t4)
+stock GetThingForCraft(thingId, thingType, &thingAmount, craftThing[], craftQuan[], craftType[])
 {
-    if(thingId == 11) // Бомба (Инженер)
+    thingAmount = 1;
+
+    if (thingType == 0) // Обычные предметы
     {
-        i0 = 182, q0 = 3, t0 = 0; // Деталь Бомбы 3 Штуки
-    }
-    else if(thingId == 64) // Exlosive Ammo 20,8mm (Инженер)
+        switch(thingId)
+        {
+            case 11: // Бомба (Инженер)
+            {
+                craftThing[0] = 182, craftQuan[0] = 3, craftType[0] = 0; // Деталь Бомбы 3 Штуки
+            }
+            case 64: // Exlosive Ammo 20,8mm (Инженер)
+            {
+                craftThing[0] = 60, craftQuan[0] = 12, craftType[0] = 0; // Палладий 12 грамм
+                craftThing[1] = 27, craftQuan[1] = 1, craftType[1] = 0; // Ammo 20,8mm
+            }
+            case 65: // Exlosive Ammo 11,43mm (Инженер)
+            {
+                craftThing[0] = 60, craftQuan[0] = 12, craftType[0] = 0; // Палладий 12 грамм
+                craftThing[1] = 28, craftQuan[1] = 1, craftType[1] = 0; // Ammo 11,43mm
+            }
+            case 66: // Exlosive Ammo 5,45mm (Инженер)
+            {
+                craftThing[0] = 60, craftQuan[0] = 12, craftType[0] = 0; // Палладий 12 грамм
+                craftThing[1] = 29, craftQuan[1] = 1, craftType[1] = 0; // Ammo 5,45mm
+            }
+            case 67: // Ammo 45mm (Инженер)
+            {
+                craftThing[0] = 60, craftQuan[0] = 12, craftType[0] = 0; // Палладий 12 грамм
+                craftThing[1] = 30, craftQuan[1] = 1, craftType[1] = 0; // Ammo 45mm
+            }
+            case 182: // Деталь Бомбы (Инженер)
+            {
+                craftThing[0] = 181, craftQuan[0] = 3, craftType[0] = 0; // Изолента 3 Штуки
+                craftThing[1] = 60, craftQuan[1] = 40, craftType[1] = 0; // Палладий 40 грамм
+                // craftThing[2] = 61, craftQuan[2] = 10, craftType[2] = 0; // Гелий 3 10 мл
+            }
+            case 90: // Монтировка
+            {
+                craftThing[0] = 201, craftQuan[0] = 1, craftType[0] = 0; // Труба
+            }
+            case 19: // Отмычка
+            {
+                craftThing[0] = 202, craftQuan[0] = 1, craftType[0] = 0; // Вилка
+            }
+            case 205: // Бомба Липучка (Инженер)
+            {
+                craftThing[0] = 182, craftQuan[0] = 1, craftType[0] = 0; // Деталь Бомбы 1 Штуки
+            }
+            case 237: // Термитная смесь
+            {
+                craftThing[0] = 60, craftQuan[0] = 20, craftType[0] = 0; // Палладий 20 Штук
+                craftThing[1] = 238, craftQuan[1] = 10, craftType[1] = 0; // Алюминий 10 Штук
+            }
+            case 268: // Резина
+            {
+                craftThing[0] = 279, craftQuan[0] = 5, craftType[0] = 0; // Резиновая смесь 5 Штук
+                craftThing[1] = 237, craftQuan[1] = 1, craftType[1] = 0; // Термитная смесь
+                thingAmount = 10;
+            }
+            case 258: // Плотная кожа
+            {
+                craftThing[0] = 260, craftQuan[0] = 5, craftType[0] = 0; // Иголки
+                craftThing[1] = 259, craftQuan[1] = 5, craftType[1] = 0; // ткань
+                craftThing[2] = 247, craftQuan[2] = 1, craftType[2] = 0; // Шкура
+                craftThing[3] = 248, craftQuan[3] = 1, craftType[3] = 0; // Шкура
+                craftThing[4] = 256, craftQuan[4] = 50, craftType[4] = 0; // Нитки
+            }
+            case 256: // Нитки
+            {
+                craftThing[0] = 260, craftQuan[0] = 1, craftType[0] = 0; // Иголки
+                craftThing[1] = 257, craftQuan[1] = 10, craftType[1] = 0; // Шерсть
+            }
+            case 259: // Ткань
+            {
+                craftThing[0] = 260, craftQuan[0] = 5, craftType[0] = 0; // Иголки
+                craftThing[1] = 244, craftQuan[1] = 5, craftType[1] = 0; // мех зайца
+                craftThing[2] = 245, craftQuan[2] = 1, craftType[2] = 0; // мех лисы
+                craftThing[3] = 245, craftQuan[3] = 1, craftType[3] = 0; // мех лисы
+                craftThing[4] = 256, craftQuan[4] = 50, craftType[4] = 0; // Нитки
+            }
+            case 260: // Иголки
+            {
+                craftThing[0] = 238, craftQuan[0] = 10, craftType[0] = 0; // Аллюминий
+            }
+            case 266: // Фильтр респиратора
+            {
+                craftThing[0] = 268, craftQuan[0] = 15, craftType[0] = 0; // Резина
+                craftThing[1] = 259, craftQuan[1] = 10, craftType[1] = 0; // Ткань
+                craftThing[2] = 238, craftQuan[2] = 5, craftType[2] = 0; // Алюминий
+            }
+            case 267: // Оболочка респиратора
+            {
+                craftThing[0] = 268, craftQuan[0] = 10, craftType[0] = 0; // Резина
+                craftThing[1] = 259, craftQuan[1] = 5, craftType[1] = 0; // Ткань
+                craftThing[2] = 238, craftQuan[2] = 20, craftType[2] = 0; // Алюминий
+            }
+            case 269: // Оболочка противогаза
+            {
+                craftThing[0] = 268, craftQuan[0] = 35, craftType[0] = 0; // Резина
+                craftThing[1] = 259, craftQuan[1] = 10, craftType[1] = 0; // Ткань
+                craftThing[2] = 238, craftQuan[2] = 30, craftType[2] = 0; // Алюминий
+            }
+            case 270: // Фильтр противогаза
+            {
+                craftThing[0] = 268, craftQuan[0] = 20, craftType[0] = 0; // Резина
+                craftThing[1] = 259, craftQuan[1] = 20, craftType[1] = 0; // Ткань
+                craftThing[2] = 238, craftQuan[2] = 10, craftType[2] = 0; // Алюминий
+            }
+        }
+    } else if (thingType == 2) // Аксессуары
     {
-        i0 = 60, q0 = 12, t0 = 0; // Палладий 12 грамм
-        i1 = 27, q1 = 1, t1 = 0; // Ammo 20,8mm
-    }
-    else if(thingId == 65) // Exlosive Ammo 11,43mm (Инженер)
+        switch(thingId)
+        {
+            case 12376: // Респиратор
+            {
+                craftThing[0] = 266, craftQuan[0] = 1, craftType[0] = 0; // Фильтр респиратора
+                craftThing[1] = 267, craftQuan[1] = 1, craftType[1] = 0; // Оболочка респиратора
+                craftThing[2] = 268, craftQuan[2] = 10, craftType[2] = 0; // Резина
+                craftThing[3] = 238, craftQuan[3] = 15, craftType[3] = 0; // Алюминий
+            }
+            case 12139: // Противогаз
+            {
+                craftThing[0] = 12376, craftQuan[0] = 1, craftType[0] = 2; // Респиратор
+                craftThing[1] = 269, craftQuan[1] = 1, craftType[1] = 0; // Оболочка противогаза
+                craftThing[2] = 270, craftQuan[2] = 1, craftType[2] = 0; // Фильтр противогаза
+                craftThing[3] = 268, craftQuan[3] = 20, craftType[3] = 0; // Резина
+                craftThing[4] = 238, craftQuan[4] = 20, craftType[4] = 0; // Алюминий
+            }
+            case 12377: // Улучшенный противогаз
+            {
+                craftThing[0] = 12377, craftQuan[0] = 1, craftType[0] = 2; // Противогаз
+                craftThing[1] = 270, craftQuan[1] = 1, craftType[1] = 0; // Фильтр противогаза
+                craftThing[2] = 268, craftQuan[2] = 25, craftType[2] = 0; // Резина
+                craftThing[3] = 259, craftQuan[3] = 10, craftType[3] = 0; // Ткань
+                craftThing[4] = 238, craftQuan[4] = 25, craftType[4] = 0; // Алюминий
+            }
+            case 12335..12373: // Крафт-аксы
+            {
+                new finditem = FindItemAccessoryCraft(thingId);
+                craftThing[0] = AccessoryCraftList[finditem][1], craftQuan[0] = AccessoryCraftList[finditem][2], craftType[0] = AccessoryCraftList[finditem][3];
+                craftThing[1] = AccessoryCraftList[finditem][4], craftQuan[1] = AccessoryCraftList[finditem][5], craftType[1] = AccessoryCraftList[finditem][6];
+                craftThing[2] = AccessoryCraftList[finditem][7], craftQuan[2] = AccessoryCraftList[finditem][8], craftType[2] = AccessoryCraftList[finditem][9];
+                craftThing[3] = AccessoryCraftList[finditem][10], craftQuan[3] = AccessoryCraftList[finditem][11], craftType[3] = AccessoryCraftList[finditem][12];
+                craftThing[4] = AccessoryCraftList[finditem][13], craftQuan[4] = AccessoryCraftList[finditem][14], craftType[4] = AccessoryCraftList[finditem][15];
+            }
+        }
+    } else if (thingType == 3) // Скины
     {
-        i0 = 60, q0 = 12, t0 = 0; // Палладий 12 грамм
-        i1 = 28, q1 = 1, t1 = 0; // Ammo 11,43mm
+        switch(thingId)
+        {
+            case 612: // Белый защитный костюм
+            {
+                craftThing[0] = 268, craftQuan[0] = 35, craftType[0] = 0; // Резина
+                craftThing[1] = 259, craftQuan[1] = 10, craftType[1] = 0; // Ткань
+            }
+            case 610, 611, 547: // Оранжевый защитный костюм
+            {
+                craftThing[0] = 613, craftQuan[0] = 1, craftType[0] = 3; // Черный защитный костюм
+                craftThing[1] = 268, craftQuan[1] = 20, craftType[1] = 0; // Резина
+                craftThing[2] = 259, craftQuan[2] = 15, craftType[2] = 0; // Ткань
+                craftThing[3] = 60, craftQuan[3] = 30, craftType[3] = 0; // Палладий
+            }
+            case 613: // Черный защитный костюм
+            {
+                craftThing[0] = 612, craftQuan[0] = 1, craftType[0] = 3; // Белый защитный костюм
+                craftThing[1] = 268, craftQuan[1] = 15, craftType[1] = 0; // Резина
+                craftThing[2] = 259, craftQuan[2] = 5, craftType[2] = 0; // Ткань
+                craftThing[3] = 60, craftQuan[3] = 10, craftType[3] = 0; // Палладий
+            }
+            case 625: // Крафт-скины
+            {
+                new finditem = FindItemSkinCraft(thingId);
+                craftThing[0] = SkinCraftList[finditem][1], craftQuan[0] = SkinCraftList[finditem][2], craftType[0] = SkinCraftList[finditem][3];
+                craftThing[1] = SkinCraftList[finditem][4], craftQuan[1] = SkinCraftList[finditem][5], craftType[1] = SkinCraftList[finditem][6];
+                craftThing[2] = SkinCraftList[finditem][7], craftQuan[2] = SkinCraftList[finditem][8], craftType[2] = SkinCraftList[finditem][9];
+                craftThing[3] = SkinCraftList[finditem][10], craftQuan[3] = SkinCraftList[finditem][11], craftType[3] = SkinCraftList[finditem][12];
+                craftThing[4] = SkinCraftList[finditem][13], craftQuan[4] = SkinCraftList[finditem][14], craftType[4] = SkinCraftList[finditem][15];
+            }
+        }
     }
-    else if(thingId == 66) // Exlosive Ammo 5,45mm (Инженер)
-    {
-        i0 = 60, q0 = 12, t0 = 0; // Палладий 12 грамм
-        i1 = 29, q1 = 1, t1 = 0; // Ammo 5,45mm
-    }
-    else if(thingId == 67) // Ammo 45mm (Инженер)
-    {
-        i0 = 60, q0 = 12, t0 = 0; // Палладий 12 грамм
-        i1 = 30, q1 = 1, t1 = 0; // Ammo 45mm
-    }
-    else if(thingId == 182) // Деталь Бомбы (Инженер)
-    {
-        i0 = 181, q0 = 3, t0 = 0; // Изолента 3 Штуки
-        i1 = 60, q1 = 40, t1 = 0; // Палладий 40 грамм
-        // i2 = 61, q2 = 10, t2 = 0; // Гелий 3 10 мл
-    }
-    else if(thingId == 90) // Монтировка
-    {
-        i0 = 201, q0 = 1, t0 = 0; // Труба
-    }
-    else if(thingId == 19) // отмычка
-    {
-        i0 = 202, q0 = 1, t0 = 0; // вилка
-    }
-    else if(thingId == 205) // Бомба Липучка (Инженер)
-    {
-        i0 = 182, q0 = 1, t0 = 0; // Деталь Бомбы 1 Штуки
-    }
-    else if (thingId == 237) // Термитная смесь
-    {
-        i0 = 60, q0 = 20, t0 = 0; // Палладий 20 Штук
-        i1 = 238, q1 = 10, t1 = 0; // Алюминий 10 Штук
-    }
-    else if (thingId == 237) // Термитная смесь
-    {
-        i0 = 60, q0 = 20, t0 = 0; // Палладий 20 Штук
-        i1 = 238, q1 = 10, t1 = 0; // Алюминий 10 Штук
-    }
-    else if (thingId == 258) // Плотная кожа
-    {
-        i0 = 260, q0 = 5, t0 = 0; // Иголки
-        i1 = 259, q1 = 5, t1 = 0; // ткань
-        i2 = 247, q2 = 1, t2 = 0; // Шкура
-        i3 = 248, q3 = 1, t3 = 0; // Шкура
-        i4 = 256, q4 = 50, t4 = 0; // Нитки
-    }
-    else if (thingId == 256) // Нитки
-    {
-        i0 = 260, q0 = 1, t0 = 0; // Иголки
-        i1 = 257, q1 = 10, t1 = 0; // Шерсть
-    }
-    else if (thingId == 259) // Ткань
-    {
-        i0 = 260, q0 = 5, t0 = 0; // Иголки
-        i1 = 244, q1 = 5, t1 = 0; // мех зайца
-        i2 = 245, q2 = 1, t2 = 0; // мех лисы
-        i3 = 245, q3 = 1, t3 = 0; // мех лисы
-        i4 = 256, q4 = 50, t4 = 0; // Нитки
-    }
-    else if (thingId == 260) // Иголки
-    {
-        i0 = 238, q0 = 10, t0 = 0; // Аллюминий
-    }
-    else if (thingId >= 12335 && thingId <= 12373) // крафт аксы
-    {
-        new finditem = FindItemAccessoryCraft(thingId);
-        i0 = AccessoryCraftList[finditem][1], q0 = AccessoryCraftList[finditem][2], t0 = AccessoryCraftList[finditem][3];
-        i1 = AccessoryCraftList[finditem][4], q1 = AccessoryCraftList[finditem][5], t1 = AccessoryCraftList[finditem][6];
-        i2 = AccessoryCraftList[finditem][7], q2 = AccessoryCraftList[finditem][8], t2 = AccessoryCraftList[finditem][9]; 
-        i3 = AccessoryCraftList[finditem][10], q3 = AccessoryCraftList[finditem][11], t3 = AccessoryCraftList[finditem][12]; 
-        i4 = AccessoryCraftList[finditem][13], q4 = AccessoryCraftList[finditem][14], t4 = AccessoryCraftList[finditem][15]; 
-    }
-    else if ((thingId >= 610 && thingId <= 611 || thingId == 625) && thingType == 3) // крафт аксы
-    {
-        new finditem = FindItemSkinCraft(thingId);
-        i0 = SkinCraftList[finditem][1], q0 = SkinCraftList[finditem][2], t0 = SkinCraftList[finditem][3];
-        i1 = SkinCraftList[finditem][4], q1 = SkinCraftList[finditem][5], t1 = SkinCraftList[finditem][6];
-        i2 = SkinCraftList[finditem][7], q2 = SkinCraftList[finditem][8], t2 = SkinCraftList[finditem][9]; 
-        i3 = SkinCraftList[finditem][10], q3 = SkinCraftList[finditem][11], t3 = SkinCraftList[finditem][12]; 
-        i4 = SkinCraftList[finditem][13], q4 = SkinCraftList[finditem][14], t4 = SkinCraftList[finditem][15]; 
-    }
-    else
+
+    // Еда
     {
         new ingId[6], ingQuan[6];
         new result = menuEatIngredient(thingId, ingId[0], ingId[1], ingId[2], ingId[3], ingId[4], ingId[5], ingQuan[0], ingQuan[1], ingQuan[2], ingQuan[3], ingQuan[4], ingQuan[5]);
         if(result)
         {
-            if(ingId[0] > 0) i0 = ingId[0], q0 = ingQuan[0], t0 = 0;
-            if(ingId[1] > 0) i1 = ingId[1], q1 = ingQuan[1], t1 = 0;
-            if(ingId[2] > 0) i2 = ingId[2], q2 = ingQuan[2], t2 = 0;
-            if(ingId[3] > 0) i3 = ingId[3], q3 = ingQuan[3], t3 = 0;
-            if(ingId[4] > 0) i4 = ingId[4], q4 = ingQuan[4], t4 = 0;
+            for (new i = 0; i < sizeof(ingId); i++)
+            {
+                if (ingId[i] <= 0) continue;
+                craftThing[i] = ingId[i];
+                craftQuan[i] = ingQuan[i];
+                craftType[i] = 0;
+            }
         }
     }
+
+    if (CheckThingQuan(thingId) == 0) thingAmount = 1;
+
     return 1;
 }
 
@@ -150,7 +242,7 @@ stock PutThingCraft(playerid, slot)
     if(thingPack > 0) return ErrorMessage(playerid, "{FF6347}Этот премет в упаковке и его нельзя использовать"), i_resetveshi(playerid);
 
     new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
-    GetThingForCraft(CreateThingID[playerid],CreateThingType[playerid], craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
+    GetThingForCraft(CreateThingID[playerid], CreateThingType[playerid], CreateThingAmount[playerid], craftId, craftQuan, craftType);
     
     new yes = -1;
     for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
@@ -255,7 +347,7 @@ stock CheckCraftReady(playerid)
 stock GetFullThingForCraft(playerid, type_message) // Проверяем, все ли требуемые предметы лежат в слотах
 {
     new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
-    GetThingForCraft(CreateThingID[playerid],CreateThingType[playerid], craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
+    GetThingForCraft(CreateThingID[playerid], CreateThingType[playerid], CreateThingAmount[playerid], craftId, craftQuan, craftType);
     
     new quan, noFull;
     for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
@@ -326,7 +418,7 @@ stock GetThingInCraftSlot(playerid, thingId, thingType) // Ищем предме
 stock TakeThingForCraft(playerid) // Собираем инфу о предметах, которые нужно забрать
 {
     new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
-    GetThingForCraft(CreateThingID[playerid],CreateThingType[playerid], craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
+    GetThingForCraft(CreateThingID[playerid], CreateThingType[playerid], CreateThingAmount[playerid], craftId, craftQuan, craftType);
     
     mysql_tquery(pearsq, "START TRANSACTION;");
     for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
@@ -434,12 +526,13 @@ stock SelectThingCraft(playerid, thingId, thingType) // Выбрали пред�
     PlayerPlaySound(playerid,1052,0,0,0);
     CreateThingID[playerid] = thingId;
     CreateThingType[playerid] = thingType;
+
+    new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
+    GetThingForCraft(thingId, thingType, CreateThingAmount[playerid], craftId, craftQuan, craftType);
     
     new line[150],lines[1400];
-    format(line,sizeof(line),"{ff9000}Вы выбрали %s", GetNameThing(0, thingId, thingType, 0)), strcat(lines,line);
+    format(line,sizeof(line),"{ff9000}Вы выбрали %s (%d шт.)", GetNameThing(0, thingId, thingType, 0), CreateThingAmount[playerid]), strcat(lines,line);
     format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
-    new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
-    GetThingForCraft(thingId,thingType, craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
     for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
     {
         if(craftId[i] > 0) format(line,sizeof(line),"\n{0088ff}- %s | Количество: %d", GetNameThing(0, craftId[i], craftType[i], 0), craftQuan[i]), strcat(lines,line);
@@ -599,11 +692,15 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
             {
                 new thingId = CreateThingID[playerid];
                 new thingType = CreateThingType[playerid];
-                new line[100],lines[1000];
-                format(line,sizeof(line),"{ff9000}Вы выбрали %s", GetNameThing(0, thingId, CreateThingType[playerid], 0)), strcat(lines,line);
-                format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
+
                 new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
-                GetThingForCraft(thingId,thingType, craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
+                GetThingForCraft(thingId, thingType, CreateThingAmount[playerid], craftId, craftQuan, craftType);
+                
+                new thingAmount = CreateThingAmount[playerid];
+
+                new line[100],lines[1000];
+                format(line,sizeof(line),"{ff9000}Вы выбрали %s (%d шт.)", GetNameThing(0, thingId, CreateThingType[playerid], 0), thingAmount), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
                 for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
                 {
                     if(craftId[i] > 0) format(line,sizeof(line),"\n{0088ff}- %s | Количество: %d", GetNameThing(0, craftId[i], craftType[i], 0), craftQuan[i]), strcat(lines,line);
@@ -613,7 +710,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
             }
             else
             {
-                new line[100],lines[800];
+                new line[100],lines[1000];
                 if(Tabs_Load[playerid] == 11) // Верстак
                 {
                     if(OnlineInfo[playerid][oInventSelectLeft] == 9999) // Ничего не выбрано для улучшений, значит открываем меню создания
@@ -628,6 +725,14 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                         format(line,sizeof(line),"\n{ff9000}Отмычка"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Бомба Липучка"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Термитная смесь"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Резина"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Оболочка Респиратора"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Фильтр Респиратора"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Респиратор"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Оболочка Противогаза"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Фильтр Противогаза"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Противогаз"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Улучшенный противогаз"), strcat(lines,line);
                         ShowDialog(playerid,1132,DIALOG_STYLE_LIST,"{ff9000}Верстак",lines,"Выбор","Отмена");
                     }
                     else
@@ -651,7 +756,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     format(line,sizeof(line),"{ff9000}Термитная смесь"), strcat(lines,line);
                     ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Химический Стол",lines,"Выбор","Отмена");
                 }
-                else if(Tabs_Load[playerid] == 17)
+                else if(Tabs_Load[playerid] == 17) // Станок
                 {
                     dialogCraftList(playerid);
                 }
@@ -726,7 +831,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     \n{ffcc66}на кнопку с галочкой, чтобы начать процесс");
                     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Химический Стол",lines,"*","");
                 }
-                else if(Tabs_Load[playerid] == 17) // Химический Стол
+                else if(Tabs_Load[playerid] == 17) // Ткацкий станок
                 {
                     format(lines,sizeof(lines),
                     "\n{ff9000}Создание Предметов\
@@ -789,8 +894,8 @@ stock ClickCraftProcess(playerid, tabs_load)
     }
     else
     {
-        ClearCraftProcess(playerid);
         HideDrawCraftProcess(playerid);
+        ClearCraftProcess(playerid);
         ErrorMessage(playerid, "{FF6347}Вы не попали в зелёную зону и провалили процесс");
 
         if(tabs_load == 10) ErrorMessageQuestProcess(playerid); // Ремонт Двигателя
@@ -1093,7 +1198,7 @@ stock CreateThingAfterCraft(playerid)
         if(CreateThingType[playerid] == 2) param = FindParamInCraftSlot(playerid);
         if(CreateThingType[playerid] == 3) param += 50;
         if(CreateThingType[playerid] >= 2 && CreateThingType[playerid] <= 3) param += get_ability(playerid,11);
-        new put_inva = GiveThingPlayer(playerid, CreateThingID[playerid], 1, param, 0, CreateThingType[playerid], 0, 9999); // Выдаём предмет игроку
+        new put_inva = GiveThingPlayer(playerid, CreateThingID[playerid], CreateThingAmount[playerid], param, 0, CreateThingType[playerid], 0, 9999); // Выдаём предмет игроку
 	    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}В вашем инвентаре не хватает места");
 
         if(PlayerInfo[playerid][pAchieve][136] == 0 && CreateThingType[playerid] == 2) AchievePlayer(playerid, 136, 1);

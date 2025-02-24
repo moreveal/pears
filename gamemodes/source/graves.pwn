@@ -282,8 +282,7 @@ stock Graves_Open(playerid, graveid)
         case GRAVE_TYPE_NORMAL: illness_chance = 28, gold_chance = 10, silver_chance = 65, item_chance = 20;
         case GRAVE_TYPE_EXPENSIVE: illness_chance = 8, gold_chance = 40, silver_chance = 100, item_chance = 5;
     }
-    // [Возможно, следует добавить корректировку шансов для конкретных биографий]
-
+    
     // Назначаем игроку болезнь
     new illnessId = -1;
     if (random(100) + 1 <= illness_chance) {

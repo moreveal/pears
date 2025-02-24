@@ -9,33 +9,24 @@ fpick 94 - Выдача голды человеку.
 oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
 */
 
+// Добавляем enum для типов кейсов
+enum CASE_TYPE_ENUM 
+{
+    CASE_TYPE_NORMAL,
+    CASE_TYPE_GOLD
+};
+
 // Обычный Транспорт
-new ThingVehiclecaseGift[MAX_MODELS_VEHICLE];
+new ThingVehiclecaseGift[MAX_VEHICLE_ALL];
 new ThingVehicleQuan;
 
 // Премиум транспорт
-new ThingPremiumVehiclecaseGift[MAX_MODELS_VEHICLE];
+new ThingPremiumVehiclecaseGift[MAX_VEHICLE_ALL];
 new ThingPremiumVehicleQuan;
 
 // Лимитированный транспорт
-new ThingLimitedVehiclecaseGift[MAX_MODELS_VEHICLE];
+new ThingLimitedVehiclecaseGift[MAX_VEHICLE_ALL];
 new ThingLimitedehicleQuan;
-
-// Мужские скины
-new ThingSkincaseGift[MAX_MODELS_SKIN];
-new ThingSkinQuan;
-
-// Женские скины
-new ThingSkincaseGiftFemale[MAX_MODELS_SKIN];
-new ThingSkinQuanFemale;
-
-// Мужские скины TOP
-new ThingSkinTopcaseGift[MAX_MODELS_SKIN];
-new ThingSkinTopQuan;
-
-// Женские скины TOP
-new ThingSkinTopcaseGiftFemale[MAX_MODELS_SKIN];
-new ThingSkinTopQuanFemale;
 
 // Аксессуары
 new ThingAccessoryGift[MAX_ACCESSORY];
@@ -87,9 +78,9 @@ stock CreateVehicleGiftCase()
     ThingLimitedehicleQuan = 0;
 
     // Собираем обычный транспорт
-    for(new v = 400; v < 612; v++)
+    for(new i = 0; i < MAX_VEHICLE_ALL; i++)
     {
-        new i = CorrectVehicleID(v);
+        new v = CorrectVehicleList(i);
 
         if(!IsAVehExisting(v)
             || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
@@ -104,64 +95,11 @@ stock CreateVehicleGiftCase()
                 || (VehLimited[i] > 0 && (VehQuan[i] < VehLimited[i] || VehLimitedCase[i] < VehLimited[i])))
                 {
                     if(vehClass == 1) ThingPremiumVehiclecaseGift[ThingPremiumVehicleQuan] = v, ThingPremiumVehicleQuan ++; // Premium Vehicle
-                    else ThingVehiclecaseGift[ThingVehicleQuan] = v, ThingVehicleQuan ++;
-                }
-        }
-    }
-
-    // Собираем кастомный транспорт
-    for(new v = 2000; v < 2000 + MAX_VEHICLE_CUSTOM; v++)
-    {
-        new i = CorrectVehicleID(v);
-
-        if(!IsAVehExisting(v)
-            || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
-
-        new vehClass = GetVehicleClass(v);
-        if(vehClass == 0 || (vehClass >= 5 && vehClass <= 7)) continue; // Пропускаем невалидные тачки по классу
-
-        new vehType = GetVehicleType(v);
-        if(vehType == 1 || vehType == 2)
-        {
-            if(VehSale[i] == 1
-                || (VehLimited[i] > 0 && (VehQuan[i] < VehLimited[i] || VehLimitedCase[i] < VehLimited[i]))) 
-                {
-                    if(vehClass == 1) ThingPremiumVehiclecaseGift[ThingPremiumVehicleQuan] = v, ThingPremiumVehicleQuan ++; // Premium Vehicle
                     else if(vehClass == 8) ThingLimitedVehiclecaseGift[ThingLimitedehicleQuan] = v, ThingLimitedehicleQuan ++; // Limited Vehicle
                     else ThingVehiclecaseGift[ThingVehicleQuan] = v, ThingVehicleQuan ++;
                 }
         }
     }
-    return true;
-}
-
-stock CreateSkinGiftCase() // Собираем скины
-{
-    ThingSkinQuan = 0;
-    ThingSkinQuanFemale = 0;
-
-    ThingSkinTopQuan = 0;
-    ThingSkinTopQuanFemale = 0;
-    
-    for(new i = 1; i < MAX_MODELS_SKIN; i++)
-    {
-        if(SkinSale[i] == 1) 
-        {
-            new genderSkin = GetSkinSex(i);
-
-            if(SkinTop[i] == true)
-            {
-                if(genderSkin == 1 || genderSkin == 0) ThingSkinTopcaseGift[ThingSkinTopQuan] = i, ThingSkinTopQuan ++;
-                else if(genderSkin == 2 || genderSkin == 0) ThingSkinTopcaseGiftFemale[ThingSkinTopQuanFemale] = i, ThingSkinTopQuanFemale ++;
-            }
-            else
-            {
-                if(genderSkin == 1 || genderSkin == 0) ThingSkincaseGift[ThingSkinQuan] = i, ThingSkinQuan ++;
-                else if(genderSkin == 2 || genderSkin == 0) ThingSkincaseGiftFemale[ThingSkinQuanFemale] = i, ThingSkinQuanFemale ++;
-            }
-        }
-    }
-    
     return true;
 }
 
@@ -250,6 +188,8 @@ stock CommonThingCase(&thingId, &thingQuan, &thingType, &thingPack)
 // Рандомайзер для создания шкатулки
 stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &thingPack, const name[] = "default")
 {
+    #pragma unused playerid
+
     // Поиск кастомного шкатулки
     new caseID = GetCustomCaseID(name);
     if(caseID >= 0) // Обнаружили кастомный шкатулки по идентификатору
@@ -374,163 +314,28 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         }
     }
 
-    else if(thingType == 3) // Одежда (Список собирается при запуске сервера)
+    else if(thingType == 3) // Одежда (Новый рандомайзер для скинов в skin_custom.pwn от 21.05.25)
     {
-        new bool:givePremiumSkin = false;
-        switch(random(5))
-        {
-            case 1:
-            {
-                if(strcmp(name,"gold") == 0) givePremiumSkin = true; // Premium
-                else givePremiumSkin = false;
-            }
-            default: givePremiumSkin = false;
-        }
-        if (givePremiumSkin)
-        {
-            if(playerid == INVALID_PLAYER_ID)
-            {
-                if (ThingSkinTopQuan == 0)
-                {
-                    givePremiumSkin = false;
-                }
-                else
-                {
-                    new thingTemp = random(ThingSkinTopQuan);
-                    thingId = ThingSkinTopcaseGift[thingTemp];
-                }
-            }
-            else
-            {
-                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в шкатулке
-                {
-                    if (ThingSkinTopQuan == 0)
-                    {
-                        givePremiumSkin = false;
-                    }
-                    else
-                    {
-                        new thingTemp = random(ThingSkinTopQuan);
-                        thingId = ThingSkinTopcaseGift[thingTemp];
-                    }
-                }
-                else // Женский скин в шкатулке
-                {
-                    if (ThingSkinTopQuanFemale == 0)
-                    {
-                        givePremiumSkin = false;
-                    }
-                    else
-                    {
-                        new thingTemp = random(ThingSkinTopQuanFemale);
-                        thingId = ThingSkinTopcaseGiftFemale[thingTemp];
-                    }
-                }
-            }
-        }
+        new skinIndex;
+        if(strcmp(name,"gold") == 0) skinIndex = GetRandomSkinFromCase(CASE_TYPE_GOLD, PlayerInfo[playerid][pSex]);
+        else skinIndex = GetRandomSkinFromCase(CASE_TYPE_NORMAL, PlayerInfo[playerid][pSex]);
 
-        if (!givePremiumSkin) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет премиум скинов в шкатулке
-        {
-            if(playerid == INVALID_PLAYER_ID)
-            {
-                if (ThingSkinQuan == 0)
-                {
-                    return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для шкатулки нет, выпадет обычный предмет
-                }
-                new thingTemp = random(ThingSkinQuan);
-                thingId = ThingSkincaseGift[thingTemp];
-            }
-            else
-            {
-                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в шкатулке
-                {
-                    if (ThingSkinQuan == 0)
-                    {
-                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для шкатулки нет, выпадет обычный предмет
-                    }
-                    new thingTemp = random(ThingSkinQuan);
-                    thingId = ThingSkincaseGift[thingTemp];
-                }
-                else // Женский скин в шкатулке
-                {
-                    if (ThingSkinQuanFemale == 0)
-                    {
-                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для шкатулки нет, выпадет обычный предмет
-                    }
-                    new thingTemp = random(ThingSkinQuanFemale);
-                    thingId = ThingSkincaseGiftFemale[thingTemp];
-                }
-            }
-        }
+        if(skinIndex == -1) return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг ошибка выбора скина, дропаем обычный предмет
+
+        thingId = skinIndex;
         thingPara = 0;
         thingQuan = 1;
     }
     else if(thingType == 5) // Транспорт (Список собирается при запуске сервера)
     {
-        new bool:givePremiumVehicle = false;
-        new bool:giveLimitedVehicle = false;
-        switch(random(40))
-        {
-            case 8, 9, 10, 11:{
-                if(strcmp(name,"gold") == 0) givePremiumVehicle = true; // Premium
-                else givePremiumVehicle = false;
-            }
-            case 1:{
-                if(strcmp(name,"gold") == 0) giveLimitedVehicle = true;// Limited
-                else giveLimitedVehicle = false;// Limited
-            }
-            default: givePremiumVehicle = giveLimitedVehicle = false; // Прочие тс
-        }
+        new vehicleList;
+        if(strcmp(name,"gold") == 0) vehicleList = GetRandomVehicleFromCase(CASE_TYPE_GOLD);
+        else vehicleList = GetRandomVehicleFromCase(CASE_TYPE_NORMAL);
 
-        if (giveLimitedVehicle)
-        {
-            if (ThingLimitedehicleQuan == 0)
-            {
-                giveLimitedVehicle = false; // Лимитированных машин нет
-                givePremiumVehicle = true; // Попробуем выдать премиум машину
-            }
-            else
-            {
-                new bool:gave = false;
-                for (new i = 0; i < 3; i++)
-                {
-                    new thingTemp = random(ThingLimitedehicleQuan);
-                    thingId = ThingLimitedVehiclecaseGift[thingTemp];
-                    new correctVehId = CorrectVehicleID(thingId);
-                    if ((VehQuan[correctVehId] + VehLimitedCase[correctVehId]) < VehLimited[correctVehId])
-                    {
-                        gave = true;
-                        break;
-                    }
-                }
-                if (!gave)
-                {
-                    giveLimitedVehicle = false; // Лимитированных машин нет
-                    givePremiumVehicle = true; // Попробуем выдать премиум машину
-                }
-            }
-        }
-        if (givePremiumVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных машин в шкатулках
-        {
-            if (ThingPremiumVehicleQuan == 0)
-            {
-                givePremiumVehicle = false; // Премиум машин нет
-            }
-            else
-            {
-                new thingTemp = random(ThingPremiumVehicleQuan);
-                thingId = ThingPremiumVehiclecaseGift[thingTemp];
-            }
-        }
-        if (!givePremiumVehicle && !giveLimitedVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных/премиум машин в шкатулках
-        {
-            if (ThingVehicleQuan == 0)
-            {
-                return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг машин для шкатулки нет, выпадет обычный предмет
-            }
-            new thingTemp = random(ThingVehicleQuan);
-            thingId = ThingVehiclecaseGift[thingTemp];
-        }
+        if(vehicleList == -1) return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг ошибка выбора, дропаем обычный предмет
+
+        thingId = CorrectVehicleList(vehicleList); // Обязательно корректируем id из набора, для получения модели транспорта!
+        thingPara = 0;
         new colorveh = 1 + random(254); // Color Vehicle
         thingQuan = colorveh;
     }
@@ -692,4 +497,307 @@ stock GivePlayerCase(playerid, giveplayerid, const name[] = "default", bool:oneP
 
     if(onePlayer == true) AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, name);
     return true;
+}
+
+//===================== Собираем скины в кейс =======================
+
+// Правильное объявление массива с инициализацией
+static const Float:gCaseClassChances[2][4] = {
+    // Обычный кейс          COMMON  UNCOMMON  RARE  LEGENDARY
+    {60.0, 40.0, 0.0, 0.0}, // CASE_TYPE_NORMAL (индекс 0)
+    {0.0, 65.0, 20.0, 15.0}  // CASE_TYPE_GOLD    (индекс 1)
+};
+
+GetRandomSkinFromCase(CASE_TYPE_ENUM:caseType, sex = 0) 
+{
+    if(caseType != CASE_TYPE_NORMAL && caseType != CASE_TYPE_GOLD) 
+        return -1;
+
+    // 1. Выбираем класс скина
+    new SKINCLASSENUM:selectedClass = GetRandomSkinClass(caseType);
+    if(selectedClass == SKINCLASS_INVALID) 
+        return -1;
+
+    // 2. Выбираем скин внутри класса
+    return GetRandomSkinByClass(selectedClass, caseType, sex);
+}
+
+// Исправленная функция GetRandomSkinClass
+SKINCLASSENUM:GetRandomSkinClass(CASE_TYPE_ENUM:caseType) 
+{
+    // Проверка валидности индекса
+    if(_:caseType < 0 || _:caseType >= sizeof(gCaseClassChances)) 
+        return SKINCLASS_INVALID;
+
+    new Float:total = 0.0;
+    new Float:randValue = frandom(100.0);
+    
+    for(new i = 0; i < sizeof(gCaseClassChances[]); i++) 
+    {
+        // Явное приведение типа для caseType
+        total += gCaseClassChances[_:caseType][i];
+        
+        if(randValue <= total) 
+        {
+            switch(i) {
+                case 0: return SKINCLASS_COMMON;
+                case 1: return SKINCLASS_UNCOMMON;
+                case 2: return SKINCLASS_RARE;
+                case 3: return SKINCLASS_LEGENDARY;
+            }
+        }
+    }
+    return SKINCLASS_INVALID;
+}
+
+GetRandomSkinByClass(SKINCLASSENUM:targetClass, CASE_TYPE_ENUM:caseType, sex = 0) 
+{
+    new totalWeight = 0;
+    new skinCount = sizeof(SkinPearsInfo);
+    new validSkins[MAX_MODELS_SKIN], validCount = 0;
+
+    for(new i = 0; i < skinCount; i++) 
+    {
+        // Разрешаем RARE и LEGENDARY для целевого LEGENDARY класса
+        if(targetClass == SKINCLASS_LEGENDARY) {
+            if(SkinPearsInfo[i][eSkinClass] != SKINCLASS_RARE && 
+               SkinPearsInfo[i][eSkinClass] != SKINCLASS_LEGENDARY) continue;
+        }
+        else {
+            if(SkinPearsInfo[i][eSkinClass] != targetClass) continue;
+        }
+        
+        if(SkinPearsInfo[i][eSkinClass] == SKINCLASS_SYSTEM) continue;
+
+        if(sex == 1 && GetSkinSex(i) == 2) continue; // Пропускаем женские скины для мужчин
+        if(sex == 2 && GetSkinSex(i) == 1) continue; // Пропускаем мужские скины для женщин
+        if(!IsSkinAllowedInCase(i, caseType)) continue;
+
+        validSkins[validCount++] = i;
+    }
+
+    if(validCount == 0) return -1;
+
+    // Используем веса на основе целевого класса
+    new skinWeights[MAX_MODELS_SKIN];
+    for(new i = 0; i < validCount; i++) 
+    {
+        new idx = validSkins[i];
+        skinWeights[i] = GetSkinWeightByCost(targetClass, SkinPearsInfo[idx][eSkinGold]);
+        totalWeight += skinWeights[i];
+    }
+
+    new randomWeight = random(totalWeight);
+    new accumulated = 0;
+
+    for(new i = 0; i < validCount; i++) 
+    {
+        accumulated += skinWeights[i];
+        if(randomWeight < accumulated) 
+        {
+            return validSkins[i];
+        }
+    }
+    return -1;
+}
+
+// Проверка доступности скина в кейсе
+IsSkinAllowedInCase(skinIndex, CASE_TYPE_ENUM:caseType) 
+{
+    switch(caseType) 
+    {
+        case CASE_TYPE_NORMAL: 
+            return SkinPearsInfo[skinIndex][eSkinClass] != SKINCLASS_RARE &&
+                   SkinPearsInfo[skinIndex][eSkinClass] != SKINCLASS_LEGENDARY;
+        
+        case CASE_TYPE_GOLD: 
+            return SkinPearsInfo[skinIndex][eSkinClass] != SKINCLASS_COMMON;
+    }
+    return false;
+}
+
+// Формула веса на основе стоимости (чем выше цена - тем меньше вес)
+GetSkinWeightByCost(SKINCLASSENUM:class, goldCost) 
+{
+    switch(class) 
+    {
+        case SKINCLASS_COMMON:    return 100000 / (goldCost + 1); // Базовый множитель для баланса
+        case SKINCLASS_UNCOMMON:  return 75000 / (goldCost + 1);
+        case SKINCLASS_RARE:     return 50000 / (goldCost + 1);
+        case SKINCLASS_LEGENDARY: return 25000 / (goldCost + 1);
+    }
+    return 1;
+}
+
+// Пример использования в командах
+CMD:opencase(playerid, params[]) {
+
+    if(server != 0) return 0;
+
+    new caseTypeStr[12], CASE_TYPE_ENUM:caseType;
+    if(sscanf(params, "s[12]", caseTypeStr)) {
+        return SendClientMessage(playerid, 0xFF0000AA, "Используй: /opencase [default/gold]");
+    }
+    
+    if(!strcmp(caseTypeStr, "default", true)) {
+        caseType = CASE_TYPE_NORMAL;
+    }
+    else if(!strcmp(caseTypeStr, "gold", true)) {
+        caseType = CASE_TYPE_GOLD;
+    }
+    else {
+        return SendClientMessage(playerid, 0xFF0000AA, "Доступные кейсы: default, gold");
+    }
+
+    new skinIndex = GetRandomSkinFromCase(caseType);
+    if(skinIndex == -1) return SendClientMessage(playerid, 0xFF0000AA, "Ошибка при открытии кейса!");
+
+    // Выдача скина
+    m_custom_sync_SetPlayerSkin(playerid, skinIndex);
+    
+    // Отправка цветного сообщения
+    SendClientMessage(playerid, -1, "Вы получили: %s | Редкость: %s {cccccc}| Gold: {ffcc00}%d", 
+        SkinPearsInfo[skinIndex][eSkinName], GetSkinClassName(skinIndex), SkinPearsInfo[skinIndex][eSkinGold]);
+    return 1;
+}
+
+//===================== Собираем транспорт в кейс =========================
+
+// Шансы классов для каждого типа кейса (в процентах)
+static const Float:gVehicleClassChances[2][9] = {
+    // Обычный кейс (классы 2,3,4)
+    {0.0, 0.0, 20.0, 50.0, 30.0, 0.0, 0.0, 0.0, 0.0}, 
+    // Голд кейс (классы 1,2,3,4,8)
+    {0.0, 5.0, 20.0, 45.0, 28.0, 0.0, 0.0, 0.0, 2.0}  
+};
+
+GetRandomVehicleFromCase(CASE_TYPE_ENUM:caseType) 
+{
+    // 1. Выбираем класс транспорта
+    new vehicleClass = GetRandomVehicleClass(caseType);
+    if(vehicleClass == 0) 
+    {
+        if(server == 0) SendClientMessageToAll(-1, "GetRandomVehicleFromCase vehicleClass == 0 (не нашли класс при создании кейса)");
+        return -1; 
+    }
+
+    // 2. Выбираем транспорт внутри класса
+    return GetRandomVehicleByClass(vehicleClass, caseType);
+}
+
+GetRandomVehicleClass(CASE_TYPE_ENUM:caseType) 
+{
+    if(_:caseType < 0 || _:caseType >= sizeof(gVehicleClassChances))
+        return 0;
+
+    new Float:total = 0.0;
+    for(new i = 0; i < 9; i++)
+        total += gVehicleClassChances[_:caseType][i];
+
+    new Float:rand = frandom(total);
+    new Float:accum = 0.0;
+
+    for(new i = 0; i < 9; i++) {
+        accum += gVehicleClassChances[_:caseType][i];
+        if(rand <= accum)
+            return i;
+    }
+    return 0;
+}
+
+GetRandomVehicleByClass(vehicleClass, CASE_TYPE_ENUM:caseType) 
+{
+    new validVehicles[MAX_VEHICLE_ALL];
+    new validWeights[MAX_VEHICLE_ALL];
+    new validCount = 0;
+    new totalWeight = 0;
+
+    for(new i = 0; i < MAX_VEHICLE_ALL; i++) 
+    {
+        new v = CorrectVehicleList(i);
+        if(!IsAVehExisting(v)) continue; // Недоступный транспорт
+        if(VehGold[i] <= 0) continue; // Без голд цены не пускаем в кейс
+        if(GetVehicleType(v) != 1 && GetVehicleType(v) != 2) continue; // Только авто и мото транспорт
+        
+        // Проверка класса
+        if(vehicleClass == 8)
+        {
+            // При выпадении лимитированного, собираем набор и премиальных, ибо нефиг
+            if(GetVehicleClass(v) != 8 && GetVehicleClass(v) != 1) continue;
+        }
+        else
+        {
+            if(GetVehicleClass(v) != vehicleClass) continue;
+        }
+        
+        // Проверка типа кейса
+        switch(caseType) 
+        {
+            case CASE_TYPE_NORMAL:
+            {
+                if(vehicleClass < 2 || vehicleClass > 4) continue;
+            }
+            case CASE_TYPE_GOLD:
+            {
+                if(!(vehicleClass == 1 || vehicleClass == 2 || vehicleClass == 3 || vehicleClass == 4 || vehicleClass == 8)) continue;
+                if(v < 2000) continue; // Убираем из GOLD кейса дефолтный транспорт
+            }
+        }
+        
+        // Дополнительные условия
+        if(VehSale[i] == 0 && vehicleClass != 8) continue; // Не на продаже
+        if(VehLimited[i] > 0 && (VehQuan[i] >= VehLimited[i] || VehLimitedCase[i] >= VehLimited[i])) 
+            continue;
+
+        // Рассчет веса (обратно пропорционально цене)
+        new weight = CalculateVehicleWeight(VehGold[i]);
+        validWeights[validCount] = weight;
+        validVehicles[validCount] = i;
+        totalWeight += weight;
+        validCount++;
+    }
+
+    if(validCount == 0) return -1;
+
+    // Выбор случайного транспорта
+    new randomWeight = random(totalWeight);
+    new accumulated = 0;
+
+    for(new i = 0; i < validCount; i++) 
+    {
+        accumulated += validWeights[i];
+        if(randomWeight < accumulated) 
+        {
+            return validVehicles[i];
+        }
+    }
+    return -1;
+}
+
+CalculateVehicleWeight(goldAmount) 
+{
+    // Чем больше goldAmount, тем меньше вес
+    // Используем обратную пропорциональность с защитой от деления на 0
+    return floatround(100000.0 / (float(goldAmount) + 1.0));
+}
+
+// Пример использования в команде открытия кейса
+CMD:opencaseveh(playerid, params[]) 
+{
+    new caseTypeStr[8], CASE_TYPE_ENUM:caseType;
+    if(sscanf(params, "s[8]", caseTypeStr))
+        return SendClientMessage(playerid, 0xFF0000AA, "Используй: /opencaseveh [default/gold]");
+
+    if(!strcmp(caseTypeStr, "default", true)) caseType = CASE_TYPE_NORMAL;
+    else if(!strcmp(caseTypeStr, "gold", true)) caseType = CASE_TYPE_GOLD;
+    else return SendClientMessage(playerid, 0xFF0000AA, "Доступные типы: default, gold");
+
+    new vehicleList = GetRandomVehicleFromCase(caseType);
+    if(vehicleList == -1) return SendClientMessage(playerid, 0xFF0000AA, "Не удалось выбрать транспорт");
+
+    new modelID = CorrectVehicleList(vehicleList);
+    
+    SendClientMessage(playerid, -1, "Вы получили: %s modelID %d [Class: %s] [Gold: %d]", 
+        GetVehicleName(modelID), modelID, vehClassName[GetVehicleClass(modelID)], VehGold[vehicleList]);
+    return 1;
 }

@@ -10,6 +10,7 @@ CMD:blockwork(playerid, const params[])
 	return 1;
 }
 
+alias:netstat("networkstats", "netstats")
 CMD:netstat(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 9) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
@@ -419,7 +420,7 @@ CMD:pricevehup(playerid, const params[])
 	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
 	
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new v = 0; v < MAX_VEHICLE_ALL; v++)
 	{
 		VehGos[v] += params[0];
 		SaveVehiclePrice(v);
@@ -438,7 +439,7 @@ CMD:pricevehdown(playerid, const params[])
 	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
 
 	mysql_tquery(pearsq, "START TRANSACTION;");
-	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	for(new v = 0; v < MAX_VEHICLE_ALL; v++)
 	{
 		if(VehGos[v]-params[0] >= 1000) VehGos[v] -= params[0], SaveVehiclePrice(v);
 	}
@@ -955,7 +956,7 @@ CMD:tp(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
  	{
-  		ShowDialog(playerid,75,DIALOG_STYLE_LIST,"{ff9000}Телепорты 1","Тихое Место\nАвтомеханик Хенк\nЛесопилка\nРыбацкая Бухта\nБаза Дальнобойщиков\nЦерковь\nЛавка Лесника\nЧиллиад\nГоспиталь\nОружейный Завод\nБанк\nЛуна\nNASA\nКвартиры (1)\nАрхеология\nОбразовательный Центр\nЛедовый Дворец","Выбрать","Отмена");
+  		ShowDialog(playerid,75,DIALOG_STYLE_LIST,"{ff9000}Телепорты 1","Тихое Место\nАвтомеханик Хенк\nЛесопилка\nРыбацкая Бухта\nБаза Дальнобойщиков\nЦерковь\nЛавка Лесника\nЧиллиад\nГоспиталь\nХимический Завод\nБанк\nЛуна\nNASA\nКвартиры (1)\nАрхеология\nОбразовательный Центр\nЛедовый Дворец","Выбрать","Отмена");
     	return 1;
     }
    	return 1;
@@ -1839,6 +1840,7 @@ stock AHelpList(playerid)
 		format(string,sizeof(string),"\n{cccccc}/mysql /mysql2 /nametag /paygold /invest /getinvest /rasformbiz /bizmaf /mafship /rrank /raccess /freezegang /limitcapt /stopgz /reloadcapt /rsetting /accessory /editmodel /exportmodel"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/reloadgz /setgz /vote /relpcapt /readw /relpallcapt /giveunit /takeunit /work2 /leadvig /unleadvig /skick /reproof /unreproof /fdom /unfdom /fbiz /unfbiz /givemats /delmats"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/rskin /admwarn /unadmwarn /au /ai /ag /lwork /givegun /givepoint /givescore /takepoint /takescore /froom /unfroom /inhb /outhb /hidden /asellroom /rngsabomb"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/newdrugspot /gotodrugspot /editdrugspot /drugspots"), strcat(str,string);
 	}
 	if(PlayerInfo[playerid][pSoska] >= 11)
 	{

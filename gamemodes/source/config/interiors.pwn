@@ -170,3 +170,9 @@
 
 #define WORLD_CASINO_HOL -1
 #define INT_CASINO_HOL 55
+
+//==================================================
+// Casino Hol
+
+#define WORLD_ZOOPET 1001
+#define INT_ZOOPET 0
