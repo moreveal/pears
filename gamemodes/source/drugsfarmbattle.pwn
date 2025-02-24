@@ -83,7 +83,7 @@ stock NarcoFarmCreateBattle(farmid, bool: force = false)
     if (!IsAMafiaID(NarcoFarmInfo[farmid][dfiFraction])) // Никому не принадлежит
     {
         #pragma warning disable 204
-        new skins[] = {15754, 15733, 15723, 15506};
+        new skins[] = {1, 32, 133, 132};
         new weapons[] = {24, 25, 30, 33};
         for (new i = 0; i < MAX_NARCO_FARMS_NPC; i++)
         {
@@ -175,6 +175,12 @@ stock NarcoFarmNotifyAboutBattle(farmid, status)
     {
         SendRadioMessage(fractionid,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Началась подготовка к битве за ферму {ffcc66}Не покидайте территорию фермы!");
         SendRadioMessage(attack_fraction,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Началась подготовка к битве за ферму {ffcc66}Не покидайте территорию фермы!");
+        foreach(Player, playerid)
+        {
+            if(fraction(playerid) != attack_fraction) continue;
+            SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Нападаение происходит на ферму %d. Метка GPS установлена на неё", NarcoFarmInfo[farmid][dfiID]);
+            CreateGps(playerid, NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][2], -1, -1, 2.0);
+        }
     }
     else {
         SendRadioMessage(fractionid,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: Ваша мафия снизила время на подготовку. Осталось 30 секунд!");
@@ -422,7 +428,8 @@ stock NarcoFarmBattle_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, 
     #pragma unused bodypart
 
     new farmid = NarcoFarmGetNearest(damagerid);
-    
+    if(farmid == INVALID_NARCOFARM_ID) return 1;
+
     new npc_id = -1;
     for (new i = 0; i < MAX_NARCO_FARMS_NPC; i++)
     {
@@ -435,9 +442,6 @@ stock NarcoFarmBattle_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, 
 
     if (npc_id > -1)
     {
-        if (!NarcoFarmIsExists(farmid)) return 0;
-        if (fraction(damagerid) != NarcoFarmBattleInfo[farmid][dfbiAttackFraction]) return 0;
-
         new Float:tempHealt = 0.0;
         GetNpcHealth(NarcoFarmNPC[farmid][npc_id], tempHealt);
         if(tempHealt - amount <= 0.0 && NarcoFarmNpcDeath[farmid][npc_id] == false) 
@@ -445,6 +449,7 @@ stock NarcoFarmBattle_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, 
             NarcoFarmBattleInfo[farmid][dfbiAttackScore]++;
             NarcoFarmNpcDeath[farmid][npc_id] = true;
         }
+        return false;
     }
 
     return 1;
@@ -452,10 +457,11 @@ stock NarcoFarmBattle_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, 
 
 stock NarcoFarmEnterDynamicArea(playerid, farmid)
 {
+    #pragma unused playerid
     if(NarcoFarmIsBattleActive(farmid))
     {
-        if(NarcoFarmBattleInfo[farmid][dfbiAttackFraction] == fraction(playerid)) CreateGps(playerid, NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][2], -1, -1, 2.0);
-        else if(NarcoFarmBattleInfo[farmid][dfbiDefendFraction] == fraction(playerid)) CreateGps(playerid, NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][2], -1, -1, 2.0);
+        //if(NarcoFarmBattleInfo[farmid][dfbiAttackFraction] == fraction(playerid)) CreateGps(playerid, NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][2], -1, -1, 2.0);
+        //else if(NarcoFarmBattleInfo[farmid][dfbiDefendFraction] == fraction(playerid)) CreateGps(playerid, NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][2], -1, -1, 2.0);
     }
     return 1;
 }
@@ -546,7 +552,7 @@ DIALOG:mafiafarm(playerid, response, listitem, const inputtext[]){
             {
                 if(fraction(i) == NarcoFarmBattleInfo[farmid][dfbiAttackFraction])
                 {
-                    CreateGps(i, NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][2], -1, -1, 2.0);
+                    //CreateGps(i, NarcoFarmInfo[farmid][dfiSpawnDefendersPos][0], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][1], NarcoFarmInfo[farmid][dfiSpawnDefendersPos][2], -1, -1, 2.0);
                     GetNarkoFermFractionName(i, farmid, NarcoFarmBattleInfo[farmid][dfbiDefendFraction]);
                     NarcoFarmBattleInfo[farmid][dfbiAttackers][quanattac] = PlayerInfo[i][pID];
                     quanattac++;
@@ -554,7 +560,7 @@ DIALOG:mafiafarm(playerid, response, listitem, const inputtext[]){
                 if(fraction(i) == NarcoFarmBattleInfo[farmid][dfbiDefendFraction]) 
                 {
                     GetNarkoFermFractionName(i, farmid, NarcoFarmBattleInfo[farmid][dfbiAttackFraction]);
-                    CreateGps(i, NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][2], -1, -1, 2.0);
+                    //CreateGps(i, NarcoFarmInfo[farmid][dfiSpawnAttackersPos][0], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][1], NarcoFarmInfo[farmid][dfiSpawnAttackersPos][2], -1, -1, 2.0);
                     NarcoFarmBattleInfo[farmid][dfbiDefenders][quandefender] = PlayerInfo[i][pID];
                     quandefender++;
                 }
