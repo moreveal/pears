@@ -766,6 +766,8 @@ stock dialogPetsList(playerid)
 
 stock dialogPetMenagment(playerid,slot)
 {
+    if(slot < 0) return false;
+
     new pet = OnlineInfo[playerid][oPet][slot];
     DP[0][playerid] = slot;
     new type = FindPet(PetInfo[pet][petType]);

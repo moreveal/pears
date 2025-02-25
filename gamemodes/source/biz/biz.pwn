@@ -451,6 +451,8 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 			// записываем залупу, а то может быть новый кастомный кар и все обычные поедут
 			if(BizzInfo[b][bProduct][s] > 0 && BizzInfo[b][bPrice][s] > 0) BizCarSlotId[b][s] = BizzInfo[b][bProduct][s], BizCarSlotPrice[b][s] = BizzInfo[b][bPrice][s], BizCarSlotItem[b][s] = BizzInfo[b][bItem][s];
 			BizzInfo[b][bProduct][s] = 0; // Очищаем все слоты, перед перезагрузкой
+			BizzInfo[b][bPrice][s] = 0; // Очищаем все слоты, перед перезагрузкой
+			BizzInfo[b][bItem][s] = 0;
 		}
 
 		new slot;

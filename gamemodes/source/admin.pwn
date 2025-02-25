@@ -519,6 +519,40 @@ CMD:rbiz(playerid, const params[])
 	return 1;
 }
 
+
+CMD:clearbizslot(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(sscanf(params, "ii", params[0], params[1])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Удалить товары из бизнеса [ /clearbizslot ID Слот ]");
+	
+	new string[128];
+	if(params[0] >= 1 && params[0] <= 200)
+	{
+		if(params[1] < 0 || params[1] >= MAX_BIZ_ITEM) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Слот товара не меньше 0 и не больше %d", MAX_BIZ_ITEM);
+
+		ClearThingBiz(params[0], params[1]);
+		format(string, sizeof(string), " [ ADM ]: %s удалил товар в слоте %d из бизнеса %s № %d", PlayerInfo[playerid][pName],params[1],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
+		
+		format(string, sizeof(string), "Удалил товар в слоте %d из бизнеса %d",params[1], params[0]);
+		AdminLog("clearbizslot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], string);
+	}
+	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");
+	return true;
+}
+
+stock ClearThingBiz(b, i)
+{
+	if(i < 0 || i >= MAX_BIZ_ITEM) return false;
+	if(b < 0 || b >= MAX_BIZ) return false;
+
+	if(BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0)
+	{
+		BizzInfo[b][bItem][i] = 0;
+		SaveBizzProductItem(b, i);
+	}
+	return true;
+}
+
 CMD:bproduct(playerid, const params[])
 {
 	new b,idproduct,count;
