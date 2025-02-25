@@ -183,7 +183,6 @@ stock GivePlayerWildPet(playerid,pet)
 
 stock Pump_StartFeedWildPet(playerid, pet)
 {
-    if(server != 0) return 0;
     if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 0;
     if(GetPVarInt(playerid, "Arobsklad") > 0) return 0;
 
