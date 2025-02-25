@@ -720,13 +720,6 @@ stock create_infect(playerid, stat, prog, i)
 	}
 }
 
-// TODO: убрать
-CMD:testprotect(playerid)
-{
-	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Текущая степень защиты: %d", GetPlayerInfectProtectionType(playerid));
-	return 1;
-}
-
 stock infect(playerid, stat, prog, bool: force = false)
 {
 	new yes = -1;
