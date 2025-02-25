@@ -1316,11 +1316,9 @@ stock NarcoSpot_OnPlayerPressALT(playerid)
                 if (IsPoliceMember(playerid)) return ErrorMessage(playerid, "Вы не можете войти в притон [ Только при рейде ]");
                 if (IsPlayerHavePursuit(playerid)) return ErrorMessage(playerid, "Вы не можете войти в притон [ Вас преследуют ]");
                 if (Stun[4][playerid] == 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я в наручниках");
-
                 if (NarcoSpotHangOutCutSceneEnable(playerid, i)) return 1;
                 if (NarcoSpotLaboratoryCutSceneEnable(playerid, i)) return 1;
                 NarcoSpotPlayer_Join(playerid, i);
-
                 return 1;
             }
         }
@@ -1331,7 +1329,6 @@ stock NarcoSpot_OnPlayerPressALT(playerid)
         if (IsPlayerInRangeOfPoint(playerid, 1.0, x, y, z))
         {
             NarcoSpotPlayer_Exit(playerid, i);
-            
             return 1;
         }
     }
@@ -1353,7 +1350,7 @@ stock NarcoSpot_OnPlayerPressALT(playerid)
             return ShowAdvancedDialog(playerid, "narcospot_hangout", DIALOG_STYLE_LIST, "{cccccc}Меню", dialog_text, "Выбор", "Закрыть", true);
         } else if (IsPlayerInRangeOfPoint(playerid, 2.0, 997.459899, 232.581756, 153.160415)) { // Почва для посадки
             new spotid = NarcoSpotPlayer_GetId(playerid);
-            if (!NarcoSpotIsExists(spotid)) return 0;
+            if (!NarcoSpotIsExists(spotid)) return false;
             if (Hold[playerid] == 16 || NarcoSpotPlayerInfo[playerid][nspCurrentAction] == NARCO_PLAYER_ACTION_SOIL) {
                 Hold[playerid] = 0;
                 NarcoSpotPlayer_SetCurrentAction(playerid, NARCO_PLAYER_ACTION_NONE);
@@ -1421,14 +1418,13 @@ stock NarcoSpot_OnPlayerPressALT(playerid)
                 SetPlayerAttachedObject(playerid, 1, 12732, 6, 0.271000, 0.025000, 0.000000, 0.399998, -80.399932, 89.400016, 0.434001, 0.661000, 0.632002, 0x0, 0x0);
                 ApplyAnimation(playerid, "GANGS", "DRUGS_BUY", 3.0, false, true, true, false, false);
             } else return ErrorMessage(playerid, "{FF6347}У вас заняты руки");
-
             return 1;
         } else {
             new spotid = NarcoSpotPlayer_GetId(playerid);
             if (NarcoSpotIsExists(spotid))
             {
                 new potid = NarcoSpotPlayer_GetNearPlaceId(playerid);
-                if (potid == NARCO_SPOT_INVALID_ID) return 1;
+                if (potid == NARCO_SPOT_INVALID_ID) return false;
 
                 // Пытаемся полить чужую грядку
                 if (Hold[playerid] == 15 && !NarcoSpotIsPlaceFree(spotid, potid) && NarcoPlaceInfo[spotid][potid][npdPlayer] != PlayerInfo[playerid][pID])
@@ -1570,7 +1566,7 @@ stock NarcoSpot_OnPlayerPressALT(playerid)
         }
         else {
             new placeid = NarcoSpotPlayer_GetNearPlaceId(playerid);
-            if (placeid == NARCO_SPOT_INVALID_ID) return 1;
+            if (placeid == NARCO_SPOT_INVALID_ID) return false;
 
             new unix = gettime();
 
