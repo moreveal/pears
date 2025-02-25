@@ -193,7 +193,7 @@ CMD:reloadgifts(playerid)
 
 stock CreateNewYearGifts()
 {
-    if(!IsANewYearSoon()) return 0;
+    if(!IsADecember()) return 0;
     new rand = random(MAX_NEWYEARSGIFTS-20);
     for(new i = rand; i < MAX_NEWYEARSGIFTS; i++)
     {

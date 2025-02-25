@@ -164,10 +164,10 @@ stock FindWildPet(playerid)
         if(WildPetInfo[pet][wildpetPlayer] == playerid)
         {
             Pump_StartFeedWildPet(playerid,pet);
-            break;
+            return true;
         }       
     }
-    return true;
+    return false;
 }
 
 stock GivePlayerWildPet(playerid,pet)

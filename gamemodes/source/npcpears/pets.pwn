@@ -483,10 +483,10 @@ stock LoadPlayerPet(playerid,slotpet, petId, inva)
     {
         if(IsValidNpc(PetInfo[pet][petID])) continue;
         OnlineInfo[playerid][oPet][slotpet] = pet;
-        new string_mysql[100];
+        new string_mysql[300];
         if(petId == 0)
         {
-            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pets` SET `petHunger` = '50',`petHealth` = '100', `petUnixLastEating` = '%d'",gettime()+1200);
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pets` SET `petHunger` = '50',`petPower` = '1',`petAgility` = '1',`petEndurance` = '1',`petHealth` = '100', `petUnixLastEating` = '%d'",gettime()+1200);
 			mysql_tquery(pearsq, string_mysql, "Call_getidPet", "ddd", playerid, slotpet, inva);
         }
         else{
@@ -1776,10 +1776,10 @@ stock FindLoadedPet(playerid)
         if(IsPlayerInRangeOfPoint(playerid,2.0,AnimalX,AnimalY,AnimalZ) && GetPlayerVirtualWorld(playerid) == GetNpcVirtualWorld(PetInfo[pet][petID]))
         {
             Pump_StartFeedPet(playerid,pet);
-            break;
+            return true;
         }    
     }
-    return true;
+    return false;
 }
 
 stock PetPlaySound(pet, pet_Sound: typesound)
@@ -1953,6 +1953,9 @@ stock OnPlayerLoadPet(playerid,slot, pet, inva)
     cache_get_value_name_int(0,"petPower",PetInfo[pet][petPower]);
     cache_get_value_name_int(0,"petAgility",PetInfo[pet][petAgility]);
     cache_get_value_name_int(0,"petEndurance",PetInfo[pet][petEndurance]);
+    if(PetInfo[pet][petPower] == 0) PetInfo[pet][petPower] = 1;
+    if(PetInfo[pet][petAgility] == 0) PetInfo[pet][petAgility] = 1;
+    if(PetInfo[pet][petEndurance] == 0) PetInfo[pet][petEndurance] = 1;
 
     cache_get_value_name_int(0,"petDonateFeatures",PetInfo[pet][petDonateFeatures]);
     if(PetInfo[pet][petDonateFeatures] == 0) PetInfo[pet][petDonateFeatures] = 2;
