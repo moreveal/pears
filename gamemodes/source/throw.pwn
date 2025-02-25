@@ -233,7 +233,8 @@ stock use_throw(playerid, inva, useinva)
 			if(ThrowInfo[t][tPara] > 0) ThrowInfo[t][tPara] = 0, ThrowInfo[t][tQara] = 0;
 		}
 		else tort_quan = fquan;
-
+		
+		if(IsABackPack(fpick) && BackPack[playerid]) return ErrorMessage(playerid,"{ff6347}Нельзя убрать рюкзак в рюкзак");
 		yesinva = GiveThingPlayer(playerid, fpick, tort_quan, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tType], ThrowInfo[t][tPack], useinva);
 
 		if(ThrowInfo[t][tPutLocation] == 1 && fpick >= 112 && fpick <= 121 || fpick == 14 || fpick == 37) in_hand_eat(playerid, 3, fpick, fpick, fquan, yesinva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent], thingPack);
