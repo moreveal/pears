@@ -1295,7 +1295,8 @@ stock ListPlayerLoadPet(playerid,type)
 	{
 		if(OnlineInfo[playerid][oPet][pet] != -1) 
 		{
-            format(line,sizeof(line),"{cccccc}%d. %s\n", quan + 1, GetSkinName(PetsParam[PetInfo[OnlineInfo[playerid][oPet][pet]][petType]][2])), strcat(lines,line);
+            new id = FindPet(PetInfo[OnlineInfo[playerid][oPet][pet]][petType]);
+            format(line,sizeof(line),"{cccccc}%d. %s\n", quan + 1, GetSkinName(PetsParam[id][2])), strcat(lines,line);
 			List[quan][playerid] = pet+1;
             quan ++;
 		}
