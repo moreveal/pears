@@ -623,6 +623,14 @@ stock PetTaskFollowMe(pet)
     return true;
 }
 
+stock DeletePet(petid)
+{
+	new string_mysql[128];
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"DELETE FROM `pets` WHERE `petID` = '%d'", petid);
+	query_empty(pearsq, string_mysql);
+	return 1;
+}
+
 stock PetTaskSeatInCar(pet)
 {
     new veh = PetInfo[pet][petVehicle];
