@@ -1457,7 +1457,7 @@ CMD:givepetexp(playerid)
     if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     for(new i = 0; i < MAX_PETS_AT_PLAYER; i++)
     {
-        if(OnlineInfo[playerid][oPet][i] > 0)
+        if(OnlineInfo[playerid][oPet][i] >= 0)
         {
             GivePetsExp(OnlineInfo[playerid][oPet][i], 25);
         }
