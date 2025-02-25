@@ -46,7 +46,6 @@ stock UseDrugs(playerid, e_DrugsType: type, slot = 999)
             SetPlayerChatBubble(playerid, "высыпает дорожку и вдыхает её через нос", COLOR_PURPLE, 20.0, 7000);
 
             SetPVarInt(playerid,"afdrugs", gettime() + 60);
-            TakeInvent(playerid, DrugsInfo[type][diItem], 1, 0, slot);
         }
         case DRUGS_TYPE_BLUE_COCAINE:
         {
@@ -60,7 +59,6 @@ stock UseDrugs(playerid, e_DrugsType: type, slot = 999)
             SetPlayerChatBubble(playerid, "высыпает дорожку и вдыхает её через нос", COLOR_PURPLE, 20.0, 7000);
 
             SetPVarInt(playerid,"afdrugs", gettime() + 60);
-            TakeInvent(playerid, DrugsInfo[type][diItem], 1, 0, slot);
         }
         case DRUGS_TYPE_DUMMY_BLUE_COCAINE:
         {
@@ -74,7 +72,6 @@ stock UseDrugs(playerid, e_DrugsType: type, slot = 999)
             SetPlayerChatBubble(playerid, "высыпает дорожку и вдыхает её через нос", COLOR_PURPLE, 20.0, 7000);
 
             SetPVarInt(playerid,"afdrugs", gettime() + 60);
-            TakeInvent(playerid, DrugsInfo[type][diItem], 1, 0, slot);
         }
         case DRUGS_TYPE_ECSTASY:
         {
