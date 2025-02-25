@@ -407,6 +407,7 @@ stock CheckTaskValid(pet, pet_TaskToNpc: PetTask, bool: msg = true)
         dialogPetCreateTask(PetInfo[pet][petPlayer], DP[0][PetInfo[pet][petPlayer]]);
         return false;
     }
+    else if(PetInfo[pet][petSkills][typeSkill] < 10) return false;
     else return true;
 }
 
