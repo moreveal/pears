@@ -182,7 +182,7 @@ stock GetThingForCraft(thingId, thingType, &thingAmount, craftThing[], craftQuan
                 craftThing[0] = 268, craftQuan[0] = 35, craftType[0] = 0; // Резина
                 craftThing[1] = 259, craftQuan[1] = 10, craftType[1] = 0; // Ткань
             }
-            case 610, 611, 547: // Оранжевый защитный костюм
+            case 610, 611, 547, 548: // Оранжевый защитный костюм
             {
                 craftThing[0] = 613, craftQuan[0] = 1, craftType[0] = 3; // Черный защитный костюм
                 craftThing[1] = 268, craftQuan[1] = 20, craftType[1] = 0; // Резина
