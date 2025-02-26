@@ -576,8 +576,8 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         }
         else if(gRedakt[playerid] == REDAKT_TYPE_FURNITURE_SET) // Установка мебели в доме
 		{
-            new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
-            new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
+            new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
+            new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
             if(dist > 200.0 && distStreet > DomInfo[oid][dMapDistance])
             {
                 new string[150];
@@ -627,8 +627,8 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		}
         else if(gRedakt[playerid] == REDAKT_TYPE_BIZ_FURNITURE_SET) // Перемещение Мебель в Бизнесе
 		{
-            new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
-            new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
+            new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
+            new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
             if(dist > 200.0 && distStreet > 30.0)
             {
                 ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса");
@@ -847,8 +847,8 @@ stock CancelDynamicEditable(playerid)
 // Создание объекта в слот в доме
 stock CreateObjectInDom(playerid, oid, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid, interiorid)
 {
-    new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
-    new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
+    new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
+    new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
     if(dist > 200.0 && distStreet > DomInfo[oid][dMapDistance])
     {
         new string[150];
@@ -885,8 +885,8 @@ stock CreateObjectInDom(playerid, oid, modelid, Float:x, Float:y, Float:z, Float
 // Создание объекта в слот в бизнесе
 stock CreateObjectInBiz(playerid, oid, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid, interiorid)
 {
-    new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
-    new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
+    new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
+    new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
     if(dist > 200.0 && distStreet > 30.0)
     {
         ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса");
