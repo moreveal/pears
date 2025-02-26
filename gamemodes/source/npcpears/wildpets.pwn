@@ -177,6 +177,7 @@ stock GivePlayerWildPet(playerid,pet)
 
     DestroyWildPet(pet);
     SuccessMessage(playerid, "{44ff99}Я получил питомца. Теперь он в моем инвентаре!");
+    CompleteBattlePassTask(playerid, 1, 2);
 
     return true;
 }
