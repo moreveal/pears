@@ -23,7 +23,7 @@ stock setprom(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] <= 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	new pf = ListCode[playerid];
-	if(pf >= 50) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ошибка промокода!"), pc_cmd_promo(playerid);
+	if(pf >= MAX_PROMO) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ошибка промокода!"), pc_cmd_promo(playerid);
 	new tyear[2], tmonth[2], tday[2], thour[2], tminute[2], tsecond[2];
 	stamp2datetime(PromoInfo[pf][roUnixbegin], tyear[0], tmonth[0], tday[0], thour[0], tminute[0], tsecond[0], 3);
 	stamp2datetime(PromoInfo[pf][roUnixend], tyear[1], tmonth[1], tday[1], thour[1], tminute[1], tsecond[1], 3);
@@ -304,7 +304,7 @@ stock critprom(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] <= 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	new pf = ListCode[playerid];
-	if(pf >= 50) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ошибка промокода!"), pc_cmd_promo(playerid);
+	if(pf >= MAX_PROMO) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ошибка промокода!"), pc_cmd_promo(playerid);
 	
 	new line[70], lines[140];
 	if(PromoInfo[pf][roVoice] == 1) format(line,sizeof(line),"{cccccc}Лаунчер: \t {99ff66}[ Требуется ]\n"), strcat(lines,line);
