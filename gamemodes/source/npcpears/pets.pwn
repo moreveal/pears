@@ -1690,9 +1690,8 @@ stock SetPetHealth(pet)
 {
     new id = FindPet(PetInfo[pet][petType]);
     new Float:healthPet = float(PetsParam[id][1]);
-    SendClientMessageToAll(-1, "Pet health: %f", healthPet);
     healthPet += float(5*(PetInfo[pet][petEndurance]+PetInfo[pet][petPower]));
-    SendClientMessageToAll(-1, "Pet health 2: %f", healthPet);
+    
     SetNpcHealth(PetInfo[pet][petID], healthPet);
     PetInfo[pet][petHealth] = healthPet;
     SavePet(PetInfo[pet][petPlayer],pet);
