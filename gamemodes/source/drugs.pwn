@@ -136,7 +136,7 @@ stock Drugs_GetPackageAmount(thingid, &fpick, &fquan)
     switch (thingid)
     {
         case 271: fpick = 4, fquan = 10;
-        case 272: fpick = 7, fquan = 20;
+        case 272: fpick = 7, fquan = 4;
         case 277: fpick = 263, fquan = 20;
         case 278: fpick = 264, fquan = 20;
         default: return 0;
