@@ -29,6 +29,7 @@ CMD:showhb(playerid, const params[])
 	{
 		if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 		if(IsARealNPC(params[0])) return ErrorMessage(playerid, "{FF6347}Это NPC");
+		if(!ProxDetectorS(5.0, playerid,params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я слишком далеко..");
 		stop_dialog(params[0]);
 		ShowDialog(params[0],1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка личной Доски Почета...","*","");
 		new string[120];
