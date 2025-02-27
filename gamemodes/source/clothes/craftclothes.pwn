@@ -125,9 +125,7 @@ stock CreateSkinListCraft(playerid)
     */
 
     ShowDialog(playerid, SKINCRAFT_LIST_TYPE, DIALOG_STYLE_LIST, "{ff9000}Станок",
-        "{cccccc}Масхалат (ID: 625)\n" \
-        "{cccccc}Противогаз\n" \
-        "{cccccc}Улучшенный противогаз",
+        "{cccccc}Масхалат (ID: 625)",
     
         "Выбор", "Назад"
     );
