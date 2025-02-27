@@ -1936,7 +1936,7 @@ stock UsePetItem(playerid, inva)
     || SleepRP[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Ваш персонаж не может сейчас достать предмет [ Заняты руки или выполняется действие ]");
 
     new string[400];
-    format(string, sizeof(string), "{ffcc66}Вы взяли в руки %s {ff9000}[ Это предмет для взаимодействия с питомцами ]\n{cccccc}Подойдите к вашему питомцу и начните взаимодействовать с ним: Кнопка ALT\n{cccccc}Далее кличкайте %s для взаимодействия",friskName[PlayerInfo[playerid][pInven][inva]], buttonName[Device[playerid]]);
+    format(string, sizeof(string), "{ffcc66}Вы взяли в руки %s {ff9000}[ Это предмет для взаимодействия с питомцами ]\n{cccccc}Подойдите к вашему питомцу и начните взаимодействовать с ним: Кнопка ALT\n{cccccc}Далее кликайте %s для взаимодействия",friskName[PlayerInfo[playerid][pInven][inva]], buttonName[Device[playerid]]);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
     in_hand_item(playerid, inva, PlayerInfo[playerid][pInven][inva], PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenQara][inva], PlayerInfo[playerid][pInvenQuan][inva]);
     return 1;

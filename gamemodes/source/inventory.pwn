@@ -3720,7 +3720,7 @@ stock UseItem(playerid,inva, fpick,fquan,fpara,thingType,thingPack)
 		
 		else if(Graves_IsArtifact(fpick)) return pc_cmd_thing(playerid), i_resetveshi(playerid); // Артефакты (Раскопка могил)
 
-		return pc_cmd_thing(playerid), i_resetveshi(playerid);
+		else return pc_cmd_thing(playerid), i_resetveshi(playerid);
 	}
 	
 	else if(thingType == 2) // Аксессуары

@@ -787,7 +787,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2000 + sizeof(vehNameCustom)) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v < 2000 + sizeof(vehNameCustom)) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;

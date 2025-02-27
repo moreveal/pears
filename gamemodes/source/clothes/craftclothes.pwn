@@ -12,10 +12,10 @@ new SkinCraftListBust[MAX_CRAFT_SKIN+DOP_SKIN_BUST][4] =
     { 625, 1, 1, 0}          // Лесной
 };
 
-new friskQualityBustSkin[MAX_CLASS_SKIN][] =
+/*new friskQualityBustSkin[MAX_CLASS_SKIN][] =
 {
     { "Скрывает маркер на карте" }
-};
+};*/
 
 stock FindItemSkinCraft(thingid)
 {
@@ -84,34 +84,7 @@ stock dialogShieldSkinCraftList(playerid)
     return 1;
 }
 
-stock CreateSkinListCraft(playerid)
-{
-    new line[100],lines[sizeof(friskQualityBustSkin)*100],quan =-1;
-    for(new i = 0; i< MAX_CRAFT_SKIN+DOP_SKIN_BUST; i++)
-    {
-        if(SkinCraftListBust[i][1] != quan)
-        {
-            quan++;
-            format(line,sizeof(line),"{ff9000}%s\n",friskQualityBustSkin[quan]), strcat(lines,line);
-        }
-    }
-    ShowDialog(playerid,SKINCRAFT_LIST_TYPE,DIALOG_STYLE_LIST,"{ff9000}Станок",lines,"Выбор","Отмена");
-    return true;
-}
-
-stock dialogShieldAcsCraftList(playerid)
-{
-    ShowDialog(playerid, ACCESSORYCRAFT_SHIELD_LIST, DIALOG_STYLE_LIST, "{ff9000}Станок",
-        "{cccccc}Респиратор\n" \
-        "{cccccc}Противогаз\n" \
-        "{cccccc}Улучшенный противогаз",
-    
-        "Выбор", "Назад"
-    );
-
-    return 1;
-}
-
+/*
 stock CreateSkinListCraftType(playerid)
 {
     new line[100],lines[MAX_CRAFT_SKIN*100],quan;
@@ -128,6 +101,50 @@ stock CreateSkinListCraftType(playerid)
     }
     ShowDialog(playerid,SKINCRAFT_LIST,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Станок",lines,"Выбор","Отмена");
     return true;
+}
+*/
+
+stock CreateSkinListCraft(playerid)
+{
+    /*
+
+    Менюшка баганая, я её закоментил
+    Исправлять эти какашки не буду, сделал так, что масхалат крафтится и норм отображается в станке
+    Сверху сток закоментил CreateSkinListCraftType (он был в диалоговом окне SKINCRAFT_LIST_TYPE, там тоже всё упростил)
+
+    new line[100],lines[sizeof(friskQualityBustSkin)*100],quan =-1;
+    for(new i = 0; i< MAX_CRAFT_SKIN+DOP_SKIN_BUST; i++)
+    {
+        if(SkinCraftListBust[i][1] != quan)
+        {
+            quan++;
+            format(line,sizeof(line),"{ff9000}%s\n",friskQualityBustSkin[quan]), strcat(lines,line);
+        }
+    }
+    ShowDialog(playerid,SKINCRAFT_LIST_TYPE,DIALOG_STYLE_LIST,"{ff9000}Станок",lines,"Выбор","Отмена");
+    */
+
+    ShowDialog(playerid, SKINCRAFT_LIST_TYPE, DIALOG_STYLE_LIST, "{ff9000}Станок",
+        "{cccccc}Масхалат (ID: 625)\n" \
+        "{cccccc}Противогаз\n" \
+        "{cccccc}Улучшенный противогаз",
+    
+        "Выбор", "Назад"
+    );
+    return true;
+}
+
+stock dialogShieldAcsCraftList(playerid)
+{
+    ShowDialog(playerid, ACCESSORYCRAFT_SHIELD_LIST, DIALOG_STYLE_LIST, "{ff9000}Станок",
+        "{cccccc}Респиратор\n" \
+        "{cccccc}Противогаз\n" \
+        "{cccccc}Улучшенный противогаз",
+    
+        "Выбор", "Назад"
+    );
+
+    return 1;
 }
 
 stock dialogCraftList(playerid)

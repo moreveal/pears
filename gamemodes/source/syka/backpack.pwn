@@ -94,6 +94,9 @@ stock player_tile_backpack(playerid, inva)
 				BackPackInfo[playerid][backpackInvPack][inva] = PlayerInfo[playerid][pInvenPack][OnlineInfo[playerid][oInventSelectLeft]];
 				i_tile(playerid, BackPackInfo[playerid][backpackInvent][inva], BackPackInfo[playerid][backpackInv][inva], inva, BackPackInfo[playerid][backpackInvPara][inva], BackPackInfo[playerid][backpackInvType][inva], BackPackInfo[playerid][backpackInvPack][inva]);
 
+				// Убираем предмет из рук, когда кладём в рюкзак
+				i_takehands(playerid, PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]]);
+
 				// Старую плитку удаляем
 				PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]] = 0;
 				PlayerInfo[playerid][pInvenQuan][OnlineInfo[playerid][oInventSelectLeft]] = 0;

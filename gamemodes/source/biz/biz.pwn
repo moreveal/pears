@@ -654,6 +654,11 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 			{
 				if(stat == 1) BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]) / 4;
 			}
+
+			// Впервые ставим предмет в слот, значит сбрасываем цену на 0 (мало ли, там уже был когда-то другой предмет в слоте и произошло смещение)
+			if(yes[i] == true && stat == 0) BizzInfo[b][bPrice][i] = 0;
+
+			// Можно сохранять
 			yesUpdate = true;
         }
     }
