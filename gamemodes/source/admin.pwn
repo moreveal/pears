@@ -1453,7 +1453,7 @@ function Call_PunishmentsName(playerid)
 	{
 		cache_get_value_name_int(0, "user_id", datad1);
 		mysql_format(pearsq_2, string, sizeof(string), "SELECT action, primary_player_name, secondary_player_name, timestamp, \
-			convertCharset(rows, \'utf-8\', \'windows-1251\') AS rows_1251, \
+			convertCharset(`rows`, \'utf-8\', \'windows-1251\') AS rows_1251, \
 			DATE_FORMAT(timestamp, \'%%d.%%c.%%Y %%H:%%i:%%s\', \'Europe/Moscow\') AS timestamp_fmt \
 			FROM `admin_logs` WHERE `secondary_player_id` = '%d' \
 			AND action IN ('warn', 'gunwarn', 'unwarn', 'mute', 'unmute', 'prison', 'unprison', 'ban', 'unban', 'kick') \
@@ -1470,7 +1470,7 @@ stock PunishmentsLogs(playerid, target)
 	new string[500];
 	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{000000}.","{cccccc}Поиск логов...","*","");
 	mysql_format(pearsq_2, string, sizeof(string), "SELECT action, primary_player_name, secondary_player_name, timestamp, \
-		convertCharset(rows, \'utf-8\', \'windows-1251\') AS rows_1251, \
+		convertCharset(`rows`, \'utf-8\', \'windows-1251\') AS rows_1251, \
 		DATE_FORMAT(timestamp, \'%%d.%%c.%%Y %%H:%%i:%%s\', \'Europe/Moscow\') AS timestamp_fmt \
 		FROM `admin_logs` WHERE `secondary_player_id` = '%d' \
 		AND action IN ('warn', 'gunwarn', 'unwarn', 'mute', 'unmute', 'prison', 'unprison', 'ban', 'unban', 'kick') \
