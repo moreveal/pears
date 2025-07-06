@@ -18,3 +18,17 @@
 
 # Proper files encoding detection & diff decorations disable
 !.vscode/settings.json
+
+# SQL files
+!database/**
+
+# Plugins/includes
+!plugins/**
+!qawno/include/**
+
+# Other
+!mysql_logs.ini
+!mysql.ini
+!server.cfg
+!npcmodes/*.pwn
+!config.json
