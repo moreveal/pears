@@ -8,6 +8,7 @@
 !gamemodes/**/*.pwn
 !gamemodes/**/*.inc
 !filterscripts/*.pwn
+!filterscripts/npc_record.amx
 !npcmodes/*.pwn
 
 # NPCs recordings
