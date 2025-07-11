@@ -25,6 +25,7 @@
 # Plugins/includes
 !plugins/**
 !qawno/include/**
+!components/**
 
 # Other
 !mysql_logs.ini
@@ -32,3 +33,6 @@
 !server.cfg
 !npcmodes/*.pwn
 !config.json
+
+*.i64
+*.idb
