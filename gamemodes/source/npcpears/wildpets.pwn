@@ -172,12 +172,13 @@ stock FindWildPet(playerid)
 
 stock GivePlayerWildPet(playerid,pet)
 {
-    new put_inva = GiveThingPlayer(playerid, PetsParam[WildPetInfo[pet][wildpetType]][2], 1, 0, 0, 6, 0, 9999);
-    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+    #pragma unused playerid, pet
+    //new put_inva = GiveThingPlayer(playerid, PetsParam[WildPetInfo[pet][wildpetType]][2], 1, 0, 0, 6, 0, 9999);
+    //if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
 
-    DestroyWildPet(pet);
-    SuccessMessage(playerid, "{44ff99}Я получил питомца. Теперь он в моем инвентаре!");
-    CompleteBattlePassTask(playerid, 1, 2);
+    //DestroyWildPet(pet);
+    //SuccessMessage(playerid, "{44ff99}Я получил питомца. Теперь он в моем инвентаре!");
+    //CompleteBattlePassTask(playerid, 1, 2);
 
     return true;
 }
@@ -199,7 +200,8 @@ stock Pump_StartFeedWildPet(playerid, pet)
 
 stock LifeWildPet(pet)
 {
-    if(!IsValidNpc(WildPetInfo[pet][wildpetID])) 
+    #pragma unused pet
+    /*if(!IsValidNpc(WildPetInfo[pet][wildpetID])) 
     {
         if(WildPetInfo[pet][wildpetUnix] + 3600 < gettime()) CreateWildPet(pet);
         else return false;
@@ -231,7 +233,7 @@ stock LifeWildPet(pet)
     if(WildPetInfo[pet][wildpetEvent] == WILDPET_FOLLOW || WildPetInfo[pet][wildpetEvent] == WILDPET_RUN)
     {
         if(GetDistanceBetweenPoints2D(AnimalX, AnimalY, WildPetInfo[pet][wildpetTaskCoord][0], WildPetInfo[pet][wildpetTaskCoord][1]) >= 100.0) DestroyWildPet(pet);
-    }
+    }*/
     return true;
 }
 

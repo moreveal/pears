@@ -85,6 +85,16 @@ native bool:TaskNpcGoToPoint(NPC:npc, Float:x, Float:y, Float:z, NPC_MOVE_MODE:m
 native bool:TaskNpcFollowPlayer(NPC:npc, playerid);
 //native bool:TaskNpcPlayAnimation(NPC:npc, const animationLibrary[], const animationName[], Float:delta, bool:loop, bool:lockX, bool:lockY, bool:freeze, time);
 
+// Заглушки для закоментированных функций
+forward bool:IsNpcInAnyVehicle(NPC:npc);
+public bool:IsNpcInAnyVehicle(NPC:npc) { return false; }
+
+forward bool:TaskNpcAttackNpc(NPC:npc, NPC:target, bool: aggressive);
+public bool:TaskNpcAttackNpc(NPC: npc, NPC: target, bool: aggressive) { return false ; }
+
+forward bool:TaskNpcPlayAnimation(NPC:npc, const animationLibrary[], const animationName[], Float:delta, bool:loop, bool:lockX, bool:lockY, bool:freeze, time);
+public bool:TaskNpcPlayAnimation(NPC:npc, const animationLibrary[], const animationName[], Float:delta, bool:loop, bool:lockX, bool:lockY, bool:freeze, time) { return false; }
+
 /*
 
       ,ad8888ba,               88  88  88                                   88
