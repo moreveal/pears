@@ -26,7 +26,9 @@
 # Plugins/includes
 !plugins/**
 !qawno/include/**
-!components/**
+!components/*.dll
+!components/*.pdb
+!components/*.so
 
 # Other
 !mysql_logs.ini
@@ -37,3 +39,6 @@
 
 *.i64
 *.idb
+
+!*.dll
+!README.md
