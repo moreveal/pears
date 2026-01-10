@@ -41,4 +41,5 @@
 *.idb
 
 !*.dll
+!*.exe
 !README.md
