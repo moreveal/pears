@@ -36,10 +36,9 @@
 !server.cfg
 !npcmodes/*
 !config.json
-
 *.i64
 *.idb
-
 !*.dll
 !*.exe
+!client/*
 !README.md
