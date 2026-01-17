@@ -75,25 +75,13 @@ native GetNpcVehicleID(NPC:npc);
 native GetNpcVehicleSeat(NPC:npc);
 native bool:IsNpcInVehicle(NPC:npc, vehicleid);
 
-// Закоментированные функции (возможно временно) не имплементированы в Linux-версии плагина
-//native bool:IsNpcInAnyVehicle(NPC:npc);
-
+native bool:IsNpcInAnyVehicle(NPC:npc);
 native bool:TaskNpcStandStill(NPC:npc);
 native bool:TaskNpcAttackPlayer(NPC:npc, playerid, bool:aggressive = false);
-//native bool:TaskNpcAttackNpc(NPC:npc, NPC:target, bool:aggressive = false);
+native bool:TaskNpcAttackNpc(NPC:npc, NPC:target, bool:aggressive = false);
 native bool:TaskNpcGoToPoint(NPC:npc, Float:x, Float:y, Float:z, NPC_MOVE_MODE:mode = NPC_MOVE_MODE_WALK);
 native bool:TaskNpcFollowPlayer(NPC:npc, playerid);
-//native bool:TaskNpcPlayAnimation(NPC:npc, const animationLibrary[], const animationName[], Float:delta, bool:loop, bool:lockX, bool:lockY, bool:freeze, time);
-
-// Заглушки для закоментированных функций
-forward bool:IsNpcInAnyVehicle(NPC:npc);
-public bool:IsNpcInAnyVehicle(NPC:npc) { return false; }
-
-forward bool:TaskNpcAttackNpc(NPC:npc, NPC:target, bool: aggressive);
-public bool:TaskNpcAttackNpc(NPC: npc, NPC: target, bool: aggressive) { return false ; }
-
-forward bool:TaskNpcPlayAnimation(NPC:npc, const animationLibrary[], const animationName[], Float:delta, bool:loop, bool:lockX, bool:lockY, bool:freeze, time);
-public bool:TaskNpcPlayAnimation(NPC:npc, const animationLibrary[], const animationName[], Float:delta, bool:loop, bool:lockX, bool:lockY, bool:freeze, time) { return false; }
+native bool:TaskNpcPlayAnimation(NPC:npc, const animationLibrary[], const animationName[], Float:delta, bool:loop, bool:lockX, bool:lockY, bool:freeze, time);
 
 /*
 
